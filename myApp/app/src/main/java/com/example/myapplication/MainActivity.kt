@@ -14,10 +14,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import oracle.jdbc.driver.OracleDriver
 import oracle.jdbc.pool.OracleDataSource
 import java.sql.Connection
 import java.sql.DriverManager
-import oracle.jdbc.driver.OracleDriver
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     // oracle databaze config
     private val DRIVER = "oracle.jdbc.driver.OracleDriver"
-    private val URL = "jdbc:oracle:thin:@fei-sql1.upceucebny.cz:1521:IDAS" // TODO: něco je asi špatňe :(
+    private val URL = "jdbc:oracle:thin:@fei-sql1.upceucebny.cz:1521:IDAS " // TODO: něco je asi špatňe :(
     private val USERNAME = "st64116"
     private val PASSWORD = "cislo123"
     private lateinit var connection: Connection
@@ -69,11 +69,20 @@ class MainActivity : AppCompatActivity() {
             } catch (e: java.lang.Exception) {
                 println(e)
             }
-            val driver = OracleDriver();
-            DriverManager.registerDriver(driver)
-            this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)
 
-            Toast.makeText(null, "CONNECTED", Toast.LENGTH_LONG)
+//            val ods = OracleDataSource()
+//            ods.url = connString
+//            ods.user = "scott"
+//            ods.setPassword("tiger")
+//            val conn = ods.getConnection()
+
+
+//            val driver = OracleDriver();
+//            DriverManager.registerDriver(driver)
+            println("connecting...");
+            this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD)
+            println("connected!")
+            Toast.makeText(this, "CONNECTED", Toast.LENGTH_LONG)
             val statement = connection.createStatement()
             val resultSet = statement.executeQuery("select * from pojistky")
 
