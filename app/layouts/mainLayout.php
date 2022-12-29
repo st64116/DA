@@ -29,22 +29,26 @@
             <a href="index.php" class="text-decoration-none">
                 <li class="sidebar-item text-center active m-1 rounded-pill" id="home">
                     <span class="sidebar-text">home</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
-                    <span class="material-symbols-outlined text-end sidebar-icon">home</span>
+                    <span class="material-symbols-outlined text-end sidebar-icon d-none">home</span>
+                </li>
+            </a>
+
+            <a href="mistnosti.php" class="text-decoration-none">
+                <li class="sidebar-item text-center m-1 rounded-pill" id="mistnosti">
+                    <span class="sidebar-text">Mistnosti</span>
+                    <span class="material-symbols-outlined text-end sidebar-icon d-none">apartment</span>
                 </li>
             </a>
 
             <a href="login.php" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="login">
                     <span class="sidebar-text">log in</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
-                    <span class="material-symbols-outlined sidebar-icon text-end">person</span>
+                    <span class="material-symbols-outlined sidebar-icon text-end d-none">person</span>
                 </li>
             </a>
             <a href="#" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
                     <span class="sidebar-text">log out</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
                 </li>
             </a>
         </ul>
