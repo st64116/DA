@@ -21,7 +21,8 @@ function select_data($connname, $conn)
     oci_execute($stmt, OCI_DEFAULT);
     echo "$connname ----selecting<br>\n";
     while (oci_fetch($stmt)) {
-        echo "    " . oci_result($stmt, "JMENO") . "<br>\n";
+        echo "    " . oci_result($stmt, "JMENO") . "";
+        echo "    " . oci_result($stmt, "PRIJMENI") . "<br>\n";
     }
     echo "$connname ----done<br>\n";
 }
