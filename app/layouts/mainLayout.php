@@ -6,13 +6,12 @@
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link href="assets/css/mainLayout.css" rel="stylesheet"/>
     <title><?php echo $title; ?></title>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
 <div class="main-container d-flex position-relative">
-    <div class="sidebar" id="side-nav">
+    <div class="sidebar d-fixed" id="side-nav">
         <div class="header-box d-flex justify-content-between">
             <h2 class="text-center text-white text-uppercase mt-2 ms-2">Místnosti</h2>
             <button class="btn d-md-none text-white open-btn ">
@@ -28,45 +27,29 @@
         </div>
         <ul class="list-unstyled text-uppercase">
             <a href="index.php" class="text-decoration-none">
-                <li class="sidebar-item text-center active m-1 rounded-pill">
+                <li class="sidebar-item text-center active m-1 rounded-pill" id="home">
                     <span class="sidebar-text">home</span>
                     <i class="text-end fas fa-bars sidebar-icon"></i>
+                    <span class="material-symbols-outlined text-end sidebar-icon">home</span>
                 </li>
             </a>
 
-            <a href="#" class="text-decoration-none">
-                <li class="sidebar-item text-center m-1 rounded-pill">
-                    <span class="sidebar-text">místnosti</span>
+            <a href="login.php" class="text-decoration-none">
+                <li class="sidebar-item text-center m-1 rounded-pill" id="login">
+                    <span class="sidebar-text">log in</span>
                     <i class="text-end fas fa-bars sidebar-icon"></i>
+                    <span class="material-symbols-outlined sidebar-icon text-end">person</span>
                 </li>
             </a>
-
             <a href="#" class="text-decoration-none">
-                <li class="sidebar-item text-center m-1 rounded-pill">
-                    <span class="sidebar-text">místnosti</span>
+                <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                    <span class="sidebar-text">log out</span>
                     <i class="text-end fas fa-bars sidebar-icon"></i>
                 </li>
             </a>
         </ul>
     </div>
     <div class="content">
-<!--        <nav class="navbar navbar-expand-lg navbar-light bg-light">-->
-<!--            <div class="container-fluid">-->
-<!--                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--                    <span class="navbar-toggler-icon"></span>-->
-<!--                </button>-->
-<!--                <div class="collapse navbar-collapse" id="navbarNav">-->
-<!--                    <ul class="navbar-nav ms-auto me-3 text-center">-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link active" aria-current="page" href="login.php">login</a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" href="logout.php">log out</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </nav>-->
         <div class="mx-2 mt-1 py-1 rounded-2 main-bg">
             <h2 class="ms-2"><?php echo $title ?></h2>
         </div>
@@ -88,7 +71,7 @@
         $(".sidebar ul li.active").removeClass('active');
         $(this).addClass('active');
         $('.sidebar').removeClass('active');
-        if(window.innerWidth <= 767){
+        if (window.innerWidth <= 767) {
             $('.open-btn').removeClass('d-none');
             $('.close-btn').addClass('d-none');
             $('.sidebar-icon').removeClass('d-none');
@@ -125,26 +108,37 @@
         $('.sidebar-text').addClass('d-none');
     })
 
-    addEventListener("load",(event)=>nav());
+    addEventListener("load", (event) => {
+        nav();
+        var url=location.href;
+        var urlFilename = url.substring(url.lastIndexOf('/')+1);
+        var fileName = urlFilename.slice(0,-4);
+        console.log(fileName);
+        if(fileName != "index"){
+            $(".sidebar ul li.active").removeClass('active');
+            $("#"+fileName).addClass('active');
+        }
+
+    });
     addEventListener("resize", (event) => nav());
 
-    nav = (event) =>{
-        if(window.innerWidth > 767){
+    nav = (event) => {
+        if (window.innerWidth > 767) {
             $('.sidebar-text').removeClass('d-none');
             $('.sidebar-icon').addClass('d-none');
             $('.sidebar-item').removeClass('text-end');
             $('.sidebar-item').addClass('text-center');
             $('.sidebar-item').addClass('m-1');
             $('.sidebar-item').addClass('rounded-pill');
-        }else{
-            if($('.sidebar').hasClass('active')){
+        } else {
+            if ($('.sidebar').hasClass('active')) {
                 $('.sidebar-icon').addClass('d-none');
                 $('.sidebar-item').removeClass('text-end');
                 $('.sidebar-item').addClass('text-center');
                 $('.sidebar-item').addClass('m-1');
                 $('.sidebar-item').addClass('rounded-pill');
                 $('.sidebar-text').removeClass('d-none');
-            }else{
+            } else {
                 $('.sidebar-icon').removeClass('d-none');
                 $('.sidebar-item').addClass('text-end');
                 $('.sidebar-item').removeClass('text-center');
