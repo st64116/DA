@@ -27,7 +27,7 @@
         </div>
         <ul class="list-unstyled text-uppercase">
             <a href="index.php" class="text-decoration-none">
-                <li class="sidebar-item text-center active m-1 rounded-pill" id="home">
+                <li class="sidebar-item text-center m-1 rounded-pill" id="home">
                     <span class="sidebar-text">home</span>
                     <span class="material-symbols-outlined text-end sidebar-icon d-none">home</span>
                 </li>
@@ -117,8 +117,10 @@
         var url=location.href;
         var urlFilename = url.substring(url.lastIndexOf('/')+1);
         var fileName = urlFilename.slice(0,-4);
-        console.log(fileName);
-        if(fileName != "index"){
+        if(fileName == "index"){
+            $(".sidebar ul li.active").removeClass('active');
+            $("#home").addClass('active');
+        }else{
             $(".sidebar ul li.active").removeClass('active');
             $("#"+fileName).addClass('active');
         }
