@@ -6,26 +6,23 @@ $db = new Client();
 
     <div class="text-start my-2 filter p-2">
         <button class="btn btn-primary text-uppercase" type="button" data-bs-toggle="collapse"
-                data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filter
+                data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
         </button>
         <div class="collapse" id="filter">
             <div class=" mt-3 px-2 py-3 p-sm-5 border border-dark rounded-3">
                 <div>
                     <label>Patro:</label>
-                    <input list="browsers">
-                    <datalist id="browsers">
+                    <select name="patra" id="patra">
+                        <option value="nevybrano"></option>
                         <?php
                         foreach($db->view_patra() as $patro){
-                            var_dump($patro);
-//                        echo $patro["NAZEV"];
-//                        foreach ($patro as $key => $value) {
-//                            echo "$key => $value";
-//                            echo "<br>";
-//                        }
-                            echo "<option value='" .$patro["NAZEV"] ."'>";
+                            echo "<option value='" .$patro["NAZEV"] ."'>".$patro["NAZEV"]."</option>";
                         }
 
                         ?>
+                    </select>
+                    <datalist id="browsers">
+
                     </datalist>
 
                 </div>
@@ -34,11 +31,11 @@ $db = new Client();
                 </div>
                 <div class="row">
                     <div class="mt-3 text-start col-6">
-                        <button class="btn btn-lg btn-danger text-uppercase" onclick="">clear
+                        <button class="btn btn-lg btn-danger text-uppercase" onclick="clear()">clear
                         </button>
                     </div>
                     <div class="mt-3 text-end col-6">
-                        <button class="btn btn-lg btn-danger text-uppercase" onclick="">search
+                        <button class="btn btn-lg btn-danger text-uppercase" onclick="search()">search
                         </button>
                     </div>
                 </div>
@@ -90,7 +87,7 @@ $db = new Client();
 
     .mistnosti th{
         background-color: var(--color1);
-        padding: 8px 16px 16px 8px;
+        padding: 16px 8px 16px 8px;
         color: white;
     }
 
@@ -101,5 +98,17 @@ $db = new Client();
     .mistnosti tr:hover{
         background-color: var(--color2);
         color: white;
+    }
+    
+    @media(max-width: 767px){
+        .mistnosti th{
+            padding: 8px 2px 8px 2px;
+            font-size: 0.7em;
+        }
+
+        .mistnosti td{
+            padding: 8px;
+            font-size: 0.7em;
+        }
     }
 </style>
