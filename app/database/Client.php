@@ -126,13 +126,12 @@ class Client
         );
     }
 
-    function insert_mistnost(string $nazev, string $ucel, string $umisteni,
-                             string $patro, string $velikost, array $prislusenstvi) : bool
+    function insert_mistnost(string $nazev, int $id_ucelu, int $id_umisteni,
+                             int $id_patra, int $id_velikosti, array $prislusenstvi) : bool
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_MISTNOST('$nazev', '$ucel', '$umisteni', 
-            '$patro', '$velikost', '$prislusString');"
+            "P_INSERT_MISTNOST('$nazev', $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
         );
     }
 
@@ -163,14 +162,15 @@ class Client
         );
     }
 
+    // TODO otestovat
     function insert_rezervaci_vlastnostmi(string $casOd, string $casDo, string $loginZajemce,
-                                          ?string $ucel, ?string $umisteni, ?string $patro,
-                                          ?string $velikost, ?array $prislusenstvi) : bool
+                                          ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,
+                                          ?int $id_velikosti, ?array $prislusenstvi) : bool
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
             "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI('$casOd', '$casDo', '$loginZajemce', 
-            '$ucel', '$umisteni', '$patro', '$velikost', '$prislusString');" // TODO otestovat / string<>date
+            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
         );
     }
 
@@ -198,11 +198,89 @@ class Client
         );
     }
 
-    // UPDATEs
+    // UPDATEs // TODO otestovat
 
-    // TODO doplnit vsechny updaty
+    function update_rezervaci(int $id_rezervace, string $casOd, string $casDo,
+                             ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,
+                             ?int $id_velikosti, array $prislusenstvi) : bool
+    {
+        $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
+        return $this->execute(
+            "P_UPDATE_MISTNOST($id_rezervace, '$casOd', '$casDo', 
+            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');" // TODO nullable?
+        );
+    }
 
-    // DELETEs
+
+    function update_mistnost(int $id_mistnosti, string $nazev,
+                             int $id_ucelu, int $id_umisteni, int $id_patra,
+                             int $id_velikosti, array $prislusenstvi) : bool
+    {
+        $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
+        return $this->execute(
+            "P_UPDATE_MISTNOST($id_mistnosti, '$nazev', 
+            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
+        );
+    }
+
+    function update_firmu(string $login, string $email, string $nazev) : bool
+    {
+        return $this->execute(
+            "P_UPDATE_FIRMU('$login', '$email', '$nazev');"
+        );
+    }
+
+    function update_osobu(string $login, string $email, string $jmeno, string $prijmeni) : bool
+    {
+        return $this->execute(
+            "P_UPDATE_OSOBU('$login', '$email', '$jmeno', '$prijmeni');"
+        );
+    }
+
+    function update_heslo(string $login, string $heslo) : bool {
+        return $this->execute(
+            "P_UPDATE_PATRO('$login', '$heslo');"
+        );
+    }
+
+    function update_patro(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_PATRO($id, '$nazev');"
+        );
+    }
+
+    function update_prislusenstvi(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_PRISLUSENSTVI($id, '$nazev');"
+        );
+    }
+
+    function update_stav(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_STAV($id, '$nazev');"
+        );
+    }
+
+    function update_ucel(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_UCEL($id, '$nazev');"
+        );
+    }
+
+    function update_umisteni(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_UMISTENI($id, '$nazev');"
+        );
+    }
+
+
+    function update_velikost(int $id, string $nazev) : bool {
+        return $this->execute(
+            "P_UPDATE_VELIKOST($id, '$nazev');"
+        );
+    }
+
+    // DELETEs // TODO otestovat
 
     function delete_zajemce(string $login) : bool {
         return $this->execute(
@@ -259,7 +337,7 @@ class Client
         );
     }
 
-    // OTHERs
+    // OTHERs // TODO otestovat
 
     function check_login(string $login, string $heslo) : bool {
         return $this->execute("pckg_login.p_exec_login('$login', '$heslo');");
