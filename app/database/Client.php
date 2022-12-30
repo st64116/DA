@@ -1,11 +1,15 @@
 <?php
 
+// poznamky TODO
+
 class Client
 {
     public $connection;
+    public $error;
 
     function __construct() {
         $this->connection = $this->connect();
+        $this->error = null;
     }
 
     private function connect() {
@@ -21,10 +25,16 @@ class Client
 
     private function make_query(string $sql) {
         $statement = oci_parse($this->connection, $sql);
-        if (!$statement)
+        if (!$statement) {
+            $this->error = oci_error($statement);
             return false;
+        }
         $isSuccess = oci_execute($statement, OCI_DEFAULT);
-        return ($isSuccess) ? $statement : false;
+        if (!$isSuccess) {
+            $this->error = oci_error($statement);
+            return false;
+        }
+        return $statement;
     }
 
     private function view(string $viewName)
@@ -33,8 +43,11 @@ class Client
         if (!$query)
             return false;
         $array = array();
-        while ($row = oci_fetch_assoc($query))
+        while ($row = oci_fetch_assoc($query)) {
+            if (isset($row["PRISLUSENSTVI"])) // TODO otestovat
+                $row["PRISLUSENSTVI"] = $this->string_prislusenstvi_to_array($row["PRISLUSENSTVI"]);
             $array[] = $row;
+        }
         return $array;
     }
 
@@ -42,7 +55,6 @@ class Client
         $result = $this->make_query("BEGIN $sqlBody END;");
         return !!$result;
     }
-
 
     // VIEWs
 
@@ -92,9 +104,12 @@ class Client
         );
     }
 
-    function insert_mistnost() : bool {
+    function insert_mistnost(string $nazev, string $ucel, string $umisteni,
+                             string $patro, string $velikost, array $prislusenstvi) : bool
+    {
+        $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_MISTNOST();" // TODO doplnit parametry
+            "P_INSERT_MISTNOST($nazev, $ucel, $umisteni, $patro, $velikost, $prislusString);"
         );
     }
 
@@ -118,15 +133,21 @@ class Client
         );
     }
 
-    function insert_rezervaci_mistnosti($todoParams) : bool {
+    function insert_rezervaci_mistnosti(string $casOd, string $casDo,
+                                        string $loginZajemce, string $nazevMistnosti) : bool {
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_MISTNOST();" // TODO doplnit parametry
+            "P_INSERT_REZERVACI_SKRZ_MISTNOST($casOd, $casDo, $loginZajemce, $nazevMistnosti);" // TODO otestovat / string<>date
         );
     }
 
-    function insert_rezervaci_vlastnosti($mistnost) : bool {
+    function insert_rezervaci_vlastnostmi(string $casOd, string $casDo, string $loginZajemce,
+                                          ?string $ucel, ?string $umisteni, ?string $patro,
+                                          ?string $velikost, ?array $prislusenstvi) : bool
+    {
+        $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI($mistnost);" // TODO zkontrolovat
+            "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI($casOd, $casDo, $loginZajemce, 
+            $ucel, $umisteni, $patro, $velikost, $prislusString);" // TODO otestovat / string<>date / nullable?
         );
     }
 
@@ -161,4 +182,20 @@ class Client
     // DELETEs
 
     // TODO doplnit vsechny delety
+
+    // OTHERs
+
+    function check_login(string $login, string $heslo) : bool {
+        return $this->execute("pckg_login.p_exec_login($login, $heslo);");
+    }
+
+    private function array_prislusenstvi_to_string(?array $prislusenstvi) : string {
+        // TODO implementovat
+        return "";
+    }
+
+    private function string_prislusenstvi_to_array(string $prislusenstvi) : array {
+        // TODO implementovat
+        return array();
+    }
 }
