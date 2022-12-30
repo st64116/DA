@@ -1,7 +1,5 @@
 <?php
 
-// poznamky TODO
-
 class Client
 {
     private $connection;
@@ -206,7 +204,60 @@ class Client
 
     // DELETEs
 
-    // TODO doplnit vsechny delety
+    function delete_zajemce(string $login) : bool {
+        return $this->execute(
+            "P_DELETE_ZAJEMCE('$login');"
+        );
+    }
+
+    function delete_mistnost(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_MISTNOST($id);"
+        );
+    }
+
+    function delete_patro(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_PATRO($id);"
+        );
+    }
+
+    function delete_prislusenstvi(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_PRISLUSENSTVI($id);"
+        );
+    }
+
+    function delete_rezervaci(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_REZERVACI($id);"
+        );
+    }
+
+    function delete_stav(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_STAV($id);"
+        );
+    }
+
+    function delete_ucel(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_UCEL($id);"
+        );
+    }
+
+    function delete_umisteni(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_UMISTENI($id);"
+        );
+    }
+
+
+    function delete_velikost(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_VELIKOST($id);"
+        );
+    }
 
     // OTHERs
 
