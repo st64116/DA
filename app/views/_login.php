@@ -4,21 +4,14 @@ $db = new Client();
 
 if (isset($_POST['submit'])) {
 
-    $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
-    $_SESSION['LOGIN'] = "z0001"; //zatím jen na test, pak vymazat
-
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    var_dump($username);
-    var_dump($password);
-
     if($db->check_login($username,$password)){
-        $sql = "SELECT OPRAVNENI FROM ZAJEMCI WHERE LOGIN=". $username;
-        $opravneni = $db->custom_query($sql);
-        if($opravneni != false){
+        $user = $db->view_zajemce($username);
+        if($user){
             $_SESSION['LOGIN'] = $username;
-            $_SESSION['ROLE'] = $opravneni;
+            $_SESSION['ROLE'] = $user['OPRAVNENI'];
             header("Location:index.php");
             die();
         }else{
@@ -27,8 +20,6 @@ if (isset($_POST['submit'])) {
     }else{
         $errorMsg = "špatný login či heslo";
     }
-
-    header("Location:index.php"); //zatím jen na test, pak vymazat
 }
 ?>
 <div class="row mt-5">
