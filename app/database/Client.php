@@ -43,14 +43,14 @@ class Client
         return false;
     }
 
-    private function view(string $viewName)
+    private function view(string $viewName, string $conditions = "")
     {
-        $query = $this->make_query("SELECT * FROM $viewName");
+        $query = $this->make_query("SELECT * FROM $viewName " . $conditions);
         if (!$query)
             return false;
         $array = array();
         while ($row = oci_fetch_assoc($query)) {
-            if (isset($row["PRISLUSENSTVI"])) // TODO otestovat
+            if (isset($row["PRISLUSENSTVI"]) && $viewName != 'VIEW_PRISLUSENSTVI') // TODO otestovat
                 $row["PRISLUSENSTVI"] = $this->string_prislusenstvi_to_array($row["PRISLUSENSTVI"]);
             $array[] = $row;
         }
@@ -64,8 +64,13 @@ class Client
 
     // VIEWs
 
+    function view_rezervace(?string $login) {
+        // TODO where login
+        return $this->view('VIEW_REZERVACE');
+    }
+
     function view_mistnosti() {
-        return $this->view('V_MISTNOSTI_S_VLASTNOSTMI');
+        return $this->view('VIEW_MISTNOSTI');
     }
 
     function view_firmy() {
