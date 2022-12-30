@@ -4,12 +4,12 @@
 
 class Client
 {
-    public $connection;
+    private $connection;
     public $error;
 
     function __construct() {
         $this->connection = $this->connect();
-        $this->error = null;
+        $this->error = false;
     }
 
     private function connect() {
@@ -24,17 +24,23 @@ class Client
     }
 
     private function make_query(string $sql) {
-        $statement = oci_parse($this->connection, $sql);
-        if (!$statement) {
-            $this->error = oci_error($statement);
-            return false;
+        try {
+            if ($this->connection) {
+                $statement = oci_parse($this->connection, $sql);
+                if ($statement) {
+                    $isSuccess = oci_execute($statement);
+                    if ($isSuccess) {
+                        $this->error = false;
+                        return $statement;
+                    }
+                }
+                $this->error = oci_error($statement);
+            } else $this->error = oci_error();
+        } catch (Exception $e) {
+            $this->error = array(["code" => $e->getCode(), "message" => $e->getMessage(),
+                "offset" => $e->getLine(), "sqltext" => $sql]);
         }
-        $isSuccess = oci_execute($statement, OCI_DEFAULT);
-        if (!$isSuccess) {
-            $this->error = oci_error($statement);
-            return false;
-        }
-        return $statement;
+        return false;
     }
 
     private function view(string $viewName)
@@ -100,7 +106,7 @@ class Client
                           string $heslo, string $nazev) : bool
     {
         return $this->execute(
-            "P_INSERT_FIRMU($login, $email, $heslo, $nazev);"
+            "P_INSERT_FIRMU('$login', '$email', '$heslo', '$nazev');"
         );
     }
 
@@ -109,7 +115,8 @@ class Client
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_MISTNOST($nazev, $ucel, $umisteni, $patro, $velikost, $prislusString);"
+            "P_INSERT_MISTNOST('$nazev', '$ucel', '$umisteni', 
+            '$patro', '$velikost', '$prislusString');"
         );
     }
 
@@ -117,26 +124,26 @@ class Client
                           string $jmeno, $prijmeni) : bool
     {
         return $this->execute(
-            "P_INSERT_OSOBU($login, $email, $heslo, $jmeno, $prijmeni);"
+            "P_INSERT_OSOBU('$login', '$email', '$heslo', '$jmeno', '$prijmeni');"
         );
     }
 
     function insert_patro(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_PATRO($nazev);"
+            "P_INSERT_PATRO('$nazev');"
         );
     }
 
     function insert_prislusenstvi(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_PRISLUSENSTVI($nazev);"
+            "P_INSERT_PRISLUSENSTVI('$nazev');"
         );
     }
 
     function insert_rezervaci_mistnosti(string $casOd, string $casDo,
                                         string $loginZajemce, string $nazevMistnosti) : bool {
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_MISTNOST($casOd, $casDo, $loginZajemce, $nazevMistnosti);" // TODO otestovat / string<>date
+            "P_INSERT_REZERVACI_SKRZ_MISTNOST('$casOd', '$casDo', '$loginZajemce', '$nazevMistnosti');" // TODO otestovat / string<>date
         );
     }
 
@@ -146,32 +153,32 @@ class Client
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI($casOd, $casDo, $loginZajemce, 
-            $ucel, $umisteni, $patro, $velikost, $prislusString);" // TODO otestovat / string<>date / nullable?
+            "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI('$casOd', '$casDo', '$loginZajemce', 
+            '$ucel', '$umisteni', '$patro', '$velikost', '$prislusString');" // TODO otestovat / string<>date
         );
     }
 
     function insert_stav(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_STAV($nazev);"
+            "P_INSERT_STAV('$nazev');"
         );
     }
 
     function insert_ucel(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_UCEL($nazev);"
+            "P_INSERT_UCEL('$nazev');"
         );
     }
 
     function insert_umisteni(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_UMISTENI($nazev);"
+            "P_INSERT_UMISTENI('$nazev');"
         );
     }
 
     function insert_velikost(string $nazev) : bool {
         return $this->execute(
-            "P_INSERT_VELIKOST($nazev);"
+            "P_INSERT_VELIKOST('$nazev');"
         );
     }
 
@@ -186,16 +193,18 @@ class Client
     // OTHERs
 
     function check_login(string $login, string $heslo) : bool {
-        return $this->execute("pckg_login.p_exec_login($login, $heslo);");
+        return $this->execute("pckg_login.p_exec_login('$login', '$heslo');");
     }
 
     private function array_prislusenstvi_to_string(?array $prislusenstvi) : string {
-        // TODO implementovat
-        return "";
+        if (!isset($prislusenstvi) || count($prislusenstvi) == 0 )
+            return "";
+        return implode(';', $prislusenstvi);
     }
 
     private function string_prislusenstvi_to_array(string $prislusenstvi) : array {
-        // TODO implementovat
-        return array();
+        if ($prislusenstvi == "")
+            return array();
+        return explode(';', $prislusenstvi);
     }
 }

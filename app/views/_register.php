@@ -6,8 +6,8 @@ if (isset($_POST['submit'])) {
     $prijmeni = $_POST["surname"];
     $email = $_POST['email'];
     $login = $_POST['username'];
-    $password = md5($_POST['password']);
-    $passwordAgain = md5($_POST['passwordAgain']);
+    $password = $_POST['password'];
+    $passwordAgain = $_POST['passwordAgain'];
     if ($password == $passwordAgain) {
         $register = $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
         if($register == false){

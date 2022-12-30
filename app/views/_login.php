@@ -7,7 +7,7 @@ if (isset($_POST['submit'])) {
     $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
 
     $username = $_POST['username'];
-    $password = md5($_POST['password']);
+    $password = $_POST['password'];
 
     var_dump($username);
     var_dump($password);
