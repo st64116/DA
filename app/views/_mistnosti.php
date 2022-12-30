@@ -152,7 +152,7 @@ $db = new Client();
 
     //tvorba tabulky
     foreach ($mistnosti as $mistnost) {
-        echo '<tr scope="row">';
+        echo '<tr scope="row radek">';
 
         if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
             echo '<td>
@@ -170,15 +170,18 @@ $db = new Client();
         echo "</tr>";
 
         if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-            echo '<tr class="collapse" id="item' . $mistnost["NAZEV_MISTNOSTI"] .'">
-<form>
-<td><button type="submit" name="update" class="btn btn-danger">update</button></td>
-<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_MISTNOSTI"] .'"></input></td>
-<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_UCELU"] .'"></input></td>
-<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_UMISTENI"] .'"></input></td>
-<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_PATRA"] .'"></input></td>
-<td><input class="w-100" type="text" value="' . $mistnost["ANZEV_VELIKOSTI"] .'"></input></td> 
-</form></tr>';
+            echo '<tr class="radek-edit text-start"><td colspan="6" class="p-0"><div class="collapse" id="item' . $mistnost["NAZEV_MISTNOSTI"] .'">
+<form class="w-100">
+<div class="row">
+<div><label>název:</label><input class="w-100" type="text" value="' . $mistnost["NAZEV_MISTNOSTI"] .'"></input></div>
+<div><label>účel:</label><input class="w-100" type="text" value="' . $mistnost["NAZEV_UCELU"] .'"></input></div>
+<div><label>umítění:</label><input class="w-100" type="text" value="' . $mistnost["NAZEV_UMISTENI"] .'"></input></div>
+<div><label>patro:</label><input class="w-100" type="text" value="' . $mistnost["NAZEV_PATRA"] .'"></input></div>
+<div><label>velikost:</label><input class="w-100" type="text" value="' . $mistnost["ANZEV_VELIKOSTI"] .'"></input></div> 
+<div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
+</div>
+</form>
+</div></td></tr>';
         }
 
     }
@@ -213,6 +216,11 @@ $db = new Client();
     .mistnosti tr:hover {
         background-color: var(--color2);
         color: white;
+    }
+
+    .radek-edit:hover{
+        background-color: white !important;
+        color:black !important;
     }
 
     @media (max-width: 767px) {

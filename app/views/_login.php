@@ -4,7 +4,7 @@ $db = new Client();
 
 if (isset($_POST['submit'])) {
 
-//    $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
+    $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
 
     $username = $_POST['username'];
     $password = md5($_POST['password']);
@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
         $errorMsg = "chyba";
     }
 
-//    header("Location:index.php"); //zatím jen na test, pak vymazat
+    header("Location:index.php"); //zatím jen na test, pak vymazat
 }
 ?>
 <div class="row mt-5">
