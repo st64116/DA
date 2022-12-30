@@ -5,6 +5,7 @@ $db = new Client();
 if (isset($_POST['submit'])) {
 
     $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
+    $_SESSION['LOGIN'] = "z0001"; //zatím jen na test, pak vymazat
 
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -21,10 +22,10 @@ if (isset($_POST['submit'])) {
             header("Location:index.php");
             die();
         }else{
-            $errorMsg = "chyba";
+            $errorMsg = "chyba přihlášení";
         }
     }else{
-        $errorMsg = "chyba";
+        $errorMsg = "špatný login či heslo";
     }
 
     header("Location:index.php"); //zatím jen na test, pak vymazat
@@ -38,6 +39,11 @@ if (isset($_POST['submit'])) {
                 <div class="mb-md-5 mt-md-4 pb-5">
                     <form action="" method="post">
                         <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                        <?php
+                        if(isset($errorMsg)){
+                            echo"<p class='text-white bg-danger p-2 rounded-3'> $errorMsg </p>";
+                        }
+                        ?>
                         <p class="text-white-50 mb-5">Zadej login a heslo!</p>
 
                         <div class="form-outline form-white mb-4 d-flex flex-column">

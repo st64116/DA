@@ -11,11 +11,11 @@ if (isset($_POST['submit'])) {
     if ($password == $passwordAgain) {
         $register = $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
         if($register == false){
-            $errorMsg = "něco se nepovedlo";
+            $errorMsg = "něco se nepovedlo!";
         }
     }else{
         echo "<script>console.log('hesla');</script>";
-        $errorMsg = "Hesla musí být stejná!!";
+        $errorMsg = "Hesla musí být stejná!";
     }
 }else{
     echo "<script>console.log('nvm');</script>";
@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
                         <h2 class="fw-bold mb-2 text-uppercase">Registrace</h2>
                         <?php
                             if(isset($errorMsg)){
-                                echo"<p class='text-danger'> $errorMsg </p>";
+                                echo"<p class='text-white bg-danger p-2 rounded-3'> $errorMsg </p>";
                             }
                         ?>
                     <form action="" method="post">
