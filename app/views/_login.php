@@ -1,8 +1,15 @@
 <?php
+if(isset($_SESSION['LOGIN'])){
+    header("Location:index.php");
+}
+
 include_once('database/Client.php');
 $db = new Client();
 
 if (isset($_POST['submit'])) {
+
+//    $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
+//    $_SESSION['LOGIN'] = "z0001"; //zatím jen na test, pak vymazat
 
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -20,6 +27,8 @@ if (isset($_POST['submit'])) {
     }else{
         $errorMsg = "špatný login či heslo";
     }
+
+//    header("Location:index.php"); //zatím jen na test, pak vymazat
 }
 ?>
 <div class="row mt-5">
