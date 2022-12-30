@@ -1,20 +1,33 @@
 <?php
 include_once('database/Client.php');
 $db = new Client();
+
 if (isset($_POST['submit'])) {
+
+//    $_SESSION['ROLE'] = 1; //zatím jen na test, pak vymazat
 
     $username = $_POST['username'];
     $password = md5($_POST['password']);
+
     var_dump($username);
     var_dump($password);
-//    $query  = "INSERT INTO admins (name,username,password,role) VALUES ('$name','$username','$password','$role')";
-//    $result = $db->query($query);
-//    if ($result==true) {
-//        header("Location:login.php");
-//        die();
-//    }else{
-//        $errorMsg  = "You are not Registred..Please Try again";
-//    }
+
+    if($db->check_login($username,$password)){
+        $sql = "SELECT OPRAVNENI FROM ZAJEMCI WHERE LOGIN=". $username;
+        $opravneni = $db->custom_query($sql);
+        if($opravneni != false){
+            $_SESSION['LOGIN'] = $username;
+            $_SESSION['ROLE'] = $opravneni;
+            header("Location:index.php");
+            die();
+        }else{
+            $errorMsg = "chyba";
+        }
+    }else{
+        $errorMsg = "chyba";
+    }
+
+//    header("Location:index.php"); //zatím jen na test, pak vymazat
 }
 ?>
 <div class="row mt-5">

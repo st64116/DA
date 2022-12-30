@@ -81,6 +81,11 @@ $db = new Client();
 
     <thead class="shadow">
     <tr class="text-uppercase">
+        <?php
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            echo "<th scope='col''>#</th>";
+        }
+        ?>
         <th scope="col">nazev</th>
         <th scope="col">účel</th>
         <th scope="col">umísťění</th>
@@ -145,14 +150,37 @@ $db = new Client();
         $mistnosti = $pom;
     }
 
+    //tvorba tabulky
     foreach ($mistnosti as $mistnost) {
         echo '<tr scope="row">';
+
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            echo '<td>
+             <button class="btn btn-light text-uppercase" type="button" data-bs-toggle="collapse"
+                data-bs-target="#item'. $mistnost["NAZEV_MISTNOSTI"] . '"  aria-expanded="false" aria-controls="item' . $mistnost["NAZEV_MISTNOSTI"] .'"><span class="material-symbols-outlined">edit</span>
+            </button>
+                  </td>';
+        }
+
         echo "<td>" . "<span class='my-4'>" . $mistnost["NAZEV_MISTNOSTI"] . "</span>" . "</td>";
         echo "<td>" . $mistnost["NAZEV_UCELU"] . "</td>";
         echo "<td>" . $mistnost["NAZEV_UMISTENI"] . "</td>";
         echo "<td>" . $mistnost["NAZEV_PATRA"] . "</td>";
         echo "<td>" . $mistnost["ANZEV_VELIKOSTI"] . "</td>";
         echo "</tr>";
+
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            echo '<tr class="collapse" id="item' . $mistnost["NAZEV_MISTNOSTI"] .'">
+<form>
+<td><button type="submit" name="update" class="btn btn-danger">update</button></td>
+<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_MISTNOSTI"] .'"></input></td>
+<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_UCELU"] .'"></input></td>
+<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_UMISTENI"] .'"></input></td>
+<td><input class="w-100" type="text" value="' . $mistnost["NAZEV_PATRA"] .'"></input></td>
+<td><input class="w-100" type="text" value="' . $mistnost["ANZEV_VELIKOSTI"] .'"></input></td> 
+</form></tr>';
+        }
+
     }
     ?>
     </tbody>

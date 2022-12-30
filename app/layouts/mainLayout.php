@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,18 +43,27 @@
                     <span class="material-symbols-outlined text-end sidebar-icon d-none">apartment</span>
                 </li>
             </a>
-
-            <a href="login.php" class="text-decoration-none">
-                <li class="sidebar-item text-center m-1 rounded-pill" id="login">
-                    <span class="sidebar-text">log in</span>
-                    <span class="material-symbols-outlined sidebar-icon text-end d-none">person</span>
-                </li>
-            </a>
-            <a href="#" class="text-decoration-none">
-                <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                    <span class="sidebar-text">log out</span>
-                </li>
-            </a>
+            <?php
+            if (!isset($_SESSION['ROLE'])) {
+                ?>
+                <a href="login.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="login">
+                        <span class="sidebar-text">log in</span>
+                        <span class="material-symbols-outlined sidebar-icon text-end d-none">person</span>
+                    </li>
+                </a>
+                <?php
+            } else {
+                ?>
+                <a href="logout.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">log out</span>
+                        <span class="material-symbols-outlined sidebar-icon text-end d-none">logout</span>
+                    </li>
+                </a>
+                <?php
+            }
+            ?>
         </ul>
     </div>
     <div class="content">
@@ -59,16 +71,21 @@
             <h2 class="ms-2"><?php echo $title ?></h2>
         </div>
 
-        <div class="mx-2 mt-2 p-3 rounded-2 main-bg">
+        <div class="mx-2 mt-2 p-3 rounded-2">
             <?php include($childView); ?>
         </div>
 
-
+        <div class="debug shadow p-4 bg-info rounded-3">
+            <?php
+            echo "<p>session:</p>";
+            var_dump($_SESSION)
+            ?>
+        </div>
     </div>
 </div>
 
 <?php
-if($script){
+if (isset($script)) {
     echo "<script type='text/javascript' src='$script'></script>";
 }
 ?>
@@ -120,15 +137,15 @@ if($script){
 
     addEventListener("load", (event) => {
         nav();
-        var url=location.href;
-        var urlFilename = url.substring(url.lastIndexOf('/')+1);
-        var fileName = urlFilename.slice(0,-4);
-        if(fileName == "index"){
+        var url = location.href;
+        var urlFilename = url.substring(url.lastIndexOf('/') + 1);
+        var fileName = urlFilename.slice(0, -4);
+        if (fileName == "index") {
             $(".sidebar ul li.active").removeClass('active');
             $("#home").addClass('active');
-        }else{
+        } else {
             $(".sidebar ul li.active").removeClass('active');
-            $("#"+fileName).addClass('active');
+            $("#" + fileName).addClass('active');
         }
 
     });
