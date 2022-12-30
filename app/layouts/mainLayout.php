@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet"
@@ -27,24 +28,28 @@
         </div>
         <ul class="list-unstyled text-uppercase">
             <a href="index.php" class="text-decoration-none">
-                <li class="sidebar-item text-center active m-1 rounded-pill" id="home">
+                <li class="sidebar-item text-center m-1 rounded-pill" id="home">
                     <span class="sidebar-text">home</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
-                    <span class="material-symbols-outlined text-end sidebar-icon">home</span>
+                    <span class="material-symbols-outlined text-end sidebar-icon d-none">home</span>
+                </li>
+            </a>
+
+            <a href="mistnosti.php" class="text-decoration-none">
+                <li class="sidebar-item text-center m-1 rounded-pill" id="mistnosti">
+                    <span class="sidebar-text">Mistnosti</span>
+                    <span class="material-symbols-outlined text-end sidebar-icon d-none">apartment</span>
                 </li>
             </a>
 
             <a href="login.php" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="login">
                     <span class="sidebar-text">log in</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
-                    <span class="material-symbols-outlined sidebar-icon text-end">person</span>
+                    <span class="material-symbols-outlined sidebar-icon text-end d-none">person</span>
                 </li>
             </a>
             <a href="#" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
                     <span class="sidebar-text">log out</span>
-                    <i class="text-end fas fa-bars sidebar-icon"></i>
                 </li>
             </a>
         </ul>
@@ -62,6 +67,11 @@
     </div>
 </div>
 
+<?php
+if($script){
+    echo "<script src='$script'></script>";
+}
+?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -113,8 +123,10 @@
         var url=location.href;
         var urlFilename = url.substring(url.lastIndexOf('/')+1);
         var fileName = urlFilename.slice(0,-4);
-        console.log(fileName);
-        if(fileName != "index"){
+        if(fileName == "index"){
+            $(".sidebar ul li.active").removeClass('active');
+            $("#home").addClass('active');
+        }else{
             $(".sidebar ul li.active").removeClass('active');
             $("#"+fileName).addClass('active');
         }
