@@ -14,7 +14,7 @@
 <div class="main-container d-flex position-relative">
     <div class="sidebar d-fixed" id="side-nav">
         <div class="header-box d-flex justify-content-between">
-            <h2 class="text-center text-white text-uppercase mt-2 ms-2">Místnosti</h2>
+            <h2 class="text-center text-white text-uppercase mt-2 ms-2">Aplikace</h2>
             <button class="btn d-md-none text-white open-btn ">
                     <span class="material-symbols-outlined">
                         arrow_forward_ios
@@ -69,7 +69,7 @@
 
 <?php
 if($script){
-    echo "<script src='$script'></script>";
+    echo "<script type='text/javascript' src='$script'></script>";
 }
 ?>
 

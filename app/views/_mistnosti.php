@@ -9,6 +9,7 @@ $db = new Client();
                 data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
         </button>
         <div class="collapse" id="filter">
+            <form>
             <div class=" mt-3 px-2 py-3 p-sm-5 border border-dark rounded-3">
                 <div>
                     <label>Patro:</label>
@@ -18,9 +19,38 @@ $db = new Client();
                         foreach($db->view_patra() as $patro){
                             echo "<option value='" .$patro["NAZEV"] ."'>".$patro["NAZEV"]."</option>";
                         }
-
                         ?>
                     </select>
+                    <label>účel:</label>
+                    <select name="ucel" id="ucel">
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach($db->view_ucely() as $ucel){
+                            echo "<option value='" .$ucel["NAZEV"] ."'>".$ucel["NAZEV"]."</option>";
+                        }
+                        ?>
+                    </select>
+
+                    <label>umísťění:</label>
+                    <select name="umisteni" id="umisteni">
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach($db->view_umisteni() as $umisteni){
+                            echo "<option value='" .$umisteni["NAZEV"] ."'>".$umisteni["NAZEV"]."</option>";
+                        }
+                        ?>
+                    </select>
+
+                    <label>Velikost:</label>
+                    <select name="velikost" id="velikost">
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach($db->view_velikosti() as $velikost){
+                            echo "<option value='" .$velikost["NAZEV"] ."'>".$velikost["NAZEV"]."</option>";
+                        }
+                        ?>
+                    </select>
+
                     <datalist id="browsers">
 
                     </datalist>
@@ -31,7 +61,7 @@ $db = new Client();
                 </div>
                 <div class="row">
                     <div class="mt-3 text-start col-6">
-                        <button class="btn btn-lg btn-danger text-uppercase" onclick="clear()">clear
+                        <button class="btn btn-lg btn-danger text-uppercase" onclick="reset()">clear
                         </button>
                     </div>
                     <div class="mt-3 text-end col-6">
@@ -41,6 +71,7 @@ $db = new Client();
                 </div>
             </div>
         </div>
+        </form>
     </div>
 
     <thead class="shadow">
@@ -54,25 +85,74 @@ $db = new Client();
     </thead>
     <tbody>
     <?php
-//    echo "<script>console.log(" . $db->view_mistnosti()[0]["ID_MISTNOSTI"] . ");</script>";
-    foreach ($db->view_mistnosti() as $mistnost) {
+
+    $mistnosti = $db->view_mistnosti();
+
+    //filter patra
+    if(isset($_GET["patra"]) && $_GET["patra"] != "nevybrano"){
+        $patra = $_GET["patra"];
+        echo "<script> document.getElementById('patra').value ='". $patra . "';</script>"; // nastavení inputu na hledanou hodnotu
+        $pom = array();
+        foreach ($mistnosti as $mistnost) { // filtr mistnosti
+            if($mistnost["NAZEV_PATRA"] == $patra){
+                array_push($pom,$mistnost);
+            }
+        }
+        $mistnosti = $pom;
+    }
+
+    //filtr ucelu
+    if(isset($_GET["ucel"]) && $_GET["ucel"] != "nevybrano"){
+        $ucel = $_GET["ucel"];
+        echo "<script> document.getElementById('ucel').value ='". $ucel . "';</script>"; // nastavení inputu na hledanou hodnotu
+        $pom = array();
+        foreach ($mistnosti as $mistnost) {
+            if($mistnost["NAZEV_UCELU"] == $ucel){
+                array_push($pom,$mistnost);
+            }
+        }
+        $mistnosti = $pom;
+    }
+
+    //filtr umisteni
+    if(isset($_GET["umisteni"]) && $_GET["umisteni"] != "nevybrano"){
+        $umisteni = $_GET["umisteni"];
+        echo "<script> document.getElementById('umisteni').value ='". $umisteni . "';</script>"; // nastavení inputu na hledanou hodnotu
+        $pom = array();
+        foreach ($mistnosti as $mistnost) {
+            if($mistnost["NAZEV_UMISTENI"] == $umisteni){
+                array_push($pom,$mistnost);
+            }
+        }
+        $mistnosti = $pom;
+    }
+
+    //filtr velikosti
+    if(isset($_GET["velikost"]) && $_GET["velikost"] != "nevybrano"){
+        $velikost = $_GET["velikost"];
+        echo "<script> document.getElementById('velikost').value ='". $velikost . "';</script>"; // nastavení inputu na hledanou hodnotu
+        $pom = array();
+        foreach ($mistnosti as $mistnost) {
+            if($mistnost["ANZEV_VELIKOSTI"] == $velikost){
+                array_push($pom,$mistnost);
+            }
+        }
+        $mistnosti = $pom;
+    }
+
+    foreach ($mistnosti as $mistnost) {
         echo '<tr scope="row">';
             echo "<td>" ."<span class='my-4'>". $mistnost["NAZEV_MISTNOSTI"] ."</span>" ."</td>";
             echo "<td>" . $mistnost["NAZEV_UCELU"]  ."</td>";
             echo "<td>" . $mistnost["NAZEV_UMISTENI"]  ."</td>";
             echo "<td>" . $mistnost["NAZEV_PATRA"]  ."</td>";
             echo "<td>" . $mistnost["ANZEV_VELIKOSTI"]  ."</td>";
-//        foreach ($mistnost as $key => $value){
-//            echo "$key => $value";
-//            echo "<br>";
-//        }
         echo "</tr>";
     }
     ?>
     </tbody>
 </table>
 <style>
-
     .filter{
 
     }

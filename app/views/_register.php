@@ -11,13 +11,15 @@
                             <label class="me-auto">*jmeno:</label>
                             <input class="text-end" name="naem" type="text" placeholder="jmeno" required=""/>
                             <label class="me-auto">*prijmeni:</label>
-                            <input class="text-end" name="surname" type="text" placeholder="jmeno" required=""/>
+                            <input class="text-end" name="surname" type="text" placeholder="přijmeni" required=""/>
                             <label class="me-auto">*login:</label>
-                            <input class="text-end" name="username" type="text" placeholder="jmeno" required=""/>
+                            <input class="text-end" name="username" type="text" placeholder="login" required=""/>
                             <label class="me-auto">*emai:</label>
                             <input class="text-end" name="email" type="email" placeholder="jmeno@gmail.com" required=""/>
-                            <label class="text-start">*password:</label>
+                            <label class="text-start">*heslo:</label>
                             <input class="text-end" type="password" name="password" placeholder="******" required=""/>
+                            <label class="text-start">*heslo znovu:</label>
+                            <input class="text-end" type="passwordAgain" name="password" placeholder="******" required=""/>
                         </div>
 
                         <div class="form-outline form-white mb-2">
