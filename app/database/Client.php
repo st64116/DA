@@ -238,10 +238,10 @@ class Client
     }
 
     function update_osobu(string $login, string $email, int $opravneni,
-                          string $jmeno, string $prijmeni) : bool
+                          string $jmeno, string $prijmeni, int $detail = 0) : bool
     {
         return $this->execute(
-            "P_UPDATE_OSOBU('$login', '$email', $opravneni, '$jmeno', '$prijmeni');"
+            "P_UPDATE_OSOBU('$login', '$email', $opravneni, '$jmeno', '$prijmeni', $detail);"
         );
     }
 
