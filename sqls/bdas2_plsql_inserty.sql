@@ -23,10 +23,10 @@ BEGIN
             v_id_velikosti, v_prislusenstvi);
     SELECT id_zajemce INTO v_id_zajemce
         FROM zajemci WHERE login LIKE v_login;
-    INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_stavu, id_skupiny) 
-        VALUES (v_casOd, v_casDo, v_id_zajemce, 0, v_id_skupiny)
+    INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_skupiny)
+        VALUES (v_od, v_do, v_id_zajemce, v_id_skupiny)
         RETURNING id_rezervace INTO v_id_rezervace;
-    p_check_dostupnost_rezervace(v_id_rezervace);
+    --p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
 EXCEPTION
     WHEN others THEN
@@ -54,10 +54,10 @@ BEGIN
         (v_id_mistnosti);
     SELECT id_zajemce INTO v_id_zajemce
         FROM zajemci WHERE login LIKE v_login;
-    INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_stavu, id_skupiny) 
-        VALUES (v_casOd, v_casDo, v_id_zajemce, 0, v_id_skupiny)
+    INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_skupiny)
+        VALUES (v_od, v_do, v_id_zajemce, v_id_skupiny)
         RETURNING id_rezervace INTO v_id_rezervace;
-    p_check_dostupnost_rezervace(v_id_rezervace);
+    --p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
 EXCEPTION
     WHEN others THEN
@@ -104,8 +104,7 @@ CREATE OR REPLACE PROCEDURE p_insert_osobu
     v_id_nadrizeneho NUMBER;
 BEGIN
     SAVEPOINT point_pred_insertem;
-    SELECT id_zajemce INTO v_id_nadrizeneho 
-        FROM zajemci WHERE login LIKE v_nadrizeny;
+    v_id_nadrizeneho := pckg_login.f_get_id_nadrizeneho(v_nadrizeny);
     v_hash := pckg_login.f_get_zasifrovane_heslo(v_heslo);
     INSERT INTO ZAJEMCI (email, login, heslo, diskriminator) 
         VALUES (v_email, v_login, v_hash, 'OSOBY')

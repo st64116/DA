@@ -86,12 +86,12 @@ BEGIN
     SAVEPOINT point_pred_updatem;
     SELECT id_zajemce INTO v_id_zajemce
         FROM zajemci WHERE login LIKE v_login;
-    SELECT id_zajemce INTO v_id_nadrizeneho
-        FROM zajemci WHERE login LIKE v_nadrizeny;
-    UPDATE zajemci SET email = v_email, opravneni = v_opravneni, 
-        id_nadrizeneho = v_id_nadrizeneho WHERE id_zajemce = v_id_zajemce;
-    UPDATE osoby SET jmeno = v_jmeno, prijmeni = v_prijmeni, detail = v_detail
+    v_id_nadrizeneho := pckg_login.f_get_id_nadrizeneho(v_nadrizeny);
+    UPDATE zajemci SET email = v_email, opravneni = v_opravneni
         WHERE id_zajemce = v_id_zajemce;
+    UPDATE osoby SET jmeno = v_jmeno, prijmeni = v_prijmeni,
+        detail = v_detail, id_nadrizeneho = v_id_nadrizeneho
+            WHERE id_zajemce = v_id_zajemce;
     COMMIT;
 EXCEPTION
     WHEN others THEN 
