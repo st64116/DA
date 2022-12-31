@@ -12,7 +12,7 @@ class Client
 
     private function connect() {
         return oci_connect("st64163","abcde",
-            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ");
+            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ", 'AL32UTF8');
     }
 
     // GENERIC FUNCTIONS
@@ -131,15 +131,17 @@ class Client
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_MISTNOST('$nazev', $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
+            "P_INSERT_MISTNOST('$nazev', $id_ucelu, $id_umisteni, 
+            $id_patra, $id_velikosti, '$prislusString');"
         );
     }
 
     function insert_osobu(string $login, string $email, string $heslo,
-                          string $jmeno, $prijmeni) : bool
+                          string $jmeno, string $prijmeni, ?string $loginNadrizeneho = null) : bool
     {
+        $nadrizeny = (is_null($loginNadrizeneho)) ? 'NULL' : "'$loginNadrizeneho'";
         return $this->execute(
-            "P_INSERT_OSOBU('$login', '$email', '$heslo', '$jmeno', '$prijmeni');"
+            "P_INSERT_OSOBU('$login', '$email', '$heslo', '$jmeno', '$prijmeni', $nadrizeny);"
         );
     }
 
@@ -155,10 +157,12 @@ class Client
         );
     }
 
+    // TODO otestovat
     function insert_rezervaci_mistnosti(string $casOd, string $casDo,
                                         string $loginZajemce, string $nazevMistnosti) : bool {
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_MISTNOST('$casOd', '$casDo', '$loginZajemce', '$nazevMistnosti');" // TODO otestovat / string<>date
+            "P_INSERT_REZERVACI_SKRZ_MISTNOST('$casOd', '$casDo', 
+            '$loginZajemce', '$nazevMistnosti');"
         );
     }
 
@@ -205,9 +209,13 @@ class Client
                              ?int $id_velikosti, array $prislusenstvi) : bool
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
+        $ucel = (is_null($id_ucelu)) ? 'NULL' : "$id_ucelu";
+        $umisteni = (is_null($id_umisteni)) ? 'NULL' : "$id_umisteni";
+        $patro = (is_null($id_patra)) ? 'NULL' : "$id_patra";
+        $velikost = (is_null($id_velikosti)) ? 'NULL' : "$id_velikosti";
         return $this->execute(
             "P_UPDATE_MISTNOST($id_rezervace, '$casOd', '$casDo', 
-            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');" // TODO nullable?
+            $ucel, $umisteni, $patro, $velikost, '$prislusString');"
         );
     }
 
@@ -230,16 +238,19 @@ class Client
         );
     }
 
-    function update_osobu(string $login, string $email, string $jmeno, string $prijmeni) : bool
+    function update_osobu(string $login, string $email, int $opravneni, string $jmeno, string $prijmeni,
+                          int $detail, ?string $loginNadrizeneho) : bool
     {
+        $nadrizeny = (is_null($loginNadrizeneho)) ? 'NULL' : "'$loginNadrizeneho'";
         return $this->execute(
-            "P_UPDATE_OSOBU('$login', '$email', '$jmeno', '$prijmeni');"
+            "P_UPDATE_OSOBU('$login', '$email', $opravneni, 
+            '$jmeno', '$prijmeni', $detail, $nadrizeny);"
         );
     }
 
     function update_heslo(string $login, string $heslo) : bool {
         return $this->execute(
-            "P_UPDATE_PATRO('$login', '$heslo');"
+            "P_UPDATE_HESLO('$login', '$heslo');"
         );
     }
 

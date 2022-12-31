@@ -48,10 +48,14 @@
 }
 
 .sidebar-item{
-  padding: 16px 0px 16px 0px;
+  padding: 8px 0px 8px 0px;
   font-weight: bold;
   text-align: center;
   color: white;
+}
+
+.sidebar-text{
+  font-size: small !important;
 }
 
 .sidebar-item:hover {
@@ -83,7 +87,7 @@
 @media(max-width: 767px){
   #side-nav{
     margin-left: -200px;
-    position: fixed;
+    /*position: fixed;*/
     min-height: 100vh;
     z-index: 1;
   }
@@ -91,6 +95,6 @@
     margin-left: 0px;
   }
   .content{
-    margin-left: 50px;
+    /*margin-left: 50px;*/
   }
 }

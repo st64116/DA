@@ -9,8 +9,10 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $passwordAgain = $_POST['passwordAgain'];
     if ($password == $passwordAgain) {
-        $register = $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
-        if($register == false){
+        $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
+        if($db->insert_osobu($login,$email,$password,$jmeno,$prijmeni)){
+            header("Location:login.php");
+        }else{
             $errorMsg = "něco se nepovedlo!";
         }
     }else{

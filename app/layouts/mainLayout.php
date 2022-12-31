@@ -40,11 +40,78 @@ session_start();
 
             <a href="mistnosti.php" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="mistnosti">
-                    <span class="sidebar-text">Mistnosti</span>
+                    <span class="sidebar-text">Místnosti</span>
                     <span class="material-symbols-outlined text-end sidebar-icon d-none">apartment</span>
                 </li>
             </a>
             <?php
+            if(isset($_SESSION['ROLE']) && $_SESSION['ROLE']==1)
+            {
+            ?>
+
+                <a href="firmy.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="firmy">
+                        <span class="sidebar-text">Firmy</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">chair</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Inventáře</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>
+                    </li>
+                </a>
+                <a href="osoby.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="osoby">
+                        <span class="sidebar-text">Osoby</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Patra</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Příslušenství</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Skupiny?</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Stavy?</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Účely</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Umístění</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">pin_drop</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Velikosti</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Zájemci</span>
+                    </li>
+                </a>
+            <?php
+            }
             if (!isset($_SESSION['ROLE'])) {
                 ?>
                 <a href="login.php" class="text-decoration-none">
@@ -56,6 +123,19 @@ session_start();
                 <?php
             } else {
                 ?>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">Rezervace</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">calendar_month</span>
+                    </li>
+                </a>
+                <a href="" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                        <span class="sidebar-text">User data</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">settings</span>
+                    </li>
+                </a>
+
                 <a href="logout.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
                         <span class="sidebar-text">log out</span>
