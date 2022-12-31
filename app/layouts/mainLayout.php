@@ -49,8 +49,8 @@ session_start();
             {
             ?>
 
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                <a href="firmy.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="firmy">
                         <span class="sidebar-text">Firmy</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">chair</span>
                     </li>
@@ -61,8 +61,8 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>
                     </li>
                 </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                <a href="osoby.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="osoby">
                         <span class="sidebar-text">Osoby</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
                     </li>

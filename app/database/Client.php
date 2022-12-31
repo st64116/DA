@@ -12,7 +12,7 @@ class Client
 
     private function connect() {
         return oci_connect("st64163","abcde",
-            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ");
+            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ", 'AL32UTF8');
     }
 
     // GENERIC FUNCTIONS
@@ -247,7 +247,7 @@ class Client
 
     function update_heslo(string $login, string $heslo) : bool {
         return $this->execute(
-            "P_UPDATE_PATRO('$login', '$heslo');"
+            "P_UPDATE_HESLO('$login', '$heslo');"
         );
     }
 
