@@ -137,10 +137,11 @@ class Client
     }
 
     function insert_osobu(string $login, string $email, string $heslo,
-                          string $jmeno, $prijmeni) : bool
+                          string $jmeno, string $prijmeni, ?string $loginNadrizeneho = null) : bool
     {
+        $nadrizeny = (is_null($loginNadrizeneho)) ? 'NULL' : "'$loginNadrizeneho'";
         return $this->execute(
-            "P_INSERT_OSOBU('$login', '$email', '$heslo', '$jmeno', '$prijmeni');"
+            "P_INSERT_OSOBU('$login', '$email', '$heslo', '$jmeno', '$prijmeni', $nadrizeny);"
         );
     }
 
@@ -237,11 +238,13 @@ class Client
         );
     }
 
-    function update_osobu(string $login, string $email, int $opravneni,
-                          string $jmeno, string $prijmeni, int $detail = 0) : bool
+    function update_osobu(string $login, string $email, int $opravneni, string $jmeno, string $prijmeni,
+                          int $detail, ?string $loginNadrizeneho) : bool
     {
+        $nadrizeny = (is_null($loginNadrizeneho)) ? 'NULL' : "'$loginNadrizeneho'";
         return $this->execute(
-            "P_UPDATE_OSOBU('$login', '$email', $opravneni, '$jmeno', '$prijmeni', $detail);"
+            "P_UPDATE_OSOBU('$login', '$email', $opravneni, 
+            '$jmeno', '$prijmeni', $detail, $nadrizeny);"
         );
     }
 
