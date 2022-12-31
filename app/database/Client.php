@@ -131,7 +131,8 @@ class Client
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
         return $this->execute(
-            "P_INSERT_MISTNOST('$nazev', $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
+            "P_INSERT_MISTNOST('$nazev', $id_ucelu, $id_umisteni, 
+            $id_patra, $id_velikosti, '$prislusString');"
         );
     }
 
@@ -155,10 +156,12 @@ class Client
         );
     }
 
+    // TODO otestovat
     function insert_rezervaci_mistnosti(string $casOd, string $casDo,
                                         string $loginZajemce, string $nazevMistnosti) : bool {
         return $this->execute(
-            "P_INSERT_REZERVACI_SKRZ_MISTNOST('$casOd', '$casDo', '$loginZajemce', '$nazevMistnosti');" // TODO otestovat / string<>date
+            "P_INSERT_REZERVACI_SKRZ_MISTNOST('$casOd', '$casDo', 
+            '$loginZajemce', '$nazevMistnosti');"
         );
     }
 
@@ -205,9 +208,13 @@ class Client
                              ?int $id_velikosti, array $prislusenstvi) : bool
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
+        $ucel = (is_null($id_ucelu)) ? 'NULL' : "$id_ucelu";
+        $umisteni = (is_null($id_umisteni)) ? 'NULL' : "$id_umisteni";
+        $patro = (is_null($id_patra)) ? 'NULL' : "$id_patra";
+        $velikost = (is_null($id_velikosti)) ? 'NULL' : "$id_velikosti";
         return $this->execute(
             "P_UPDATE_MISTNOST($id_rezervace, '$casOd', '$casDo', 
-            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');" // TODO nullable?
+            $ucel, $umisteni, $patro, $velikost, '$prislusString');"
         );
     }
 
@@ -230,10 +237,11 @@ class Client
         );
     }
 
-    function update_osobu(string $login, string $email, string $jmeno, string $prijmeni) : bool
+    function update_osobu(string $login, string $email, int $opravneni,
+                          string $jmeno, string $prijmeni) : bool
     {
         return $this->execute(
-            "P_UPDATE_OSOBU('$login', '$email', '$jmeno', '$prijmeni');"
+            "P_UPDATE_OSOBU('$login', '$email', $opravneni, '$jmeno', '$prijmeni');"
         );
     }
 
