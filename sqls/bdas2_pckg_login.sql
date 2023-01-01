@@ -1,12 +1,17 @@
 --- PACKAGE pro prihlasovani a kontrolu hesel
 CREATE OR REPLACE PACKAGE pckg_login AS
 
-    -- vraci zasifrovane heslo
+    --- vraci id_nadrizeneho nebo null podle loginu
+    FUNCTION f_get_id_nadrizeneho
+        (v_login_nadrizeneho IN VARCHAR2)
+        RETURN NUMBER;
+
+    --- vraci zasifrovane heslo
     FUNCTION f_get_zasifrovane_heslo 
         (v_heslo IN VARCHAR2)
         RETURN VARCHAR2;
 
-    -- vyhodi vyjimku pokud udaje netvori spravnou kombinaci
+    --- vyhodi vyjimku pokud udaje netvori spravnou kombinaci
     PROCEDURE p_exec_login 
         (v_login IN VARCHAR2, 
         v_heslo IN VARCHAR2);
@@ -56,6 +61,22 @@ CREATE OR REPLACE PACKAGE BODY pckg_login AS
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             raise_application_error(-20202, 'The requested login was not found');
+        WHEN others THEN RAISE;
+    END;
+
+/*PUBLIC*/
+    FUNCTION f_get_id_nadrizeneho
+        (v_login_nadrizeneho IN VARCHAR2)
+        RETURN NUMBER
+        IS
+        v_id_nadrizeneho NUMBER;
+    BEGIN
+        SELECT id_zajemce INTO v_id_nadrizeneho
+            FROM zajemci WHERE login LIKE v_login_nadrizeneho;
+        RETURN v_id_nadrizeneho;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN NULL;
         WHEN others THEN RAISE;
     END;
     

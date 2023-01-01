@@ -19,6 +19,10 @@ BEGIN
         raise_application_error(-20003, 'The end time must not be in the past');
     END IF;
 
+    IF ( :new.id_stavu NOT BETWEEN 1 AND 4) THEN
+        raise_application_error(-20012, 'The reservation must be in one of the integrated states');
+    END IF;
+
     IF (:new.id_stavu = 2 OR :new.id_stavu = 3) THEN
         IF (:new.id_mistnosti IS NULL) THEN
             raise_application_error(-20008, 'The reservation in reserved or completed state must have an assigned room');
