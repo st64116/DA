@@ -27,12 +27,18 @@ END;
 CREATE OR REPLACE PROCEDURE p_check_stavy_rezervaci
     IS
 BEGIN
+    SAVEPOINT point_pred_kontrolou;
     FOR r_rezervace IN
         (SELECT id_rezervace, id_stavu FROM rezervace
             WHERE id_stavu IN (1, 2))
     LOOP
         P_CHECK_DOSTUPNOST_REZERVACE(r_rezervace.id_rezervace);
     END LOOP;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_kontrolou;
+        RAISE;
 END;
 
 -- pravidelne opakovani (nelze spustit, na JOBS nemame prava)

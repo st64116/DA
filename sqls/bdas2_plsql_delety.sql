@@ -193,10 +193,22 @@ EXCEPTION
 END;
 /
 
+-- LOGY
+
+CREATE OR REPLACE PROCEDURE p_delete_log
+    (v_id_logu IN NUMBER)
+    IS
+BEGIN
+    SAVEPOINT point_pred_deletem;
+    DELETE FROM logy WHERE id_logu = v_id_logu;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_deletem;
+        RAISE;
+END;
+/
+
 -- SOUBORY
 
     -- TODO pridat soubory
-    
--- LOGY
-
-    -- TODO pridat logy

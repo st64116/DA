@@ -227,10 +227,23 @@ EXCEPTION
         RAISE;
 END;
 
+-- LOGY
+
+CREATE OR REPLACE PROCEDURE p_insert_log
+    (v_typ_operace IN VARCHAR2, v_tabulka IN VARCHAR2, v_info IN VARCHAR2)
+    IS
+BEGIN
+    SAVEPOINT point_pred_insertem;
+    INSERT INTO logy (typ_operace, tabulka, info)
+        VALUES (v_typ_operace, v_tabulka, v_info);
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_insertem;
+        RAISE;
+END;
+/
+
 -- SOUBORY
 
     -- TODO pridat soubory
-
--- LOGY
-
-    -- TODO pridat logy

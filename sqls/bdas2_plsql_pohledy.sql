@@ -74,3 +74,8 @@ CREATE OR REPLACE VIEW view_prislusenstvi AS
 -- STAVY
 CREATE OR REPLACE VIEW view_stavy AS
     SELECT id_stavu, nazev FROM stavy;
+
+-- LOGY
+CREATE OR REPLACE VIEW view_logy AS
+    SELECT id_logu, typ_operace, tabulka, info,
+        TO_CHAR(cas, 'yyyy-mm-dd hh24:mi:ss') AS cas FROM logy;

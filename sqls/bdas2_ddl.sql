@@ -25,3 +25,36 @@ ALTER TABLE osoby
 ALTER TABLE osoby
     ADD detail NUMBER 
     DEFAULT 0 NOT NULL;
+
+-- LOGY ADD tabulku
+
+CREATE TABLE logy (
+    id_logu NUMBER NOT NULL,
+    typ_operace VARCHAR2(6) NOT NULL,
+    tabulka VARCHAR2(32) NOT NULL,
+    info VARCHAR2(1024) NOT NULL,
+    cas DATE DEFAULT sysdate NOT NULL
+);
+
+ALTER TABLE logy ADD CONSTRAINT logy_pk PRIMARY KEY ( id_logu );
+
+-- LOGY ADD sekvenci
+
+CREATE SEQUENCE s_logy START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER t_logy_id BEFORE
+    INSERT ON logy
+    REFERENCING
+        NEW AS new
+    FOR EACH ROW
+BEGIN
+    IF ( :new.id_logu IS NULL ) THEN
+        SELECT s_mistnosti.NEXTVAL INTO :new.id_logu
+            FROM DUAL;
+    END IF;
+END;
+/
+
+ALTER TRIGGER "T_LOGY_ID" ENABLE;
+
+-- KONEC

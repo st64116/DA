@@ -236,10 +236,26 @@ EXCEPTION
 END;
 /
 
+-- LOGY
+
+CREATE OR REPLACE PROCEDURE p_update_log
+    (v_id_logu IN NUMBER,
+    v_typ_operace IN VARCHAR2,
+    v_tabulka IN VARCHAR2,
+    v_info IN VARCHAR2)
+    IS
+BEGIN
+    SAVEPOINT point_pred_updatem;
+    UPDATE logy SET typ_operace = v_typ_operace, tabulka = v_tabulka, info = v_info
+        WHERE id_logu = v_id_logu;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_updatem;
+        RAISE;
+END;
+/
+
 -- SOUBORY
 
     -- TODO pridat soubory
-
--- LOGY
-
-    -- TODO pridat logy
