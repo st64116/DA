@@ -77,6 +77,7 @@ session_start();
                 <a href="prislusenstvi.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="prislusenstvi">
                         <span class="sidebar-text">Příslušenství</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">key</span>
                     </li>
                 </a>
 <!--                <a href="" class="text-decoration-none">-->
@@ -85,11 +86,12 @@ session_start();
 <!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>-->
 <!--                    </li>-->
 <!--                </a>-->
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Stavy?</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="stavy.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="stavy">
+                        <span class="sidebar-text">Stavy</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">bolt</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Účely</span>-->
