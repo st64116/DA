@@ -7,7 +7,7 @@ BEFORE
         NEW AS new
     FOR EACH ROW
 BEGIN
-    IF ( :new.casod < sysdate + INTERVAL '30' MINUTE ) THEN
+    IF ( :new.casod < sysdate + INTERVAL '5' MINUTE ) THEN
         raise_application_error(-20001, 'The reservation start time must be at least 30 minutes in the future');
     END IF;
 
@@ -90,7 +90,7 @@ BEGIN
         raise_application_error(-20005, 'The room must have all properties except accessories');
     END IF;
     IF (:new.patri LIKE 'rezervaci' 
-        AND pckg_rez_vlas_mist.f_check_vlastnosti_podmnozinou_mistnosti(:new.id_skupiny) = 1) THEN
+        AND pckg_rez_vlas_mist.f_check_vlastnosti_podmnozinou(:new.id_skupiny) = 1) THEN
             raise_application_error(-20011, 'The reservation properties must be subset of existing room properties');
     END IF;
 END;

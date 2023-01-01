@@ -89,43 +89,36 @@ BEGIN
 END;
 /
 
--- test
-BEGIN
-    --p_insert_mistnost('Test', 'Pracovní', 'Koridor A', 'Druhé', '2-5 osob', 'Pracovní stůl/stoly;Osobní počítač/če;Tabule');
-    p_insert_rezarvaci_skrz_mistnost(TO_DATE('9-12-2022 12:30', 'DD-MM-YYYY HH24:MI'), TO_DATE('9-12-2022 13:30', 'DD-MM-YYYY HH24:MI'),'z0001', 'A01');
-END;
-/
-
 -- OSOBY
 BEGIN
-    p_insert_osoba('z0001', 'josef.novak@tatofirma.cz', 
+    p_insert_osobu('z0001', 'josef.novak@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Josef', 'Novák');
-    p_insert_osoba('z0002', 'pavel.novotny@tatofirma.cz', 
+    p_insert_osobu('z0002', 'pavel.novotny@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Pavel', 'Novotný');
-    p_insert_osoba('z0003', 'karel.polak@tatofirma.cz', 
+    p_insert_osobu('z0003', 'karel.polak@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Karel', 'Polák');
-    p_insert_osoba('z0004', 'martin.loupak@tatofirma.cz',
+    p_insert_osobu('z0004', 'martin.loupak@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Martin', 'Loupák');
-    p_insert_osoba('z0005', 'tereza.fialova@tatofirma.cz',
+    p_insert_osobu('z0005', 'tereza.fialova@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Tereza', 'Fialová');
-    p_insert_osoba('n0001', 'veronika.loupakova@jinafirma.cz',
+    p_insert_osobu('n0001', 'veronika.loupakova@jinafirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Veronika', 'Loupáková');
-    p_insert_osoba('z0006', 'barbora.hruba@tatofirma.cz',
+    p_insert_osobu('z0006', 'barbora.hruba@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Barbora', 'Hrubá');
-    p_insert_osoba('n0002', 'klara.bulova@jinafirma.cz',
+    p_insert_osobu('n0002', 'klara.bulova@jinafirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Klára', 'Bulová');
-    p_insert_osoba('z0007', 'petr.krasny@tatofirma.cz',
+    p_insert_osobu('z0007', 'petr.krasny@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Petr', 'Krásný');
-    p_insert_osoba('z0008', 'sara.vladykova@tatofirma.cz',
+    p_insert_osobu('z0008', 'sara.vladykova@tatofirma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Sára', 'Vladyková');
 END;
@@ -133,18 +126,19 @@ END;
 
 -- FIRMY
 BEGIN
-    p_insert_firma('prvniFirma', 'kontakt@prvni-firma.cz', 
+    p_insert_firmu('prvniFirma', 'kontakt@prvni-firma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'První Firma s.r.o.');
-    p_insert_firma('druhaFirma', 'kontakt@druha-firma.cz', 
+    p_insert_firmu('druhaFirma', 'kontakt@druha-firma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Druhá Firma a.s.');
-    p_insert_firma('tretiFirma', 'kontakt@treti-firma.cz', 
+    p_insert_firmu('tretiFirma', 'kontakt@treti-firma.cz',
         '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
         'Třetí Firma s.r.o.');
 END;
 /
 
+/* TODO predelat - nefunguje
 -- REZERVACE (v minulosti - musí být vypnutý triger t_rezervace_check_cas a t_rezervace_check_stav)
 ALTER TRIGGER t_rezervace_check_cas DISABLE;
 ALTER TRIGGER t_rezervace_check_stav_a_mistnost DISABLE;
@@ -160,7 +154,8 @@ DECLARE
         v_id_skupiny NUMBER;
         v_id_stavu NUMBER;
     BEGIN
-        v_id_skupiny := pckg_rez_vlas_mist.f_add_vlastnost_pro_rezervace -- TODO zmenit na aktualni
+        -- predelat, funkce nefunguje, funkce se zmenila
+        v_id_skupiny := pckg_rez_vlas_mist.f_add_vlastnost_pro_rezervace
             (v_ucel, v_umisteni, v_patro, v_velikost, v_prislusenstvi);
         SELECT id_zajemce INTO v_id_zajemce
             FROM zajemci WHERE login LIKE v_zajemce;
@@ -225,3 +220,4 @@ END;
 ALTER TRIGGER t_rezervace_check_cas ENABLE;
 ALTER TRIGGER t_rezervace_check_stav_a_mistnost ENABLE;
 /
+ */

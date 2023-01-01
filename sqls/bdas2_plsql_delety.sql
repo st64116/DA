@@ -66,7 +66,7 @@ CREATE OR REPLACE PROCEDURE p_delete_osobu
 BEGIN
     SAVEPOINT point_pred_deletem;
     SELECT id_zajemce INTO v_id_zajemce 
-        FROM osoby WHERE login LIKE v_login;
+        FROM zajemci WHERE login LIKE v_login;
     DELETE FROM osoby WHERE id_zajemce = v_id_zajemce;
     --DELETE FROM zajemci WHERE id_zajemce = v_id_zajemce; -- neni potreba, ma to cascade delete
     COMMIT;
@@ -86,7 +86,7 @@ CREATE OR REPLACE PROCEDURE p_delete_firmu
 BEGIN
     SAVEPOINT point_pred_deletem;
     SELECT id_zajemce INTO v_id_zajemce 
-        FROM firmy WHERE login LIKE v_login;
+        FROM zajemci WHERE login LIKE v_login;
     DELETE FROM firmy WHERE id_zajemce = v_id_zajemce;
     --DELETE FROM zajemci WHERE id_zajemce = v_id_zajemce; -- neni potreba, ma to cascade delete
     COMMIT;
@@ -195,8 +195,8 @@ END;
 
 -- SOUBORY
 
-    -- todo
+    -- TODO pridat soubory
     
 -- LOGY
 
-    -- todo
+    -- TODO pridat logy
