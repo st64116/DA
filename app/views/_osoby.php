@@ -268,7 +268,7 @@ if (isset($_POST['heslo'])) {
 </form>
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
-<div><label>login:</label><input name="loginUpdate" class="w-100" type="text" value="' . $osoba["LOGIN"] . '" required></div>
+<div><label>login:</label><input name="loginUpdate" class="w-100" type="text" value="' . $osoba["LOGIN"] . '" required readonly></div>
 <div><label>email:</label><input name="emailUpdate" class="w-100" type="email" value="' . $osoba["EMAIL"] . '" required></div>
 <div><label>jméno:</label><input name="jmenoUpdate" class="w-100" type="text" value="' . $osoba["JMENO"] . '" required></div>
 <div><label>příjmení:</label><input name="prijmeniUpdate" class="w-100" type="text" value="' . $osoba["PRIJMENI"] . '" required></div>

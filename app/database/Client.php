@@ -238,10 +238,10 @@ class Client
         );
     }
 
-    function update_firmu(string $login, string $email, string $nazev) : bool
+    function update_firmu(string $login, string $email, string $nazev, int $opravneni) : bool
     {
         return $this->execute(
-            "P_UPDATE_FIRMU('$login', '$email', '$nazev');"
+            "P_UPDATE_FIRMU('$login', '$email', '$nazev',$opravneni);"
         );
     }
 

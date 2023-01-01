@@ -32,7 +32,7 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
 
 ?>
 
-//popup
+<!--popup-->
 <div class="modal fade" id="popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -49,7 +49,7 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
         </div>
     </div>
 </div>
-//formular
+<!--formular-->
 <div class="shadow row text-center">
     <?php
     if (isset($errorMsg)) {
