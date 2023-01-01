@@ -68,12 +68,12 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Patra</span>-->
-<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="patra.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="patra">
+                        <span class="sidebar-text">Patra</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Příslušenství</span>-->
