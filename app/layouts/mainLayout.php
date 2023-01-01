@@ -55,61 +55,61 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">chair</span>
                     </li>
                 </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Inventáře</span>
-                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>
-                    </li>
-                </a>
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Inventáře</span>-->
+<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>-->
+<!--                    </li>-->
+<!--                </a>-->
                 <a href="osoby.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="osoby">
                         <span class="sidebar-text">Osoby</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
                     </li>
                 </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Patra</span>
-                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Příslušenství</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Skupiny?</span>
-                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Stavy?</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Účely</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Umístění</span>
-                        <span class="material-symbols-outlined text-end sidebar-icon d-none">pin_drop</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Velikosti</span>
-                    </li>
-                </a>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">Zájemci</span>
-                    </li>
-                </a>
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Patra</span>-->
+<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Příslušenství</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Skupiny?</span>-->
+<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Stavy?</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Účely</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Umístění</span>-->
+<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">pin_drop</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Velikosti</span>-->
+<!--                    </li>-->
+<!--                </a>-->
+<!--                <a href="" class="text-decoration-none">-->
+<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+<!--                        <span class="sidebar-text">Zájemci</span>-->
+<!--                    </li>-->
+<!--                </a>-->
             <?php
             }
             if (!isset($_SESSION['ROLE'])) {
@@ -123,15 +123,15 @@ session_start();
                 <?php
             } else {
                 ?>
-                <a href="" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                <a href="rezervace.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="rezervace">
                         <span class="sidebar-text">Rezervace</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">calendar_month</span>
                     </li>
                 </a>
-                <a href="" class="text-decoration-none">
+                <a href="nastaveni.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
-                        <span class="sidebar-text">User data</span>
+                        <span class="sidebar-text">Nastavení</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">settings</span>
                     </li>
                 </a>
@@ -156,12 +156,12 @@ session_start();
             <?php include($childView); ?>
         </div>
 
-        <div class="debug shadow p-4 bg-info rounded-3">
-            <?php
-            echo "<p>session:</p>";
-            var_dump($_SESSION)
-            ?>
-        </div>
+<!--        <div class="debug shadow p-4 bg-info rounded-3">-->
+<!--            --><?php
+//            echo "<p>session:</p>";
+//            var_dump($_SESSION)
+//            ?>
+<!--        </div>-->
     </div>
 </div>
 
@@ -170,7 +170,7 @@ if (isset($script)) {
     echo "<script type='text/javascript' src='$script'></script>";
 }
 ?>
-
+<script src="extensions/mobile/bootstrap-table-mobile.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>

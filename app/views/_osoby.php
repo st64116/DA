@@ -2,29 +2,32 @@
 include_once('database/Client.php');
 $db = new Client();
 
-if(isset($_POST['submitAdd'])){
+if (isset($_POST['submitAdd'])) {
     $login = $_POST['loginAdd'];
     $email = $_POST['emailAdd'];
     $jmeno = $_POST['jmenoAdd'];
     $prijmeni = $_POST['prijmeniAdd'];
+    $nadrizeny = $_POST['nadrizenyAdd'];
     $heslo = $_POST['hesloAdd'];
-    var_dump($jmeno);
-    if($db->insert_osobu($login,$email,$heslo,$jmeno,$prijmeni)){
+//    if ($nadrizeny == "") {
+//        $nadrizeny = 'NULL';
+//    }
+    if ($db->insert_osobu($login, $email, $heslo, $jmeno, $prijmeni, $nadrizeny)) {
         $rezervaceMsg = "Osoba úspěšně přidána :)";
-    }else{
+    } else {
         $errorMsg = "Nastala chyba! Osoba nebyla přidána!";
     }
 }
 
-if(isset($_POST['delete'])){
-    if($db->delete_zajemce($_POST['osobaId'])){
+if (isset($_POST['delete'])) {
+    if ($db->delete_zajemce($_POST['osobaId'])) {
         $rezervaceMsg = "Osoba úspěšně odstraněna :)";
-    }else{
+    } else {
         $errorMsg = "Nastala chyba! Osoba nebyla odstraněna!";
     }
 }
 
-if(isset($_POST['update'])){
+if (isset($_POST['update'])) {
 //function update_osobu(string $login, string $email, int $opravneni,
 //                      string $jmeno, string $prijmeni) : bool
 //{
@@ -33,20 +36,25 @@ if(isset($_POST['update'])){
     $opravneni = $_POST['opravneniUpdate'];
     $jmeno = $_POST['jmenoUpdate'];
     $prijmeni = $_POST['prijmeniUpdate'];
-    var_dump($login);
-    if($db->update_osobu($login,$email,$opravneni,$jmeno,$prijmeni)){
-        $rezervaceMsg = "Osoba úspěšně upravena :)";
+    $nadrizeny = $_POST['nadrizenyUpdate'];
+    if(isset($_POST['detailUpdate'])){
+        $detail = 1;
     }else{
+        $detail = 0;
+    }
+    if ($db->update_osobu($login, $email, $opravneni, $jmeno, $prijmeni,$detail,$nadrizeny)) {
+        $rezervaceMsg = "Osoba úspěšně upravena :)";
+    } else {
         $errorMsg = "Nastala chyba! Osoba nebyla upravena!";
     }
 }
 
-if(isset($_POST['heslo'])){
+if (isset($_POST['heslo'])) {
     var_dump($_POST['noveHeslo']);
     var_dump($_POST['login']);
-    if($db->update_heslo($_POST['login'],$_POST['noveHeslo'])){
+    if ($db->update_heslo($_POST['login'], $_POST['noveHeslo'])) {
         $rezervaceMsg = "Heslo úspěšně změněno :)";
-    }else{
+    } else {
         $errorMsg = "Nastala chyba! Heslo nebylo změněno!";
     }
 }
@@ -68,7 +76,7 @@ if(isset($_POST['heslo'])){
                     data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
             </button>
             <?php
-            if(isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1){
+            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
                 echo '<button class="btn btn-success text-uppercase text-end" type="button" data-bs-toggle="collapse"
                 data-bs-target="#add" aria-expanded="false" aria-controls="add">Přidat
         </button>';
@@ -125,7 +133,7 @@ if(isset($_POST['heslo'])){
             </form>
         </div>
         <?php
-        if(isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1){
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
             ?>
             <div class="collapse" id="add">
                 <form action="" method="post">
@@ -137,6 +145,8 @@ if(isset($_POST['heslo'])){
                     <input class="w-100" type="text" name="jmenoAdd" required>
                     <label>Příjmení:</label>
                     <input class="w-100" type="text" name="prijmeniAdd" required>
+                    <label>login nadřízeného:</label>
+                    <input class="w-100" type="text" name="nadrizenyAdd">
                     <label>Heslo:</label>
                     <input class="w-100" type="text" name="hesloAdd" required>
                     <button class="btn btn-danger mt-2" type="submit" name="submitAdd">Přidat</button>
@@ -164,7 +174,7 @@ if(isset($_POST['heslo'])){
 
     $osoby = $db->view_osoby();
 
-//    //filter jmeno
+    //    //filter jmeno
     if (isset($_GET["jmeno"]) && $_GET['jmeno'] != "") {
         $jmeno = $_GET["jmeno"];
         echo "<script> document.getElementById('jmeno').value ='" . $jmeno . "';</script>"; // nastavení inputu na hledanou hodnotu
@@ -176,8 +186,8 @@ if(isset($_POST['heslo'])){
         }
         $osoby = $pom;
     }
-//
-//    //filtr prijmeni
+    //
+    //    //filtr prijmeni
     if (isset($_GET["prijmeni"]) && $_GET["prijmeni"] != "") {
         $prijmeni = $_GET["prijmeni"];
         echo "<script> document.getElementById('prijmeni').value ='" . $prijmeni . "';</script>"; // nastavení inputu na hledanou hodnotu
@@ -189,8 +199,8 @@ if(isset($_POST['heslo'])){
         }
         $osoby = $pom;
     }
-//
-//    //filtr loginu
+    //
+    //    //filtr loginu
     if (isset($_GET["login"]) && $_GET["login"] != "") {
         $login = $_GET["login"];
         echo "<script> document.getElementById('login').value ='" . $login . "';</script>"; // nastavení inputu na hledanou hodnotu
@@ -202,8 +212,8 @@ if(isset($_POST['heslo'])){
         }
         $osoby = $pom;
     }
-//
-//    //filtr emailu
+    //
+    //    //filtr emailu
     if (isset($_GET["email"]) && $_GET["email"] != "") {
         $email = $_GET["email"];
         echo "<script> document.getElementById('email').value ='" . $email . "';</script>"; // nastavení inputu na hledanou hodnotu
@@ -229,31 +239,31 @@ if(isset($_POST['heslo'])){
     }
 
     //tvorba tabulky
-    if(count($osoby) == 0){
-        echo "<tr><td colspan='10'>Nebyl nalezen žádný záznam splňující parametry filtru</td></tr>";
-    }else{
-    foreach ($osoby as $osoba) {
-        echo '<tr scope="row radek">';
+    if (count($osoby) == 0) {
+        echo "<tr><td colspan='10'>Nebyl nalezen žádný</td></tr>";
+    } else {
+        foreach ($osoby as $osoba) {
+            echo '<tr scope="row radek">';
 
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
-            echo '<td>
+            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
+                echo '<td>
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#item' . $osoba["LOGIN"] . '"  aria-expanded="false" aria-controls="item' . $osoba["LOGIN"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
-        }
-        echo "<td>" . "<span class='my-4'>" . $osoba["LOGIN"] . "</span>" . "</td>";
-        echo "<td>" . $osoba["EMAIL"] . "</td>";
-        echo "<td>" . $osoba["JMENO"] . "</td>";
-        echo "<td>" . $osoba["PRIJMENI"] . "</td>";
-        echo "<td>" . $osoba["OPRAVNENI"] . "</td>";
-        echo "</tr>";
+            }
+            echo "<td>" . "<span class='my-4'>" . $osoba["LOGIN"] . "</span>" . "</td>";
+            echo "<td>" . $osoba["EMAIL"] . "</td>";
+            echo "<td>" . $osoba["JMENO"] . "</td>";
+            echo "<td>" . $osoba["PRIJMENI"] . "</td>";
+            echo "<td>" . $osoba["OPRAVNENI"] . "</td>";
+            echo "</tr>";
 
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-            echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $osoba["LOGIN"] . '">
+            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+                echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $osoba["LOGIN"] . '">
 <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center">
 <label>nové heslo(min 4 znaky): </label>
-<input class="d-none" name="login" type="text" value="' . $osoba['LOGIN'] .'" required readonly>
+<input class="d-none" name="login" type="text" value="' . $osoba['LOGIN'] . '" required readonly>
 <input class="mx-2" name="noveHeslo" type="text" minlength="4" required>
 <button type="submit" name="heslo" class="btn btn-danger btn-sm">Změnit Heslo</button>
 </form>
@@ -263,8 +273,15 @@ if(isset($_POST['heslo'])){
 <div><label>email:</label><input name="emailUpdate" class="w-100" type="email" value="' . $osoba["EMAIL"] . '" required></div>
 <div><label>jméno:</label><input name="jmenoUpdate" class="w-100" type="text" value="' . $osoba["JMENO"] . '" required></div>
 <div><label>příjmení:</label><input name="prijmeniUpdate" class="w-100" type="text" value="' . $osoba["PRIJMENI"] . '" required></div>
-<div><label>opravnění:</label><select name="opravneniUpdate" class="w-100" type="text" id="opravneniUpdate' . $osoba['LOGIN'] . '"><option value="0">uživatel</option><option value="1">admin</option></select></div>
-<div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
+<div><label>nadřizeny:</label><input type="text" name="nadrizenyUpdate" class="w-100" value="' . $osoba['NADRIZENY'] . '"></div>
+<div><label>opravnění:</label><select name="opravneniUpdate" class="w-100" type="text" id="opravneniUpdate' . $osoba['LOGIN'] . '">
+<option value="0">uživatel</option><option value="1">admin</option></select></div>';
+if($osoba['DETAIL'] == 0){
+    echo '<div><label>detail:</label><input name="detailUpdate" type="checkbox"></div>';
+}else{
+    echo '<div><label>detail:</label><input name="detailUpdate" type="checkbox" checked></div>';
+}
+echo '<div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>
 </form>
 <form class="px-2" action="" method="post">
@@ -272,9 +289,9 @@ if(isset($_POST['heslo'])){
 <button class="btn btn-danger" type="submit" name="delete">Delete</button>
 </form>
 </div></td></tr>';
-            echo '<script>document.getElementById("opravneniUpdate'.$osoba["LOGIN"].'").value = ' . $osoba['OPRAVNENI']. '</script>'; // nastavení oprávnění na aktouální hodnotu
+                echo '<script>document.getElementById("opravneniUpdate' . $osoba["LOGIN"] . '").value = ' . $osoba['OPRAVNENI'] . '</script>'; // nastavení oprávnění na aktouální hodnotu
+            }
         }
-    }
     }
     ?>
     </tbody>
