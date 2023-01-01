@@ -203,6 +203,12 @@ class Client
         );
     }
 
+    function insert_log(string $typ_operace, string $tabulka, string $info) : bool {
+        return $this->execute(
+            "P_INSERT_LOG('$typ_operace', '$tabulka', '$info');"
+        );
+    }
+
     // UPDATEs // TODO otestovat
 
     function update_rezervaci(int $id_rezervace, string $casOd, string $casDo,
@@ -292,6 +298,12 @@ class Client
         );
     }
 
+    function update_log(int $id, string $typ_operace, string $tabulka, string $info) : bool {
+        return $this->execute(
+            "P_UPDATE_LOG($id, '$typ_operace', '$tabulka', '$info');"
+        );
+    }
+
     // DELETEs // TODO otestovat
 
     function delete_zajemce(string $login) : bool {
@@ -349,6 +361,12 @@ class Client
         );
     }
 
+    function delete_log(int $id) : bool {
+        return $this->execute(
+            "P_DELETE_LOG($id);"
+        );
+    }
+
     // OTHERs // TODO otestovat
 
     function check_login(string $login, string $heslo) : bool {
@@ -365,5 +383,9 @@ class Client
         if ($prislusenstvi == "")
             return array();
         return explode(';', $prislusenstvi);
+    }
+
+    public function zkontrolovat_rezervace() : void {
+        $this->execute("P_CHECK_STAVY_REZERVACI();");
     }
 }
