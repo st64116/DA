@@ -57,4 +57,6 @@ END;
 
 ALTER TRIGGER "T_LOGY_ID" ENABLE;
 
--- KONEC
+-- SOUBORY
+
+    -- TODO pridat soubory

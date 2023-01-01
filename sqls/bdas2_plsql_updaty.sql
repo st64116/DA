@@ -17,6 +17,7 @@ BEGIN
     SAVEPOINT point_pred_updatem;
     v_od := to_date(v_casOd, 'yyyy-mm-dd hh24:mi');
     v_do := to_date(v_casDo, 'yyyy-mm-dd hh24:mi');
+    p_check_casy_rezervace(v_od, v_do);
     SELECT id_stavu INTO v_id_stavu 
         FROM rezervace WHERE id_rezervace = v_id_rezervace;
     IF (v_id_stavu <> 1) THEN
@@ -31,6 +32,7 @@ BEGIN
         id_velikosti = v_id_velikosti
         WHERE id_skupiny = v_id_skupiny;
     pckg_rez_vlas_mist.p_update_inventar(v_id_skupiny, v_prislusenstvi);
+    p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
 EXCEPTION
     WHEN others THEN 

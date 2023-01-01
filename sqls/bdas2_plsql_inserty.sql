@@ -26,7 +26,7 @@ BEGIN
     INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_skupiny)
         VALUES (v_od, v_do, v_id_zajemce, v_id_skupiny)
         RETURNING id_rezervace INTO v_id_rezervace;
-    --p_check_dostupnost_rezervace(v_id_rezervace);
+    p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
 EXCEPTION
     WHEN others THEN
@@ -57,7 +57,7 @@ BEGIN
     INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_skupiny)
         VALUES (v_od, v_do, v_id_zajemce, v_id_skupiny)
         RETURNING id_rezervace INTO v_id_rezervace;
-    --p_check_dostupnost_rezervace(v_id_rezervace);
+    p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
 EXCEPTION
     WHEN others THEN
