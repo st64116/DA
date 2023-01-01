@@ -40,23 +40,6 @@ EXCEPTION
 END;
 /
 
--- ZAJEMCE
-
-CREATE OR REPLACE PROCEDURE p_delete_zajemce
-    (v_login IN VARCHAR2)
-    IS
-BEGIN
-    SAVEPOINT point_pred_deletem;
-    DELETE FROM zajemci WHERE login LIKE v_login;
-    -- DELETE FROM osoby / firmy -- neni potreba, maji cascade delete
-    COMMIT;
-EXCEPTION
-    WHEN others THEN
-        ROLLBACK TO point_pred_deletem;
-        RAISE;
-END;
-/
-
 -- OSOBA (+ ZAJEMCE)
 
 CREATE OR REPLACE PROCEDURE p_delete_osobu

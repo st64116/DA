@@ -18,7 +18,7 @@ if (isset($_POST['submitAdd'])) {
 }
 
 if (isset($_POST['delete'])) {
-    if ($db->delete_zajemce($_POST['osobaId'])) {
+    if ($db->delete_firmu($_POST['osobaId'])) {
         $rezervaceMsg = "Firma úspěšně odstraněna :)";
     } else {
         $errorMsg = "Nastala chyba! Firma nebyla odstraněna!";

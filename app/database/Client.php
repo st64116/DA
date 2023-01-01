@@ -117,6 +117,10 @@ class Client
         }
     }
 
+    function view_logy() {
+        return $this->view('VIEW_LOGY');
+    }
+
     // INSERTs
 
     function insert_firmu(string $login, string $email,
@@ -158,7 +162,6 @@ class Client
         );
     }
 
-    // TODO otestovat
     function insert_rezervaci_mistnosti(string $casOd, string $casDo,
                                         string $loginZajemce, string $nazevMistnosti) : bool {
         return $this->execute(
@@ -167,7 +170,6 @@ class Client
         );
     }
 
-    // TODO otestovat
     function insert_rezervaci_vlastnostmi(string $casOd, string $casDo, string $loginZajemce,
                                           ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,
                                           ?int $id_velikosti, ?array $prislusenstvi) : bool
@@ -306,9 +308,15 @@ class Client
 
     // DELETEs // TODO otestovat
 
-    function delete_zajemce(string $login) : bool {
+    function delete_firmu(string $login) : bool {
         return $this->execute(
-            "P_DELETE_ZAJEMCE('$login');"
+            "P_DELETE_FIRMU('$login');"
+        );
+    }
+
+    function delete_osobu(string $login) : bool {
+        return $this->execute(
+            "P_DELETE_OSOBU('$login');"
         );
     }
 
