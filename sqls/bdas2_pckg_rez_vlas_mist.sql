@@ -1,12 +1,18 @@
 --- PACKAGE pro pomocne funkce k rezervacim, mistnostem a vlastnostem (namaji vlastni commit a rollback)
 CREATE OR REPLACE PACKAGE pckg_rez_vlas_mist AS
-    TYPE type_pole_prislusenstvi IS TABLE OF NUMBER INDEX BY BINARY_INTEGER;
+
+--> TYPES
+
+    TYPE type_pole_prislusenstvi IS TABLE OF NUMBER
+        INDEX BY BINARY_INTEGER;
     
     TYPE type_pole_mistnosti IS TABLE OF mistnosti%ROWTYPE 
         INDEX BY BINARY_INTEGER;
 
-    --- vraci nalezene/nove vlastnosti pro mistnosti
-    --- vyzaduje vsechny vlastnosti
+--> SKUPINY VLASTNOSTI
+
+    --- vraci/vytvori skupinu pro mistnosti podle zadanych vlastnosti
+        --- vyzaduje vsechny vlastnosti (zadny null)
     FUNCTION f_add_vlastnost_pro_mistnost 
         (v_id_ucelu IN NUMBER,
         v_id_umisteni IN NUMBER,
@@ -15,7 +21,8 @@ CREATE OR REPLACE PACKAGE pckg_rez_vlas_mist AS
         v_prislusenstvi IN VARCHAR2)
         RETURN NUMBER;
         
-    --- vraci nove vlastnosti pro rezervace skrze zadane vlastnosti
+    --- vraci/vytvori skupinu pro rezervace podle zadanych vlastnosti
+        --- null = cokoliv
     FUNCTION f_add_vlastnost_pro_rezervace 
         (v_id_ucelu IN NUMBER,
         v_id_umisteni IN NUMBER,
@@ -24,56 +31,85 @@ CREATE OR REPLACE PACKAGE pckg_rez_vlas_mist AS
         v_prislusenstvi IN VARCHAR2)
         RETURN NUMBER;
     
-    --- vraci nove vlastnosti pro rezervace skrze zadanou mistnost
-    --- prebira vlastnosti mistnosti
+    --- vraci/vytvori skupinu pro rezervace jako "kopii" vlastnosti mistnosti
     FUNCTION f_add_vlastnost_pro_rezervace
-        (v_id_mistnosti IN NUMBER) RETURN NUMBER;
-    
-    --- smaze puvodni a vytvori novy inventar
-    PROCEDURE p_update_inventar 
-        (v_id_skupiny IN NUMBER, v_prislusenstvi IN VARCHAR2);
-        
-    --- vraci novy stav rezervace a v out parametru nove prirazeni mistnosti
-    FUNCTION f_check_stav_rezervace 
-        (v_id_rezervace IN NUMBER, v_id_mistnosti OUT NUMBER) RETURN NUMBER;
-        
-    --- vraci mistnosti odpovidajici zadanym vlastnostem (null = cokoliv)
+        (v_id_mistnosti IN NUMBER)
+        RETURN NUMBER;
+
+    --- vraci mistnosti odpovidajici zadanym vlastnostem
+        --- null = cokoliv
     FUNCTION f_get_mistnosti_podle_vlastnosti
-        (v_id_ucelu IN NUMBER, v_id_umisteni IN NUMBER, 
-        v_id_patra IN NUMBER, v_id_velikosti IN NUMBER, 
+        (v_id_ucelu IN NUMBER,
+        v_id_umisteni IN NUMBER,
+        v_id_patra IN NUMBER,
+        v_id_velikosti IN NUMBER,
         v_prislusenstvi IN VARCHAR2)
         RETURN type_pole_mistnosti;
-        
-    --- vraci id_skupiny pokud se shoduje se zadanymi vlastnostmi (null = cokoliv)
+
+    --- vraci id_skupiny pokud se shoduje se zadanymi vlastnostmi
+        --- null = cokoliv
     FUNCTION f_get_id_skupiny_podle_vlastnosti
-        (v_id_ucelu IN NUMBER, v_id_umisteni IN NUMBER,
-        v_id_patra IN NUMBER, v_id_velikosti IN NUMBER, 
-        v_prislusenstvi IN VARCHAR2) 
+        (v_id_ucelu IN NUMBER,
+        v_id_umisteni IN NUMBER,
+        v_id_patra IN NUMBER,
+        v_id_velikosti IN NUMBER,
+        v_prislusenstvi IN VARCHAR2)
         RETURN NUMBER;
-    
-    --- vraci 1 pokud rezervace koliduje jinak vraci 0
-    FUNCTION f_check_kolize_rezervace
-        (v_id_rezervace IN NUMBER, v_id_mistnosti IN NUMBER)
-        RETURN NUMBER;
-    
-    --- vraci 1 pokud vlastnosti nejsou podmnozinou zadne z mistnosti, jinak vraci 0
-    FUNCTION f_check_vlastnosti_podmnozinou_mistnosti
-        (v_id_skupiny IN NUMBER) RETURN NUMBER;
-        
-    --- vraci oddelene nazvy prislusenstvi: "x;y;z" => ["x","y","z"] 
+
+--> INVENTAR
+
+    --- vraci oddelene nazvy prislusenstvi
+        --- "x;y;z" => ["x","y","z"]
     FUNCTION f_get_split_prislusenstvi
         (v_prislusenstvi IN VARCHAR2)
         RETURN type_pole_prislusenstvi;
-    
-    --- vraci spojene nazvy prislusenstvi: ["x","y","z"] => "x;y;z"
+
+    --- vraci spojene nazvy prislusenstvi
+        --- ["x","y","z"] => "x;y;z"
     FUNCTION f_get_concat_prislusenstvi
         (v_id_skupiny IN NUMBER)
         RETURN VARCHAR2;
-        
+
+    --- nahradi puvodni inventar nove zadanym
+    PROCEDURE p_update_inventar 
+        (v_id_skupiny IN NUMBER,
+        v_prislusenstvi IN VARCHAR2);
+
+    --- smaze inventar skupiny
+    PROCEDURE p_delete_inventar
+        (v_id_skupiny IN NUMBER);
+
+    --- vytvori novy inventar
+    PROCEDURE p_insert_inventar
+        (v_id_skupiny IN NUMBER,
+        v_prislusenstvi IN VARCHAR2);
+
+--> REZERVACE
+
+    --- vraci 1 pokud vlastnosti rezervace nejsou podmnozinou zadne z mistnosti
+        --- jinak vraci 0
+    FUNCTION f_check_vlastnosti_podmnozinou_mistnosti
+        (v_id_skupiny IN NUMBER)
+        RETURN NUMBER;
+
+    --- vraci 1 pokud rezervace koliduje s jinou
+        --- jinak vraci 0
+    FUNCTION f_check_kolize_rezervace
+        (v_id_rezervace IN NUMBER,
+        v_id_mistnosti IN NUMBER)
+        RETURN NUMBER;
+
+    --- vraci stav rezervace, ktery by mela aktualne dostat
+        --- v out vraci mistnost, kterou by mela rezervace dostat
+    FUNCTION f_check_stav_rezervace 
+        (v_id_rezervace IN NUMBER,
+        v_id_mistnosti OUT NUMBER)
+        RETURN NUMBER;
+
 END pckg_rez_vlas_mist;
 /
 
---- PACKAGE BODY
+---------------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
 
@@ -83,17 +119,20 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
         (v_ucel IN VARCHAR2, 
         v_umisteni IN VARCHAR2,
         v_patro IN VARCHAR2,
-        v_velikost IN VARCHAR2, 
+        v_velikost IN VARCHAR2,
+
         v_id_ucelu OUT NUMBER, 
         v_id_umisteni OUT NUMBER,
         v_id_patra OUT NUMBER, 
         v_id_velikosti OUT NUMBER)
         IS
     BEGIN
-        SELECT id_ucelu INTO v_id_ucelu FROM ucely WHERE v_ucel LIKE nazev;
+        SELECT id_ucelu INTO v_id_ucelu FROM ucely
+            WHERE v_ucel LIKE nazev;
         SELECT id_umisteni INTO v_id_umisteni FROM umisteni 
             WHERE v_umisteni LIKE nazev;
-        SELECT id_patra INTO v_id_patra FROM patra WHERE v_patro LIKE nazev;
+        SELECT id_patra INTO v_id_patra FROM patra
+            WHERE v_patro LIKE nazev;
         SELECT id_velikosti INTO v_id_velikosti FROM velikosti 
             WHERE v_velikost LIKE nazev;
     END;
@@ -101,7 +140,8 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
 /*PRIVATE*/
     --- v out parametrech vraci id-cka vlastnosti
     PROCEDURE p_get_ids_vlastnosti
-        (v_id_mistnosti IN NUMBER, 
+        (v_id_mistnosti IN NUMBER,
+
         v_id_ucelu OUT NUMBER, 
         v_id_umisteni OUT NUMBER,
         v_id_patra OUT NUMBER, 
@@ -165,60 +205,7 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
         RETURN 0;
     END;
 
-/*PUBLIC*/
-    FUNCTION f_get_split_prislusenstvi
-        (v_prislusenstvi IN VARCHAR2)
-        RETURN type_pole_prislusenstvi
-        IS
-        v_pole type_pole_prislusenstvi;
-        v_zacatek NUMBER := 1;
-        v_konec NUMBER;
-        v_delka NUMBER := LENGTH(v_prislusenstvi);
-        v_aktualni_id NUMBER;
-        v_aktualni VARCHAR2(32);
-    BEGIN
-        LOOP
-            v_konec := INSTR( v_prislusenstvi, ';', v_zacatek);
-            IF (v_konec = 0) THEN 
-                v_konec := v_delka;
-                v_aktualni := SUBSTR( v_prislusenstvi, v_zacatek, v_delka - v_zacatek + 1);
-            ELSE
-                v_aktualni := SUBSTR( v_prislusenstvi, v_zacatek, v_konec - v_zacatek);
-            END IF;
-            SELECT id_prislusenstvi INTO v_aktualni_id 
-                FROM prislusenstvi WHERE nazev LIKE v_aktualni;
-            v_pole(v_pole.count) := v_aktualni_id;
-            v_zacatek := v_konec + 1;
-            EXIT WHEN (v_konec = v_delka);
-        END LOOP;
-        RETURN v_pole;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-            raise_application_error(-20201, 'The requested accessory was not found');
-        WHEN others THEN
-            RAISE;
-    END;
-
-/*PUBLIC*/
-    FUNCTION f_get_concat_prislusenstvi 
-        (v_id_skupiny IN NUMBER) RETURN VARCHAR2
-        IS
-        v_string VARCHAR2(1000) := '';
-    BEGIN
-        FOR r_prislus IN 
-            (SELECT nazev FROM inventare JOIN prislusenstvi USING (id_prislusenstvi)
-                WHERE id_skupiny = v_id_skupiny)
-        LOOP
-            v_string := v_string || r_prislus.nazev ||';';
-        END LOOP;
-        IF (v_string NOT LIKE '') THEN
-            v_string := NULL;
-        ELSE
-            v_string := SUBSTR(v_string, 0, LENGTH(v_string) - 1);
-        END IF;
-        RETURN v_string;
-    END;
-
+/**> VLASTNOSTI <**/
 
 /*PUBLIC*/
     FUNCTION f_add_vlastnost_pro_mistnost
@@ -258,6 +245,7 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
     END;
     
 /*PUBLIC*/
+    --- deprecated -- TODO nahradit a smazat, SELECT bude vracet vic zaznamu
     FUNCTION f_get_id_skupiny_podle_vlastnosti
         (v_id_ucelu IN NUMBER, v_id_umisteni IN NUMBER, v_id_patra IN NUMBER,
         v_id_velikosti IN NUMBER, v_prislusenstvi IN VARCHAR2) RETURN NUMBER
@@ -304,25 +292,15 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
         RETURN v_pole_mistnosti;
     END;
 
-/*PUBLIC*/
-    FUNCTION f_check_kolize_rezervace
-        (v_id_rezervace IN NUMBER, v_id_mistnosti IN NUMBER)
-        RETURN NUMBER
-        IS
-    BEGIN
-        -- TODO najdi vsechny rezervace se stavem 2 a stejnou mistnosti
-        -- TODO porovnej vsechny jejich casy
-        RETURN 0;
-    END;
 
 /*PUBLIC*/
     FUNCTION f_check_vlastnosti_podmnozinou_mistnosti
-        (v_id_skupiny IN NUMBER) RETURN NUMBER
+    (v_id_skupiny_rezervace IN NUMBER) RETURN NUMBER
         IS
         v_id_skupiny_mistnosti NUMBER;
     BEGIN
-        --SELECT id_skupiny INTO v_id_skupiny_mistnosti 
-        --    FROM skupiny_vlastnosti 
+        --SELECT id_skupiny INTO v_id_skupiny_mistnosti
+        --    FROM skupiny_vlastnosti
         --    WHERE v_id_skupiny <> id_skupiny AND patri LIKE 'mistnosti';
         -- TODO select into pole
         -- TODO check vsechny z pole jestli jim sedi prislusenstvi
@@ -333,15 +311,103 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
         WHEN others THEN
             RAISE;
     END;
-    
+
+
+/*** INVENTARE ***/
+
 /*PUBLIC*/
-    PROCEDURE p_update_inventar 
-        (v_id_skupiny IN NUMBER, 
+    FUNCTION f_get_split_prislusenstvi
+    (v_prislusenstvi IN VARCHAR2)
+        RETURN type_pole_prislusenstvi
+        IS
+        v_pole type_pole_prislusenstvi;
+        v_zacatek NUMBER := 1;
+        v_konec NUMBER;
+        v_delka NUMBER := LENGTH(v_prislusenstvi);
+        v_aktualni_id NUMBER;
+        v_aktualni VARCHAR2(32);
+    BEGIN
+        LOOP
+            v_konec := INSTR( v_prislusenstvi, ';', v_zacatek);
+            IF (v_konec = 0) THEN
+                v_konec := v_delka;
+                v_aktualni := SUBSTR( v_prislusenstvi, v_zacatek, v_delka - v_zacatek + 1);
+            ELSE
+                v_aktualni := SUBSTR( v_prislusenstvi, v_zacatek, v_konec - v_zacatek);
+            END IF;
+            SELECT id_prislusenstvi INTO v_aktualni_id
+            FROM prislusenstvi WHERE nazev LIKE v_aktualni;
+            v_pole(v_pole.count) := v_aktualni_id;
+            v_zacatek := v_konec + 1;
+            EXIT WHEN (v_konec = v_delka);
+        END LOOP;
+        RETURN v_pole;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            raise_application_error(-20201, 'The requested accessory was not found');
+        WHEN others THEN
+            RAISE;
+    END;
+
+/*PUBLIC*/
+    FUNCTION f_get_concat_prislusenstvi
+    (v_id_skupiny IN NUMBER) RETURN VARCHAR2
+        IS
+        v_string VARCHAR2(1000) := '';
+    BEGIN
+        FOR r_prislus IN
+            (SELECT nazev FROM inventare JOIN prislusenstvi USING (id_prislusenstvi)
+             WHERE id_skupiny = v_id_skupiny)
+            LOOP
+                v_string := v_string || r_prislus.nazev ||';';
+            END LOOP;
+        IF (v_string NOT LIKE '') THEN
+            v_string := NULL;
+        ELSE
+            v_string := SUBSTR(v_string, 0, LENGTH(v_string) - 1);
+        END IF;
+        RETURN v_string;
+    END;
+
+/*PUBLIC*/
+    PROCEDURE p_update_inventar
+        (v_id_skupiny IN NUMBER,
         v_prislusenstvi IN VARCHAR2)
+        IS
+    BEGIN
+        p_delete_inventar(v_id_skupiny);
+        p_insert_inventar(v_id_skupiny, v_prislusenstvi);
+    END;
+
+/*PUBLIC*/
+    PROCEDURE p_delete_inventar
+        (v_id_skupiny IN NUMBER)
         IS
     BEGIN
         RETURN;
         -- TODO implement
+    END;
+
+/*PUBLIC*/
+    PROCEDURE p_insert_inventar
+        (v_id_skupiny IN NUMBER,
+        v_prislusenstvi IN VARCHAR2)
+        IS
+    BEGIN
+        RETURN;
+    END;
+
+/**> REZERVACE <**/
+
+/*PUBLIC*/
+    FUNCTION f_check_kolize_rezervace
+        (v_id_rezervace IN NUMBER, v_id_mistnosti IN NUMBER)
+        RETURN NUMBER
+        IS
+    BEGIN
+        -- TODO najdi vsechny rezervace se stavem 2 a stejnou mistnosti
+        -- TODO porovnej vsechny jejich casy
+        RETURN 0;
     END;
 
 /*PUBLIC*/
