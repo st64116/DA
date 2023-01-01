@@ -10,6 +10,7 @@ session_start();
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link href="assets/css/mainLayout.css" rel="stylesheet"/>
+    <link href="assets/css/tabulka.css" rel="stylesheet"/>
     <title><?php echo $title; ?></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
@@ -130,7 +131,7 @@ session_start();
                     </li>
                 </a>
                 <a href="nastaveni.php" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="nastaveni">
                         <span class="sidebar-text">Nastavení</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">settings</span>
                     </li>

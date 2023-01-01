@@ -14,21 +14,21 @@ if (isset($_POST['heslo'])) {
     }
 }
 
-if(isset($_POST['update'])){
-    if(isset($_POST['detail'])){
+if (isset($_POST['update'])) {
+    if (isset($_POST['detail'])) {
         $detail = 0;
-    }else{
+    } else {
         $detail = 1;
     }
-    if($db->update_osobu($_POST['login'],$_POST['email'],$_POST['opravneni'],$_POST['jmeno'],$_POST['prijmeni'],$detail,$_POST['nadrizeny'])){
+    if ($db->update_osobu($_POST['login'], $_POST['email'], $_POST['opravneni'], $_POST['jmeno'], $_POST['prijmeni'], $detail, $_POST['nadrizeny'])) {
         $goodMsg = "Data úspěšně změněna";
-    }else{
+    } else {
         $errorMsg = "něco se nepovedlo :(";
     }
 }
 
 $userData = $db->view_zajemce($_SESSION['LOGIN']);
-var_dump($userData);
+//var_dump($userData);
 
 ?>
 
@@ -42,15 +42,16 @@ var_dump($userData);
         echo "<p class='text-white bg-success p-2 my-2 rounded-3'> $goodMsg </p>";
     }
     ?>
-    <h3 class="my-3 display-6">Uživatelská data</h3>
-    <hr>
+    <div class="shadow mb-2 nadpis">
+        <h3 class="p-2">Uživatelská data</h3>
+    </div>
     <form class="text-start" action="" method="post">
         <div class="col-12"><label class="">Login:</label><input id="login" name="login" class="w-100" type="text"
                                                                  required></div>
         <div class="col-12"><label class="">Email:</label><input id="email" name="email" class="w-100" type="email"
                                                                  required></div>
-<!--        <div class="col-12"><label class="">Firma:</label><input id="firma" name="firma" class="w-100" type="text">-->
-<!--        </div>-->
+        <!--        <div class="col-12"><label class="">Firma:</label><input id="firma" name="firma" class="w-100" type="text">-->
+        <!--        </div>-->
         <div class="col-12"><label class="">Jméno:</label><input id="jmeno" name="jmeno" class="w-100" type="text"
                                                                  required></div>
         <div class="col-12"><label class="">Příjmení:</label><input id="prijmeni" name="prijmeni" class="w-100"
@@ -81,11 +82,11 @@ var_dump($userData);
         <div class="row text-start">
             <div class="col-12 col-lg-4">
                 <label>Nové heslo:</label>
-                <input name="password" class="w-100" type="password">
+                <input name="password" class="w-100" type="text" minlength="4">
             </div>
             <div class="col-lg-4">
                 <label>Nové heslo znovu:</label>
-                <input name="passwordAgain" class="w-100" type="password">
+                <input name="passwordAgain" class="w-100" minlength="4" type="text">
             </div>
             <div class="col-4">
                 <label class="w-100">&nbsp</label>
@@ -103,9 +104,15 @@ echo "<script>document.getElementById('jmeno').value='" . $userData['JMENO'] . "
 echo "<script>document.getElementById('prijmeni').value='" . $userData['PRIJMENI'] . "'</script>";
 echo "<script>document.getElementById('nadrizeny').value='" . $userData['NADRIZENY'] . "'</script>";
 echo "<script>document.getElementById('opravneni').value='" . $userData['OPRAVNENI'] . "'</script>";
-if($_SESSION['ROLE'] == 0){
+if ($_SESSION['ROLE'] == 0) {
     echo "<script>document.getElementById('opravneni').disabled=true</script>";
 }
 ?>
-
+<style>
+    .nadpis{
+        background-color: var(--color1);
+        color: white;
+        font-weight: bold;
+    }
+</style>
 

@@ -24,6 +24,7 @@ if (isset($_POST['rezervace']) && isset($_SESSION['LOGIN'])) {
 }
 
 if (isset($_POST['update'])) {
+    //TODO nefunguje udpate příslušenství
 //    function update_mistnost(int $id_mistnosti, string $nazev,
 //                             int $id_ucelu, int $id_umisteni, int $id_patra,
 //                             int $id_velikosti, array $prislusenstvi) : bool
@@ -92,10 +93,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-var_dump($viewPatra);
-
 ?>
-<table class="mistnosti ms-auto me-auto text-center shadow-lg mt-3">
     <div class="text-start my-2 filter p-2">
         <?php
         if (isset($errorMsg)) {
@@ -246,7 +244,8 @@ var_dump($viewPatra);
             </div>
         <?php } ?>
     </div>
-
+<div class="table-responsive shadow-lg mt-3" id="responsive-table">
+<table class="tabulka ms-auto me-auto text-center">
     <thead class="shadow">
     <tr class="text-uppercase">
         <?php
@@ -329,21 +328,21 @@ var_dump($viewPatra);
         echo '<tr scope="row radek">';
 
         if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
-            echo '<td>
+            echo '<td data-title="#" class="radek">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#item' . $mistnost["Mistnost"] . '"  aria-expanded="false" aria-controls="item' . $mistnost["Mistnost"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
         }
-        echo "<td>" . "<span class='my-4'>" . $mistnost["Mistnost"] . "</span>" . "</td>";
-        echo "<td>" . $mistnost["Ucel"] . "</td>";
-        echo "<td>" . $mistnost["Umisteni"] . "</td>";
-        echo "<td>" . $mistnost["Patro"] . "</td>";
-        echo "<td>" . $mistnost["Velikost"] . "</td>";
-        echo "<td>" . str_replace(';',' ', $mistnost["Prislusenstvi"]) . "</td>";
+        echo "<td data-title='nazev' class='radek'>" . "<span class='my-4'>" . $mistnost["Mistnost"] . "</span>" . "</td>";
+        echo "<td data-title='účel' class='radek'>" . $mistnost["Ucel"] . "</td>";
+        echo "<td data-title='umístění' class='radek'>" . $mistnost["Umisteni"] . "</td>";
+        echo "<td data-title='patro' class='radek'>" . $mistnost["Patro"] . "</td>";
+        echo "<td data-title='velikost' class='radek'>" . $mistnost["Velikost"] . "</td>";
+        echo "<td data-title='příslušenství' class='radek'>" . str_replace(';',' ', $mistnost["Prislusenstvi"]) . "</td>";
 
         if (isset($_SESSION['ROLE'])) { //pokud je přihlášen -> možnost rezervace
-            echo '<td>
+            echo '<td data-title="rezervace" class="radek">
              <button class="btn btn-light btn-sm text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#rezerv' . $mistnost["Mistnost"] . '"  aria-expanded="false" aria-controls="rezerv' . $mistnost["Mistnost"] . '">
                 <span class="material-symbols-outlined fw-light">add</span>
@@ -431,50 +430,4 @@ var_dump($viewPatra);
     ?>
     </tbody>
 </table>
-<style>
-    .filter {
-
-    }
-
-    .mistnosti {
-        width: 100%;
-    }
-
-    .mistnosti tr {
-        padding-top: 10px;
-        margin: 10px;
-    }
-
-    .mistnosti th {
-        background-color: var(--color1);
-        padding: 16px 8px 16px 8px;
-        color: white;
-    }
-
-    .mistnosti td {
-        padding: 8px;
-        font-weight: bold;
-    }
-
-    .mistnosti tr:hover {
-        background-color: var(--color2);
-        color: white;
-    }
-
-    .radek-edit:hover {
-        background-color: white !important;
-        color: black !important;
-    }
-
-    @media (max-width: 767px) {
-        .mistnosti th {
-            padding: 8px 2px 8px 2px;
-            font-size: 0.7em;
-        }
-
-        .mistnosti td {
-            padding: 8px;
-            font-size: 0.7em;
-        }
-    }
-</style>
+</div>

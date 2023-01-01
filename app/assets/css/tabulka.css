@@ -1,0 +1,71 @@
+.tabulka {
+    width: 100%;
+}
+
+.tabulka tr {
+    padding-top: 10px;
+    margin: 10px;
+}
+
+.tabulka th {
+    background-color: var(--color1);
+    padding: 16px 8px 16px 8px;
+    color: white;
+}
+
+.tabulka td {
+    padding: 8px;
+    font-weight: bold;
+}
+
+.tabulka tr:hover {
+    background-color: var(--color2);
+    color: white;
+}
+
+.radek-edit:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+@media (max-width: 767px) {
+    .tabulka th {
+        padding: 8px 2px 8px 2px;
+        font-size: 0.7em;
+    }
+
+    .tabulka td {
+        padding: 8px;
+        font-size: 0.8em;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .tabulka tr:hover{
+        background-color: white;
+        color: black;
+    }
+    #responsive-table tbody,
+    #responsive-table tr,
+    #responsive-table td{
+        text-align: start;
+        display:block;
+    }
+
+    #responsive-table thead tr{
+        display: none;
+    }
+
+    #responsive-table .radek{
+        border-bottom: 1px solid black;
+        position: relative;
+        padding-left: 30%;
+    }
+    #responsive-table .radek:before{
+        content: attr(data-title);
+        position: absolute;
+        color: var(--color1);
+        left: 0px;
+
+    }
+}
