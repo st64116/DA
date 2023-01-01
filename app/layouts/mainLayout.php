@@ -10,6 +10,7 @@ session_start();
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link href="assets/css/mainLayout.css" rel="stylesheet"/>
+    <link href="assets/css/tabulka.css" rel="stylesheet"/>
     <title><?php echo $title; ?></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
@@ -67,33 +68,36 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Patra</span>-->
-<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>-->
-<!--                    </li>-->
-<!--                </a>-->
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Příslušenství</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="patra.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="patra">
+                        <span class="sidebar-text">Patra</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">stairs</span>
+                    </li>
+                </a>
+                <a href="prislusenstvi.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="prislusenstvi">
+                        <span class="sidebar-text">Příslušenství</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">key</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Skupiny?</span>-->
 <!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>-->
 <!--                    </li>-->
 <!--                </a>-->
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Stavy?</span>-->
-<!--                    </li>-->
-<!--                </a>-->
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Účely</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="stavy.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="stavy">
+                        <span class="sidebar-text">Stavy</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">bolt</span>
+                    </li>
+                </a>
+                <a href="ucely.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="ucely">
+                        <span class="sidebar-text">Účely</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">lightbulb</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Umístění</span>-->
@@ -130,7 +134,7 @@ session_start();
                     </li>
                 </a>
                 <a href="nastaveni.php" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="nastaveni">
                         <span class="sidebar-text">Nastavení</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">settings</span>
                     </li>
