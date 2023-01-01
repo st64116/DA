@@ -94,6 +94,17 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
             </div>
         </div>
     </form>
+    <?php if($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 1){ ?>
+        <hr>
+        <form class="text-start" action="" method="post">
+            <button class="btn btn-danger" type="submit" name="emulaceOn">Emulovat uživatele</button>
+        </form>
+    <?php }elseif ($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 0){ ?>
+        <hr>
+        <form class="text-start" action="" method="post">
+            <button class="btn btn-danger" type="submit" name="emulaceOff">Vypnout emulaci</button>
+        </form>
+    <?php } ?>
 </div>
 
 <?php

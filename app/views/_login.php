@@ -19,6 +19,7 @@ if (isset($_POST['submit'])) {
         if($user){
             $_SESSION['LOGIN'] = $username;
             $_SESSION['ROLE'] = $user['OPRAVNENI'];
+            $_SESSION['ADMIN'] = $user['OPRAVNENI'];
             header("Location:index.php");
             die();
         }else{

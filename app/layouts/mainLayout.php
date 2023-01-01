@@ -1,6 +1,16 @@
 <?php
 //error_reporting(E_ERROR | E_PARSE);
 session_start();
+
+if(isset($_POST['emulaceOn']) && $_SESSION['ADMIN'] = 1){
+    $_SESSION['ROLE'] = 0;
+    header("Location:nastaveni.php");
+}
+if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
+    $_SESSION['ROLE'] = 1;
+    header("Location:nastaveni.php");
+}
+
 ?>
 <html>
 <head>
@@ -160,12 +170,12 @@ session_start();
             <?php include($childView); ?>
         </div>
 
-<!--        <div class="debug shadow p-4 bg-info rounded-3">-->
-<!--            --><?php
-//            echo "<p>session:</p>";
-//            var_dump($_SESSION)
-//            ?>
-<!--        </div>-->
+        <div class="debug shadow p-4 bg-info rounded-3">
+            <?php
+            echo "<p>session:</p>";
+            var_dump($_SESSION)
+            ?>
+        </div>
     </div>
 </div>
 
