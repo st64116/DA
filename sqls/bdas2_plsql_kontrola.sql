@@ -4,15 +4,21 @@ CREATE OR REPLACE PROCEDURE p_check_dostupnost_rezervace
     IS
     v_aktualni_stav NUMBER;
     v_novy_stav NUMBER;
+    v_do DATE;
     v_id_mistnosti NUMBER;
 BEGIN
-    SELECT id_stavu INTO v_aktualni_stav
+    SELECT id_stavu, casDo INTO v_aktualni_stav, v_do
         FROM rezervace WHERE id_rezervace = v_id_rezervace;
-    v_novy_stav := pckg_rez_vlas_mist.f_check_stav_rezervace(v_id_rezervace, v_id_mistnosti);
-    IF (v_novy_stav <> v_aktualni_stav) THEN
+
+    IF (v_aktualni_stav = 1) THEN
+        v_novy_stav := pckg_rez_vlas_mist.f_check_stav_rezervace(v_id_rezervace, v_id_mistnosti);
         UPDATE rezervace
-            SET id_stavu = v_aktualni_stav, id_mistnosti = v_id_mistnosti
-            WHERE id_rezervace = v_id_rezervace;
+            SET id_stavu = v_novy_stav, id_mistnosti = v_id_mistnosti
+                WHERE id_rezervace = v_id_rezervace;
+    END IF;
+
+    IF (v_aktualni_stav = 2 AND v_do <= sysdate) THEN
+        UPDATE rezervace SET id_stavu = 3 WHERE id_rezervace = v_id_rezervace;
     END IF;
 END;
 /
@@ -21,9 +27,12 @@ END;
 CREATE OR REPLACE PROCEDURE p_check_stavy_rezervaci
     IS
 BEGIN
-    -- TODO cursor select vsechny rezervace se stavem 1 a 2
-    -- TODO na stavu 1 proved f_check_stav_rezervace
-    -- TODO na stavu 2 check sysdate > casDO
+    FOR r_rezervace IN
+        (SELECT id_rezervace, id_stavu FROM rezervace
+            WHERE id_stavu IN (1, 2))
+    LOOP
+        P_CHECK_DOSTUPNOST_REZERVACE(r_rezervace.id_rezervace);
+    END LOOP;
 END;
 
 -- pravidelne opakovani (nelze spustit, na JOBS nemame prava)

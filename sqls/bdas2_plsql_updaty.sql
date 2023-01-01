@@ -238,8 +238,8 @@ END;
 
 -- SOUBORY
 
-    -- todo
+    -- TODO pridat soubory
 
 -- LOGY
 
-    -- todo
+    -- TODO pridat logy
