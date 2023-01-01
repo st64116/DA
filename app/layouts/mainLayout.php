@@ -92,11 +92,12 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">bolt</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Účely</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="ucely.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="ucely">
+                        <span class="sidebar-text">Účely</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">lightbulb</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Umístění</span>-->
