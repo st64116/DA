@@ -276,9 +276,9 @@ if (isset($_POST['heslo'])) {
 <div><label>opravnění:</label><select name="opravneniUpdate" class="w-100" type="text" id="opravneniUpdate' . $osoba['LOGIN'] . '">
 <option value="0">uživatel</option><option value="1">admin</option></select></div>';
                     if ($osoba['DETAIL'] == 0) {
-                        echo '<div><label>detail:</label><input name="detailUpdate" type="checkbox"></div>';
+                        echo '<div><label>soukromý profil:</label><input name="detailUpdate" type="checkbox"></div>';
                     } else {
-                        echo '<div><label>detail:</label><input name="detailUpdate" type="checkbox" checked></div>';
+                        echo '<div><label>soukromý profil:</label><input name="detailUpdate" type="checkbox" checked></div>';
                     }
                     echo '<div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>

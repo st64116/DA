@@ -32,7 +32,24 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
 
 ?>
 
-
+//popup
+<div class="modal fade" id="popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pozor!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Odebíráte si roly admina!!!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+//formular
 <div class="shadow row text-center">
     <?php
     if (isset($errorMsg)) {
@@ -94,6 +111,17 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
             </div>
         </div>
     </form>
+    <?php if($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 1){ ?>
+        <hr>
+        <form class="text-start" action="" method="post">
+            <button class="btn btn-danger" type="submit" name="emulaceOn">Emulovat uživatele</button>
+        </form>
+    <?php }elseif ($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 0){ ?>
+        <hr>
+        <form class="text-start" action="" method="post">
+            <button class="btn btn-danger" type="submit" name="emulaceOff">Vypnout emulaci</button>
+        </form>
+    <?php } ?>
 </div>
 
 <?php

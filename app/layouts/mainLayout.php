@@ -1,6 +1,16 @@
 <?php
 //error_reporting(E_ERROR | E_PARSE);
 session_start();
+
+if(isset($_POST['emulaceOn']) && $_SESSION['ADMIN'] = 1){
+    $_SESSION['ROLE'] = 0;
+    header("Location:nastaveni.php");
+}
+if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
+    $_SESSION['ROLE'] = 1;
+    header("Location:nastaveni.php");
+}
+
 ?>
 <html>
 <head>
@@ -98,17 +108,18 @@ session_start();
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">lightbulb</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Umístění</span>-->
-<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">pin_drop</span>-->
-<!--                    </li>-->
-<!--                </a>-->
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Velikosti</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <a href="umisteni.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="umisteni">
+                        <span class="sidebar-text">Umístění</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">pin_drop</span>
+                    </li>
+                </a>
+                <a href="velikosti.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="velikosti">
+                        <span class="sidebar-text">Velikosti</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">aspect_ratio</span>
+                    </li>
+                </a>
 <!--                <a href="" class="text-decoration-none">-->
 <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
 <!--                        <span class="sidebar-text">Zájemci</span>-->
@@ -160,12 +171,12 @@ session_start();
             <?php include($childView); ?>
         </div>
 
-<!--        <div class="debug shadow p-4 bg-info rounded-3">-->
-<!--            --><?php
-//            echo "<p>session:</p>";
-//            var_dump($_SESSION)
-//            ?>
-<!--        </div>-->
+        <div class="debug shadow p-4 bg-info rounded-3">
+            <?php
+            echo "<p>session:</p>";
+            var_dump($_SESSION)
+            ?>
+        </div>
     </div>
 </div>
 
