@@ -2,11 +2,19 @@
 include_once('database/Client.php');
 $db = new Client();
 
+$viewUcel = $db->view_ucely();
+$viewUmisteni = $db->view_umisteni();
+$viewPatra = $db->view_patra();
+$viewVelikosti = $db->view_velikosti();
+$viewPrislusenstvi = $db->view_prislusenstvi();
+
 if (isset($_POST['rezervace']) && isset($_SESSION['LOGIN'])) {
     $od = $_POST['od'];
     $do = $_POST['do'];
-    $od = str_replace('T', ' ' ,$od);
-    $do = str_replace('T', ' ' ,$do);
+    $od = str_replace('T', ' ', $od);
+    $do = str_replace('T', ' ', $do);
+    var_dump($od);
+    var_dump($do);
     $mistnost = $_POST['mistnost'];
     if ($db->insert_rezervaci_mistnosti($od, $do, $_SESSION['LOGIN'], $mistnost)) {
         $rezervaceMsg = "rezervace místnosti:" . $mistnost . "od: " . $od . "do: " . $do . "proběhla úspěšně";
@@ -15,13 +23,47 @@ if (isset($_POST['rezervace']) && isset($_SESSION['LOGIN'])) {
     }
 }
 
-if(isset($_GET['update'])){
-    //TODO: udpate řádku
+if (isset($_POST['update'])) {
+//    function update_mistnost(int $id_mistnosti, string $nazev,
+//                             int $id_ucelu, int $id_umisteni, int $id_patra,
+//                             int $id_velikosti, array $prislusenstvi) : bool
+    $id_mistnosti = $_POST['id_mistnosti'];
+    $nazev = $_POST['mistnost'];
+    foreach($viewUcel as $item){
+        if($item['NAZEV'] == $_POST['ucel']){
+            $ucel = $item['ID_UCELU'];
+        }
+    }
+    foreach ($viewUmisteni as $item){
+        if(str_replace(' ', '', $item['NAZEV']) == $_POST['umisteni']){
+            $umisteni = $item['ID_UMISTENI'];
+        }
+    }
+    foreach ($viewPatra as $item){
+        if($item['NAZEV'] == $_POST['patro']){
+            $patro = $item['ID_PATRA'];
+        }
+    }
+    foreach ($viewVelikosti as $item){
+        if(str_replace(' ', '', $item['NAZEV']) == $_POST['velikost']){
+            $velikost = $item['ID_VELIKOSTI'];
+        }
+    }
+    $prislusentstviArray = array();
+    foreach ($db->view_prislusenstvi() as $prislusenstvi) {
+        if (isset($_POST[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
+            array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
+        }
+    }
+    var_dump($prislusentstviArray);
+    if ($db->update_mistnost($id_mistnosti,$nazev,$ucel,$umisteni,$patro,$velikost,$prislusentstviArray)) {
+        $rezervaceMsg = "Úpravy se úspěšně neprovedly :)";
+    }else{
+        $errorMsg = "Nastala chyba! Úpravy se neprovedly!";
+    }
 }
 
-//TODO: přidání záznamu
-
-if(isset($_POST['submitAdd'])){
+if (isset($_POST['submitAdd'])) {
     $nazev = $_POST['nazevAdd'];
     $ucel = $_POST['ucelAdd'];
     $umisteni = $_POST['ucelAdd'];
@@ -30,36 +72,30 @@ if(isset($_POST['submitAdd'])){
     $prislusentstviArray = array();
     var_dump($ucel);
     foreach ($db->view_prislusenstvi() as $prislusenstvi) {
-//        var_dump(str_replace(' ', '' ,$prislusenstvi['NAZEV']));
-        if(isset($_POST[str_replace(' ', '' ,$prislusenstvi['NAZEV'])])){
+        if (isset($_POST[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
             array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
         }
     }
     var_dump($prislusentstviArray);
-    if($db->insert_mistnost($nazev,$ucel,$umisteni,$patro,$velikost,$prislusentstviArray)){
+    if ($db->insert_mistnost($nazev, $ucel, $umisteni, $patro, $velikost, $prislusentstviArray)) {
         $rezervaceMsg = "úspěšně přidáno! :)";
-    }else{
+    } else {
         $errorMsg = "Nastala chyba! Položka se nepřidala!";
     }
 }
 
-//function insert_mistnost(string $nazev, string $ucel, string $umisteni,
-//                         string $patro, string $velikost, array $prislusenstvi) : bool
-//{
-
-//TODO: odebrání záznamu
-
-if(isset($_POST['delete'])){
-if($db->delete_mistnost($_POST['mistnostId'])){
-    $rezervaceMsg = "Místnost byla úspěšně odstraněna :)";
-}else{
-    $errorMsg = "Něco se nepovedlo. Místnost nebyla odstraněna!";
+if (isset($_POST['delete'])) {
+    if ($db->delete_mistnost($_POST['mistnostId'])) {
+        $rezervaceMsg = "Místnost byla úspěšně odstraněna :)";
+    } else {
+        $errorMsg = "Něco se nepovedlo. Místnost nebyla odstraněna!";
+    }
 }
-}
+
+var_dump($viewPatra);
 
 ?>
 <table class="mistnosti ms-auto me-auto text-center shadow-lg mt-3">
-
     <div class="text-start my-2 filter p-2">
         <?php
         if (isset($errorMsg)) {
@@ -70,16 +106,16 @@ if($db->delete_mistnost($_POST['mistnostId'])){
         }
         ?>
         <div class="d-flex justify-content-between">
-        <button class="btn btn-primary text-uppercase" type="button" data-bs-toggle="collapse"
-                data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
-        </button>
-        <?php
-            if(isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1){
+            <button class="btn btn-primary text-uppercase" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
+            </button>
+            <?php
+            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
                 echo '<button class="btn btn-success text-uppercase text-end" type="button" data-bs-toggle="collapse"
                 data-bs-target="#add" aria-expanded="false" aria-controls="add">Přidat
         </button>';
             }
-        ?>
+            ?>
         </div>
         <div class="collapse" id="filter">
             <form>
@@ -90,7 +126,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
                             <select class="w-100" name="patra" id="patra">
                                 <option value="nevybrano"></option>
                                 <?php
-                                foreach ($db->view_patra() as $patro) {
+                                foreach ($viewPatra as $patro) {
                                     echo "<option value='" . $patro["NAZEV"] . "'>" . $patro["NAZEV"] . "</option>";
                                 }
                                 ?>
@@ -101,7 +137,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
                             <select class="w-100" name="ucel" id="ucel">
                                 <option value="nevybrano"></option>
                                 <?php
-                                foreach ($db->view_Ucely() as $Ucel) {
+                                foreach ($viewUcel as $Ucel) {
                                     echo "<option value='" . $Ucel["NAZEV"] . "'>" . $Ucel["NAZEV"] . "</option>";
                                 }
                                 ?>
@@ -112,7 +148,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
                             <select class="w-100" name="umisteni" id="umisteni">
                                 <option value="nevybrano"></option>
                                 <?php
-                                foreach ($db->view_umisteni() as $umisteni) {
+                                foreach ($viewUmisteni as $umisteni) {
                                     echo "<option value='" . $umisteni["NAZEV"] . "'>" . $umisteni["NAZEV"] . "</option>";
                                 }
                                 ?>
@@ -123,7 +159,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
                             <select class="w-100" name="velikost" id="velikost">
                                 <option value="nevybrano"></option>
                                 <?php
-                                foreach ($db->view_velikosti() as $velikost) {
+                                foreach ($viewVelikosti as $velikost) {
                                     echo "<option value='" . $velikost["NAZEV"] . "'>" . $velikost["NAZEV"] . "</option>";
                                 }
                                 ?>
@@ -150,60 +186,64 @@ if($db->delete_mistnost($_POST['mistnostId'])){
                 </div>
             </form>
         </div>
-<?php
-    if(isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1){
-?>
-        <div class="collapse" id="add">
-            <form action="" method="post">
-                <label>Název:</label>
-                <input class="w-100" type="text" name="nazevAdd" required>
-                <label>účel:</label>
-                <select class="w-100" name="ucelAdd" id="ucelAdd" required>
-                    <option value="nevybrano"></option>
-                    <?php
-                    foreach ($db->view_Ucely() as $Ucel) {
-                        echo "<option value='" . $Ucel["ID_UCELU"] . "'>" . $Ucel["NAZEV"] . "</option>";
-                    }
-                    ?>
-                </select>
-                <label>umísťění:</label>
-                <select class="w-100" name="umisteniAdd" id="umisteniAdd" required>
-                    <option value="nevybrano"></option>
-                    <?php
-                    foreach ($db->view_umisteni() as $umisteni) {
-                        echo "<option value='" . $umisteni["ID_UMISTENI"] . "'>" . $umisteni["NAZEV"] . "</option>";
-                    }
-                    ?>
-                </select>
-                <label>Patro:</label>
-                <select class="w-100" name="patra" id="patra" required>
-                    <option value="nevybrano"></option>
-                    <?php
-                    foreach ($db->view_patra() as $patro) {
-                        echo "<option value='" . $patro["ID_PATRA"] . "'>" . $patro["NAZEV"] . "</option>";
-                    }
-                    ?>
-                </select>
-                <label>Velikost:</label>
-                <select class="w-100" name="velikost" id="velikost" required>
-                    <option value="nevybrano"></option>
-                    <?php
-                    foreach ($db->view_velikosti() as $velikost) {
-                        echo "<option value='" . $velikost["ID_VELIKOSTI"] . "'>" . $velikost["NAZEV"] . "</option>";
-                    }
-                    ?>
-                </select>
+        <?php
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            ?>
+            <div class="collapse" id="add">
+                <form action="" method="post">
+                    <label>Název:</label>
+                    <input class="w-100" type="text" name="nazevAdd" required>
+                    <label>účel:</label>
+                    <select class="w-100" name="ucelAdd" id="ucelAdd" required>
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach ($viewUcel as $Ucel) {
+                            echo "<option value='" . $Ucel["ID_UCELU"] . "'>" . $Ucel["NAZEV"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                    <label>umísťění:</label>
+                    <select class="w-100" name="umisteniAdd" id="umisteniAdd" required>
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach ($viewUmisteni as $umisteni) {
+                            echo "<option value='" . $umisteni["ID_UMISTENI"] . "'>" . $umisteni["NAZEV"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                    <label>Patro:</label>
+                    <select class="w-100" name="patra" id="patra" required>
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach ($viewPatra as $patro) {
+                            echo "<option value='" . $patro["ID_PATRA"] . "'>" . $patro["NAZEV"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                    <label>Velikost:</label>
+                    <select class="w-100" name="velikost" id="velikost" required>
+                        <option value="nevybrano"></option>
+                        <?php
+                        foreach ($viewVelikosti as $velikost) {
+                            echo "<option value='" . $velikost["ID_VELIKOSTI"] . "'>" . $velikost["NAZEV"] . "</option>";
+                        }
+                        ?>
+                    </select>
 
-                <div class="row">
-                <?php
-                foreach ($db->view_prislusenstvi() as $prislusenstvi) {
-                    echo "<div class='col-6 col-lg-4 text-start'><label>". $prislusenstvi['NAZEV'] .":</label><input class='mx-2' type='checkbox' name=".str_replace(' ', '' ,$prislusenstvi['NAZEV'])."></div>";
-                }
-                ?>
-                </div>
-                <button class="btn btn-danger" type="submit" name="submitAdd">Přidat</button>
-            </form>
-        </div>
+                    <div class="row mx-0">
+                        <?php
+                        foreach ($viewPrislusenstvi as $prislusenstvi) {
+//                            echo "<div class='col-6 col-lg-4 text-start'><label>" . $prislusenstvi['NAZEV'] . ":</label><input class='mx-2' type='checkbox' name=" . str_replace(' ', '', $prislusenstvi['NAZEV']) . "></div>";
+                            echo '<div class="form-check form-switch col-6 col-lg-4">
+                                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>
+                                  <label class="form-check-label" for="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
+                                </div>';
+                        }
+                        ?>
+                    </div>
+                    <button class="btn btn-danger" type="submit" name="submitAdd">Přidat</button>
+                </form>
+            </div>
         <?php } ?>
     </div>
 
@@ -219,6 +259,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
         <th scope="col">umísťění</th>
         <th scope="col">patro</th>
         <th scope="col">velikost</th>
+        <th scope="col">Příslušenství</th>
         <?php
         if (isset($_SESSION['ROLE'])) {
             echo "<th scope='col''>rezervace</th>";
@@ -299,6 +340,7 @@ if($db->delete_mistnost($_POST['mistnostId'])){
         echo "<td>" . $mistnost["Umisteni"] . "</td>";
         echo "<td>" . $mistnost["Patro"] . "</td>";
         echo "<td>" . $mistnost["Velikost"] . "</td>";
+        echo "<td>" . str_replace(';',' ', $mistnost["Prislusenstvi"]) . "</td>";
 
         if (isset($_SESSION['ROLE'])) { //pokud je přihlášen -> možnost rezervace
             echo '<td>
@@ -311,20 +353,53 @@ if($db->delete_mistnost($_POST['mistnostId'])){
 
         echo "</tr>";
 
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { // editační formulář
             echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $mistnost["Mistnost"] . '">
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
-<div><label>název:</label><input name="nazevUpdate" class="w-100" type="text" value="' . $mistnost["Mistnost"] . '"></div>
-<div><label>účel:</label><input name="ucelUpdate" class="w-100" type="text" value="' . $mistnost["Ucel"] . '"></div>
-<div><label>umítění:</label><input name="umisteniUpdate" class="w-100" type="text" value="' . $mistnost["Umisteni"] . '"></div>
-<div><label>patro:</label><input name="patroUpdate" class="w-100" type="text" value="' . $mistnost["Patro"] . '"></div>
-<div><label>velikost:</label><input name="velikostUpdate" class="w-100" type="text" value="' . $mistnost["Velikost"] . '"></div>
-                <div class="row">';
-                foreach ($db->view_prislusenstvi() as $prislusenstvi) {
-                    echo "<div class='col-6 col-lg-4 text-start'><label>". $prislusenstvi['NAZEV'] .":</label><input class='mx-2' type='checkbox' name=".str_replace(' ', '' ,$prislusenstvi['NAZEV'])."></div>";
+<input class="d-none" name="id_mistnosti" type="text" value="' . $mistnost['ID_MISTNOSTI'] . '" readonly required>
+<div><label>název:</label><input name="mistnost" class="w-100" type="text" value="' . $mistnost["Mistnost"] . '"></div>
+<div><label>účel:</label>
+<select class="w-100" name="ucel" id="ucel' . $mistnost["ID_MISTNOSTI"] . '" required>';
+            foreach ($viewUcel as $Ucel) {
+                echo "<option value='" . $Ucel["NAZEV"] . "'>" . $Ucel["NAZEV"] . "</option>";
+            }
+            echo '</select>
+</div>
+<div><label>umítění:</label>
+<select class="w-100" name="umisteni" id="umisteni' . $mistnost["ID_MISTNOSTI"] . '" required>';
+            foreach ($viewUmisteni as $umisteni) {
+                echo "<option value='" . str_replace(' ', '', $umisteni["NAZEV"]) . "'>" . $umisteni["NAZEV"] . "</option>";
+            }
+            echo '</select>
+</div>
+<div><label>patro:</label>
+<select class="w-100" name="patro" id="patra' . $mistnost["ID_MISTNOSTI"] . '" required>';
+            foreach ($viewPatra as $patro) {
+                echo "<option value='" . $patro["NAZEV"] . "'>" . $patro["NAZEV"] . "</option>";
+            }
+            echo '</select></div>
+<div><label>velikost:</label>
+<select class="w-100" name="velikost" id="velikost' . $mistnost["ID_MISTNOSTI"] . '" required>';
+            foreach ($viewVelikosti as $velikost) {
+                echo "<option value='" . str_replace(' ', '', $velikost["NAZEV"]) . "'>" . $velikost["NAZEV"] . "</option>";
+            }
+
+            echo '</select>
+                  </div>
+                  <div class="row m-0">';
+
+            foreach ($viewPrislusenstvi as $prislusenstvi) {
+                echo '<div class="form-check form-switch col-6 col-lg-4">';
+                if (!is_bool(strpos(strtolower($mistnost["Prislusenstvi"]), strtolower($prislusenstvi['NAZEV']), 0))) {
+                    echo '<input class="form-check-input" checked type="checkbox" role="switch" id="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
+                } else {
+                    echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
                 }
-                echo'</div> 
+                echo '<label class="form-check-label" for="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
+                      </div>';
+            }
+            echo '</div> 
 <div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>
 </form>
@@ -333,9 +408,14 @@ if($db->delete_mistnost($_POST['mistnostId'])){
 <button class="btn btn-danger" type="submit" name="delete">Delete</button>
 </form>
 </div></td></tr>';
+
+            echo '<script>document.getElementById("patra'. $mistnost['ID_MISTNOSTI'] .'").value="'. $mistnost["Patro"].'"</script>';
+            echo '<script>document.getElementById("ucel'. $mistnost['ID_MISTNOSTI'] .'").value="'. $mistnost["Ucel"].'"</script>';
+            echo '<script>document.getElementById("umisteni'. $mistnost['ID_MISTNOSTI'] .'").value="'. str_replace(' ', '', $mistnost["Umisteni"]).'"</script>';
+            echo '<script>document.getElementById("velikost'. $mistnost['ID_MISTNOSTI'] .'").value="'. str_replace(' ', '', $mistnost["Velikost"]).'"</script>';
         }
 
-        if (isset($_SESSION['ROLE'])) {
+        if (isset($_SESSION['ROLE'])) { // rezervační formulář
             echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="rezerv' . $mistnost["Mistnost"] . '">
 <form class="w-100 px-2 border border-bottom-1 p-1" action="" method="post">
 <div class="row">

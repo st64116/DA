@@ -62,11 +62,12 @@ class Client
 
     // VIEWs
 
-    function view_rezervace(?string $login) {
-        if (isset($id_zajemce))
+    function view_rezervace() {
+            return $this->view('VIEW_REZERVACE');
+    }
+
+    function view_rezervaci(string $login) {
             return $this->view('VIEW_REZERVACE', "WHERE '$login' LIKE \"Zajemce\"");
-        else
-            return $this->view('VIEW_ZAJEMCE');
     }
 
     function view_mistnosti() {
