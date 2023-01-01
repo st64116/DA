@@ -105,14 +105,15 @@ END;
 CREATE OR REPLACE PROCEDURE p_update_firmu 
     (v_login IN VARCHAR2,
     v_email IN VARCHAR2,
-    v_nazev IN VARCHAR2)
+    v_nazev IN VARCHAR2,
+    v_opravneni IN NUMBER)
     IS
     v_id NUMBER;
 BEGIN
     SAVEPOINT point_pred_updatem;
     SELECT id_zajemce INTO v_id
         FROM zajemci WHERE login LIKE v_login;
-    UPDATE zajemci SET email = v_email WHERE id_zajemce = v_id;
+    UPDATE zajemci SET email = v_email, opravneni = v_opravneni WHERE id_zajemce = v_id;
     UPDATE firmy SET nazev = v_nazev WHERE id_zajemce = v_id;
     COMMIT;
 EXCEPTION
