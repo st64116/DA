@@ -9,9 +9,7 @@ if (isset($_POST['submitAdd'])) {
     $prijmeni = htmlspecialchars($_POST['prijmeniAdd']);
     $nadrizeny = htmlspecialchars($_POST['nadrizenyAdd']);
     $heslo = htmlspecialchars($_POST['hesloAdd']);
-//    if ($nadrizeny == "") {
-//        $nadrizeny = 'NULL';
-//    }
+
     if ($db->insert_osobu($login, $email, $heslo, $jmeno, $prijmeni, $nadrizeny)) {
         $rezervaceMsg = "Osoba úspěšně přidána :)";
     } else {
@@ -28,9 +26,9 @@ if (isset($_POST['delete'])) {
 }
 
 if (isset($_POST['update'])) {
-//function update_osobu(string $login, string $email, int $opravneni,
-//                      string $jmeno, string $prijmeni) : bool
-//{
+//    function update_osobu(string $login, string $email, int $opravneni, string $jmeno, string $prijmeni,
+//                          int $detail, ?string $loginNadrizeneho) : bool
+
     $login = htmlspecialchars($_POST['loginUpdate']);
     $email = htmlspecialchars($_POST['emailUpdate']);
     $opravneni = htmlspecialchars($_POST['opravneniUpdate']);
@@ -38,10 +36,11 @@ if (isset($_POST['update'])) {
     $prijmeni = htmlspecialchars($_POST['prijmeniUpdate']);
     $nadrizeny = htmlspecialchars($_POST['nadrizenyUpdate']);
     if (isset($_POST['detailUpdate'])) {
-        $detail = 1;
+        $detail = 0; // 0 = veřejný
     } else {
-        $detail = 0;
+        $detail = 1; // 1 = soukromý profil
     }
+    var_dump($detail);
     if ($db->update_osobu($login, $email, $opravneni, $jmeno, $prijmeni, $detail, $nadrizeny)) {
         $rezervaceMsg = "Osoba úspěšně upravena :)";
     } else {
