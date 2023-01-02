@@ -3,7 +3,7 @@ include_once('database/Client.php');
 $db = new Client();
 
 if(isset($_POST['add'])){
-    $nazev = $_POST['nazev'];
+    $nazev = htmlspecialchars($_POST['nazev']);
     if($db->insert_umisteni($nazev)){
         $goodMsg = "Umístění úspěšně přidáno!";
     }else{
@@ -20,7 +20,7 @@ if(isset($_POST['delete'])){
 }
 
 if(isset($_POST['update'])){
-    if($db->update_umisteni($_POST['id'],$_POST['nazev'])){
+    if($db->update_umisteni($_POST['id'],htmlspecialchars($_POST['nazev']))){
         $goodMsg = "Umístění úspěšně upraveno :)";
     }else{
         $errorMsg = "něco se nepovedlo :(";

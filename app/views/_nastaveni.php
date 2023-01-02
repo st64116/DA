@@ -4,7 +4,7 @@ $db = new Client();
 
 if (isset($_POST['heslo'])) {
     if ($_POST['password'] == $_POST['passwordAgain']) {
-        if ($db->update_heslo($_SESSION['LOGIN'], $_POST['password'])) {
+        if ($db->update_heslo($_SESSION['LOGIN'], htmlspecialchars($_POST['password']))) {
             $goodMsg = "Heslo úspěšně změněno";
         } else {
             $errorMsg = "něco se nepovedlo :(";
@@ -20,7 +20,14 @@ if (isset($_POST['update'])) {
     } else {
         $detail = 1;
     }
-    if ($db->update_osobu($_POST['login'], $_POST['email'], $_POST['opravneni'], $_POST['jmeno'], $_POST['prijmeni'], $detail, $_POST['nadrizeny'])) {
+
+    if($_SESSION['ROLE'] == 0 ){
+        $opravneni = 0;
+    }else{
+        $opravneni = $_POST['opravneni'];
+    }
+
+    if ($db->update_osobu($_POST['login'], htmlspecialchars($_POST['email']), $opravneni, htmlspecialchars($_POST['jmeno']), htmlspecialchars($_POST['prijmeni']), $detail, htmlspecialchars($_POST['nadrizeny']))) {
         $goodMsg = "Data úspěšně změněna";
     } else {
         $errorMsg = "něco se nepovedlo :(";
@@ -64,7 +71,7 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
     </div>
     <form class="text-start" action="" method="post">
         <div class="col-12"><label class="">Login:</label><input id="login" name="login" class="w-100" type="text"
-                                                                 required></div>
+                                                                 required readonly></div>
         <div class="col-12"><label class="">Email:</label><input id="email" name="email" class="w-100" type="email"
                                                                  required></div>
         <!--        <div class="col-12"><label class="">Firma:</label><input id="firma" name="firma" class="w-100" type="text">-->

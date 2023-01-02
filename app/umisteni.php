@@ -1,5 +1,5 @@
 <?php
-$title = 'Umisteni';
+$title = 'Umístění';
 $childView = 'views/_umisteni.php';
 include('layouts/mainLayout.php');
 ?>

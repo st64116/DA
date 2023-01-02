@@ -7,9 +7,8 @@ if (isset($_POST['submitAdd'])) {
     $email = $_POST['emailAdd'];
     $jmeno = $_POST['jmenoAdd'];
     $heslo = $_POST['hesloAdd'];
-//    if ($nadrizeny == "") {
-//        $nadrizeny = 'NULL';
-//    }
+
+    var_dump($login);
     if ($db->insert_firmu($login, $email, $heslo, $jmeno)) {
         $rezervaceMsg = "Firma úspěšně přidána :)";
     } else {
@@ -18,7 +17,7 @@ if (isset($_POST['submitAdd'])) {
 }
 
 if (isset($_POST['delete'])) {
-    if ($db->delete_firmu($_POST['osobaId'])) {
+    if ($db->delete_firmu($_POST['firmaId'])) {
         $rezervaceMsg = "Firma úspěšně odstraněna :)";
     } else {
         $errorMsg = "Nastala chyba! Firma nebyla odstraněna!";
@@ -240,10 +239,10 @@ $firmy = $db->view_firmy();
 <option value="0">uživatel</option><option value="1">admin</option></select>
 </div>
 </div>
-<button class="btn btn-danger" type="submit" name="update">Update</button>
+<button class="btn btn-danger mt-2" type="submit" name="update">Update</button>
 </form>
 <form class="px-2" action="" method="post">
-<input class="d-none" type="text" name="osobaId" value="' . $firma["LOGIN"] . '">
+<input class="d-none" type="text" name="firmaId" value="' . $firma["LOGIN"] . '">
 <button class="btn btn-danger" type="submit" name="delete">Delete</button>
 </form>
 </div></td></tr>';

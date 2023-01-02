@@ -2,12 +2,12 @@
 include_once('database/Client.php');
 $db = new Client();
 if (isset($_POST['submit'])) {
-    $jmeno = $_POST['name'];
-    $prijmeni = $_POST["surname"];
-    $email = $_POST['email'];
-    $login = $_POST['username'];
-    $password = $_POST['password'];
-    $passwordAgain = $_POST['passwordAgain'];
+    $jmeno = htmlspecialchars($_POST['name']);
+    $prijmeni = htmlspecialchars($_POST["surname"]);
+    $email = htmlspecialchars($_POST['email']);
+    $login = htmlspecialchars($_POST['username']);
+    $password = htmlspecialchars($_POST['password']);
+    $passwordAgain = htmlspecialchars($_POST['passwordAgain']);
     if ($password == $passwordAgain) {
         $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
         if($db->insert_osobu($login,$email,$password,$jmeno,$prijmeni)){

@@ -56,6 +56,7 @@
         display:block;
     }
 
+
     #responsive-table thead tr{
         display: none;
     }
@@ -64,6 +65,7 @@
         border-bottom: 1px solid black;
         position: relative;
         padding-left: 30%;
+        min-height: 38px;
     }
     #responsive-table .radek:before{
         content: attr(data-title);

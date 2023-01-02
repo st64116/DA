@@ -72,12 +72,6 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
 <!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>-->
 <!--                    </li>-->
 <!--                </a>-->
-                <a href="osoby.php" class="text-decoration-none">
-                    <li class="sidebar-item text-center m-1 rounded-pill" id="osoby">
-                        <span class="sidebar-text">Osoby</span>
-                        <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
-                    </li>
-                </a>
                 <a href="patra.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="patra">
                         <span class="sidebar-text">Patra</span>
@@ -138,6 +132,12 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
                 <?php
             } else {
                 ?>
+                <a href="osoby.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="osoby">
+                        <span class="sidebar-text">Osoby</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">person</span>
+                    </li>
+                </a>
                 <a href="rezervace.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="rezervace">
                         <span class="sidebar-text">Rezervace</span>
@@ -171,12 +171,12 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
             <?php include($childView); ?>
         </div>
 
-        <div class="debug shadow p-4 bg-info rounded-3">
-            <?php
-            echo "<p>session:</p>";
-            var_dump($_SESSION)
-            ?>
-        </div>
+<!--        <div class="debug shadow p-4 bg-info rounded-3">-->
+<!--            --><?php
+//            echo "<p>session:</p>";
+//            var_dump($_SESSION)
+//            ?>
+<!--        </div>-->
     </div>
 </div>
 
