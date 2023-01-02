@@ -194,4 +194,22 @@ END;
 
 -- SOUBORY
 
-    -- TODO pridat soubory
+CREATE OR REPLACE PROCEDURE p_delete_profilovku
+    (v_login IN VARCHAR2)
+    IS
+    v_id_profilovky NUMBER;
+BEGIN
+    SAVEPOINT point_pred_deletem;
+    SELECT id_profilovky INTO v_id_profilovky
+        FROM zajemci WHERE login LIKE v_login;
+    UPDATE zajemci SET id_profilovky = NULL
+        WHERE login LIKE v_login;
+    DELETE FROM soubory
+           WHERE id_souboru = v_id_profilovky;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_deletem;
+        RAISE;
+END;
+/

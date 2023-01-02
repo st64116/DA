@@ -12,7 +12,8 @@ class Client
 
     private function connect() {
         return oci_connect("st64163","abcde",
-            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ", 'AL32UTF8');
+            "fei-sql3.upceucebny.cz:1521/BDAS.UPCEUCEBNY.CZ",
+            'AL32UTF8');
     }
 
     // GENERIC FUNCTIONS
@@ -43,21 +44,24 @@ class Client
 
     private function view(string $viewName, string $conditions = "")
     {
-        $query = $this->make_query("SELECT * FROM $viewName " . $conditions);
-        if (!$query)
+        $statement = $this->make_query("SELECT * FROM $viewName " . $conditions);
+        if (!$statement)
             return false;
         $array = array();
-        while ($row = oci_fetch_assoc($query)) {
-            if (isset($row["PRISLUSENSTVI"]) && $viewName != 'VIEW_PRISLUSENSTVI') // TODO otestovat
+        while ($row = oci_fetch_assoc($statement)) {
+            if (isset($row["PRISLUSENSTVI"]) && $viewName != 'VIEW_PRISLUSENSTVI')
                 $row["PRISLUSENSTVI"] = $this->string_prislusenstvi_to_array($row["PRISLUSENSTVI"]);
             $array[] = $row;
         }
+        oci_free_statement($statement);
         return $array;
     }
 
     private function execute(string $sqlBody) : bool {
-        $result = $this->make_query("BEGIN $sqlBody END;");
-        return !!$result;
+        $statement = $this->make_query("BEGIN $sqlBody END;");
+        $result = !!$statement;
+        oci_free_statement($statement);
+        return $result;
     }
 
     // VIEWs
@@ -119,6 +123,23 @@ class Client
 
     function view_logy() {
         return $this->view('VIEW_LOGY');
+    }
+
+    function view_soubory() {
+        // TODO zjistit jak prevest BLOB na FILE
+        return $this->view('VIEW_SOUBORY');
+    }
+
+    function view_profilovky(?string $login = null) {
+        // TODO zjistit jak prevest BLOB na FILE
+        if (isset($login)) {
+            $profilovky = $this->view('VIEW_PROFILOVKY', "WHERE '$login' LIKE login");
+            if (!$profilovky)
+                return false;
+            return $profilovky[0];
+        } else {
+            return $this->view('VIEW_PROFILOVKY');
+        }
     }
 
     // INSERTs
@@ -211,7 +232,14 @@ class Client
         );
     }
 
-    // UPDATEs // TODO otestovat
+    function insert_profilovku(string $login, string $nazev, string $pripona, $soubor) : bool {
+        // TODO zjistit jak prevest FILE na BLOB
+        return $this->execute(
+            "P_INSERT_PROFILOVKU('$login', '$nazev', '$pripona', $soubor);"
+        );
+    }
+
+    // UPDATEs
 
     function update_rezervaci(int $id_rezervace, string $casOd, string $casDo,
                              ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,
@@ -306,7 +334,14 @@ class Client
         );
     }
 
-    // DELETEs // TODO otestovat
+    function update_profilovku(string $login, string $nazev, string $pripona, $soubor) : bool {
+        // TODO zjistit jak prevest FILE na BLOB
+        return $this->execute(
+            "P_UPDATE_PROFILOVKU('$login', '$nazev', '$pripona', $soubor);"
+        );
+    }
+
+    // DELETEs
 
     function delete_firmu(string $login) : bool {
         return $this->execute(
@@ -375,7 +410,13 @@ class Client
         );
     }
 
-    // OTHERs // TODO otestovat
+    function delete_profilovku(string $login) : bool {
+        return $this->execute(
+            "P_DELETE_PROFILOVKU('$login');"
+        );
+    }
+
+    // OTHERs
 
     function check_login(string $login, string $heslo) : bool {
         return $this->execute("pckg_login.p_exec_login('$login', '$heslo');");

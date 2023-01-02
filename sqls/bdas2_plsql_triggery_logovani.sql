@@ -92,7 +92,7 @@ DECLARE
     v_info VARCHAR2(2042);
 BEGIN
     v_info := '' || :new.id_zajemce || ', "' || :new.login || '", "' || :new.email || '", "'
-                  || :new.heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni;
+        || :new.heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni || ', ' || :new.id_profilovky;
     P_MAKE_LOG('insert', 'zajemci', v_info);
 END;
 /
@@ -111,9 +111,9 @@ DECLARE
     v_info_new VARCHAR2(1022);
 BEGIN
     v_info_old := '' || :old.id_zajemce || ', "' || :old.login || '", "' || :old.email || '", "'
-        || :old.heslo || '", "' || :old.diskriminator || '", ' || :old.opravneni;
+        || :old.heslo || '", "' || :old.diskriminator || '", ' || :old.opravneni || ', ' || :old.id_profilovky;
     v_info_new := '' || :new.id_zajemce || ', "' || :new.login || '", "' || :new.email || '", "'
-        || :new.heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni;
+        || :new.heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni || ', ' || :new.id_profilovky;
     P_MAKE_LOG('update', 'zajemci', v_info_old || ' -> ' || v_info_new);
 END;
 /
@@ -129,7 +129,7 @@ DECLARE
     v_info VARCHAR2(2042);
 BEGIN
     v_info := '' || :old.id_zajemce || ', "' || :old.login || '", "' || :old.email || '", "'
-        || :old.heslo || '", "' || :old.diskriminator || '", ' || :old.opravneni;
+        || :old.heslo || '", "' || :old.diskriminator || '", ' || :old.opravneni || ', ' || :old.id_profilovky;
     P_MAKE_LOG('delete', 'zajemci', v_info);
 END;
 /
@@ -195,7 +195,7 @@ ALTER TRIGGER "T_LOG_DELETE_OSOBY" ENABLE;
 
 --------------------------------------------------------------------------------------------
 
--- FIRMY insertW
+-- FIRMY insert
 CREATE OR REPLACE TRIGGER t_log_insert_firmy
     AFTER INSERT ON firmy
     REFERENCING
@@ -245,3 +245,62 @@ END;
 /
 
 ALTER TRIGGER "T_LOG_DELETE_FIRMY" ENABLE;
+
+--------------------------------------------------------------------------------------------
+
+-- SOUBORY insert
+CREATE OR REPLACE TRIGGER t_log_insert_soubory
+    AFTER INSERT ON soubory
+    REFERENCING
+        NEW AS new
+    FOR EACH ROW
+DECLARE
+    v_info VARCHAR2(2042);
+BEGIN
+    v_info := '' || :new.id_souboru || ', "' || :new.nazev || '", "' || :new.pripona || '"';
+    P_MAKE_LOG('insert', 'soubory', v_info);
+END;
+/
+
+ALTER TRIGGER "T_LOG_INSERT_SOUBORY" ENABLE;
+
+-- SOUBORY update
+CREATE OR REPLACE TRIGGER t_log_update_soubory
+    AFTER UPDATE ON soubory
+    REFERENCING
+        NEW AS new
+        OLD AS old
+    FOR EACH ROW
+DECLARE
+    v_info_old VARCHAR2(1022);
+    v_info_new VARCHAR2(1022);
+    v_zmena CHAR(8) := 'OLD_BLOB';
+BEGIN
+    IF (DBMS_LOB.compare(:old.obsah, :new.obsah) <> 0) THEN
+        v_zmena := 'NEW_BLOB';
+    END IF;
+    v_info_old := '' || :old.id_souboru || ', "' || :old.nazev || '", "' || :old.pripona || '"';
+    v_info_new := '' || :new.id_souboru || ', "' || :new.nazev || '", "' || :new.pripona || '", ' || v_zmena;
+    P_MAKE_LOG('update', 'soubory', v_info_old || ' -> ' || v_info_new);
+END;
+/
+
+ALTER TRIGGER "T_LOG_UPDATE_SOUBORY" ENABLE;
+
+-- SOUBORY delete
+CREATE OR REPLACE TRIGGER t_log_delete_soubory
+    AFTER DELETE ON soubory
+    REFERENCING
+        OLD AS old
+    FOR EACH ROW
+DECLARE
+    v_info VARCHAR2(2042);
+BEGIN
+    v_info := '' || :old.id_souboru || ', "' || :old.nazev || '", "' || :old.pripona || '"';
+    P_MAKE_LOG('insert', 'soubory', v_info);
+END;
+/
+
+ALTER TRIGGER "T_LOG_DELETE_SOUBORY" ENABLE;
+
+--------------------------------------------------------------------------------------------

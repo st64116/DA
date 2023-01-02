@@ -32,7 +32,7 @@ CREATE OR REPLACE VIEW view_mistnosti AS
     
 -- ZAJEMCE
 CREATE OR REPLACE VIEW view_zajemce AS
-    SELECT login, email, opravneni, nazev, jmeno, prijmeni, detail, 
+    SELECT login, email, opravneni, nazev, jmeno, prijmeni, detail, id_profilovky,
         (SELECT n.login FROM zajemci n WHERE n.id_zajemce = o.id_nadrizeneho) 
         AS nadrizeny
             FROM zajemci z
@@ -41,12 +41,12 @@ CREATE OR REPLACE VIEW view_zajemce AS
     
 -- FIRMY
 CREATE OR REPLACE VIEW view_firmy AS
-    SELECT login, email, nazev, opravneni
+    SELECT login, email, nazev, opravneni, id_profilovky
         FROM zajemci JOIN firmy USING (id_zajemce);
         
 -- OSOBY
 CREATE OR REPLACE VIEW view_osoby AS
-    SELECT login, email, jmeno, prijmeni, detail, opravneni, 
+    SELECT login, email, jmeno, prijmeni, detail, opravneni, id_profilovky,
         (SELECT n.login FROM zajemci n WHERE n.id_zajemce = o.id_nadrizeneho) 
         AS nadrizeny
             FROM zajemci z JOIN osoby o USING (id_zajemce);
@@ -79,3 +79,11 @@ CREATE OR REPLACE VIEW view_stavy AS
 CREATE OR REPLACE VIEW view_logy AS
     SELECT id_logu, typ_operace, tabulka, info,
         TO_CHAR(cas, 'yyyy-mm-dd hh24:mi:ss') AS cas FROM logy;
+
+-- SOUBORY
+CREATE OR REPLACE VIEW view_soubory AS
+    SELECT id_souboru, nazev, pripona, obsah FROM soubory;
+
+CREATE OR REPLACE VIEW view_profilovky AS
+    SELECT login, nazev, pripona, obsah
+        FROM zajemci z JOIN soubory s ON z.id_profilovky = s.id_souboru;

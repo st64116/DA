@@ -246,4 +246,24 @@ END;
 
 -- SOUBORY
 
-    -- TODO pridat soubory
+CREATE OR REPLACE PROCEDURE p_insert_profilovku
+    (v_login IN VARCHAR2,
+    v_nazev IN VARCHAR2,
+    v_pripona IN VARCHAR2,
+    v_obsah IN BLOB)
+    IS
+    v_id_profilovky NUMBER;
+BEGIN
+    SAVEPOINT point_pred_insertem;
+    INSERT INTO soubory (nazev, pripona, obsah)
+        VALUES (v_nazev, v_pripona, v_obsah)
+            RETURNING id_souboru INTO v_id_profilovky;
+    UPDATE zajemci SET id_profilovky = v_id_profilovky
+        WHERE login LIKE v_login;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_insertem;
+        RAISE;
+END;
+/

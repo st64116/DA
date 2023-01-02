@@ -32,7 +32,7 @@ CREATE TABLE logy (
     id_logu NUMBER NOT NULL,
     typ_operace VARCHAR2(6) NOT NULL,
     tabulka VARCHAR2(32) NOT NULL,
-    info VARCHAR2(1024) NOT NULL,
+    info VARCHAR2(2042) NOT NULL,
     cas DATE DEFAULT sysdate NOT NULL
 );
 
@@ -57,6 +57,38 @@ END;
 
 ALTER TRIGGER "T_LOGY_ID" ENABLE;
 
--- SOUBORY
+-- SOUBORY ADD tabulku
 
-    -- TODO pridat soubory
+CREATE TABLE soubory (
+    id_souboru NUMBER NOT NULL,
+    obsah BLOB NOT NULL,
+    nazev VARCHAR2(32) NOT NULL,
+    pripona VARCHAR2(8) NOT NULL
+);
+
+ALTER TABLE soubory ADD CONSTRAINT soubory_pk PRIMARY KEY ( id_souboru );
+
+-- SOUBORY ADD sekvenci
+
+CREATE SEQUENCE s_soubory START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER t_soubory_id BEFORE
+    INSERT ON soubory
+    REFERENCING
+        NEW AS new
+    FOR EACH ROW
+BEGIN
+    IF ( :new.id_souboru IS NULL ) THEN
+        SELECT s_mistnosti.NEXTVAL INTO :new.id_souboru
+            FROM DUAL;
+    END IF;
+END;
+/
+
+ALTER TRIGGER "T_SOUBORY_ID" ENABLE;
+
+-- SOUBORY ADD profilovku do zajemcu
+
+ALTER TABLE zajemci
+    ADD id_profilovky NUMBER
+        CONSTRAINT PROFILOVKA_SOUBORY_FK REFERENCES soubory (id_souboru);

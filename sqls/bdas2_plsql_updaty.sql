@@ -261,4 +261,23 @@ END;
 
 -- SOUBORY
 
-    -- TODO pridat soubory
+CREATE OR REPLACE PROCEDURE p_update_profilovku
+    (v_login IN VARCHAR2,
+    v_nazev IN VARCHAR2,
+    v_pripona IN VARCHAR2,
+    v_obsah IN BLOB)
+    IS
+    v_id_profilovky NUMBER;
+BEGIN
+    SAVEPOINT point_pred_updatem;
+    SELECT id_profilovky INTO v_id_profilovky
+        FROM zajemci WHERE login LIKE v_login;
+    UPDATE soubory SET nazev = v_nazev, pripona = v_pripona, obsah = v_obsah
+        WHERE id_souboru = v_id_profilovky;
+    COMMIT;
+EXCEPTION
+    WHEN others THEN
+        ROLLBACK TO point_pred_updatem;
+        RAISE;
+END;
+/
