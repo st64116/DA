@@ -140,7 +140,7 @@ BEGIN
     p_insert_osobu('josef.novak', 'josef.novak@czechsoft.eu','YNrWBqn4Ek',
                    'Josef', 'Novák', 'CzechSoft');
 
-    p_insert_osobu('pavel.novotny', 'pavel.novotny@czechsoft.eu','RjuQvwmImC',
+    p_insert_osobu('pavel.novotny', 'pavel.novotny@czechsoft.eu','RjuQvwm1mC',
                    'Pavel', 'Novotný', 'josef.novak');
 
     p_insert_osobu('karel.polak', 'karel.polak@czechsoft.eu','vRH7NsUWZm',
@@ -158,8 +158,7 @@ BEGIN
     p_insert_osobu('Loupakova', 'v.loupakova@emailsuper.cz','juYJbE0gxS',
                    'Veronika', 'Loupáková', null);
 
-    p_insert_osobu('Bulova', 'bulova@kavantena.cz',
-                   '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005',
+    p_insert_osobu('Bulova', 'bulova@kavantena.cz','EjJbu0gxSY',
                    'Klára', 'Bulová', 'Kavantena');
 
     p_insert_osobu('Krasny', 'krasny@kavantena.cz','Fy8h8JAVKw',
