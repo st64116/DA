@@ -249,10 +249,33 @@ class Client
     }
 
     function insert_profilovku(string $login, string $nazev, string $pripona, $soubor) : bool {
-        // TODO zjistit jak prevest FILE na BLOB
+        //TODO zjistit jak prevest FILE na BLOB
         return $this->execute(
             "P_INSERT_PROFILOVKU('$login', '$nazev', '$pripona', $soubor);"
         );
+    }
+
+    function insert_profilovku_pokus(string $login, string $nazev, string $pripona, $soubor) : bool {
+        $lob = oci_new_descriptor($this->connection, OCI_D_LOB);
+        $sql =  "INSERT INTO soubory (nazev,pripona, obsah) VALUES ('$nazev','$pripona',EMPTY_BLOB()) RETURNING  obsah, id_souboru INTO :BLOBDATA, :ID";
+        $smtp = oci_parse($this->connection, $sql);
+        oci_bind_by_name($smtp, ':BLOBDATA', $lob, -1, OCI_B_BLOB);
+        oci_bind_by_name($smtp, ':ID', $id, -1, OCI_B_INT);
+        oci_execute($smtp, OCI_DEFAULT);
+        if ($lob->savefile($soubor)) {
+            $smtp = oci_parse($this->connection, "UPDATE zajemci SET id_profilovky = " . $id ." WHERE login LIKE '$login'");
+            oci_execute($smtp);
+            $lob->free();
+            oci_free_statement($smtp);
+            oci_commit($this->connection);
+            return true;
+        }
+        else {
+            $lob->free();
+            oci_free_statement($smtp);
+            echo "Couldn't upload Blob\n";
+            return false;
+        }
     }
 
     // UPDATEs

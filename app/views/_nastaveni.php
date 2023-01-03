@@ -2,6 +2,29 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if (isset($_POST['changeImage'])) {
+    if ($_FILES["image"]["error"] > 0) {
+        $errorMsg = "něco se nepovedlo!!";
+    } else {
+        if ($db->view_profilovky($_SESSION['LOGIN']) != false) {
+            $db->delete_profilovku($_SESSION['LOGIN']);
+        }
+        if (!is_bool(strpos(strtolower($_FILES["image"]["type"]), "jpeg", 0))) {
+            $pripona = "jpeg";
+        } else {
+            $pripona = "png";
+        }
+
+        if ($db->insert_profilovku_pokus($_SESSION['LOGIN'], $_FILES["image"]["name"], $pripona, $_FILES["image"]["tmp_name"])) {
+            $goodMsg = "profilovka nastavena";
+        } else {
+            $errorMsg = "něco se nepovedlo!!";
+        };
+
+    }
+
+}
+
 if (isset($_POST['heslo'])) {
     if ($_POST['password'] == $_POST['passwordAgain']) {
         if ($db->update_heslo($_SESSION['LOGIN'], htmlspecialchars($_POST['password']))) {
@@ -21,9 +44,9 @@ if (isset($_POST['update'])) {
         $detail = 1;
     }
 
-    if($_SESSION['ROLE'] == 0 ){
+    if ($_SESSION['ROLE'] == 0) {
         $opravneni = 0;
-    }else{
+    } else {
         $opravneni = $_POST['opravneni'];
     }
 
@@ -118,12 +141,23 @@ $userData = $db->view_zajemce($_SESSION['LOGIN']);
             </div>
         </div>
     </form>
-    <?php if($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 1){ ?>
+    <hr>
+    <form method="post" action="" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-12 col-lg-8 text-start mb-2">
+                <input class="" type="file" accept="image/png, image/jpeg" name="image">
+            </div>
+            <div class="col-4">
+                <button class="btn btn-danger btn-sm w-100" type="submit" name="changeImage">změnit fotku</button>
+            </div>
+        </div>
+    </form>
+    <?php if ($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 1) { ?>
         <hr>
         <form class="text-start" action="" method="post">
             <button class="btn btn-danger" type="submit" name="emulaceOn">Emulovat uživatele</button>
         </form>
-    <?php }elseif ($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 0){ ?>
+    <?php } elseif ($_SESSION['ADMIN'] == 1 && $_SESSION['ROLE'] == 0) { ?>
         <hr>
         <form class="text-start" action="" method="post">
             <button class="btn btn-danger" type="submit" name="emulaceOff">Vypnout emulaci</button>
@@ -144,7 +178,7 @@ if ($_SESSION['ROLE'] == 0) {
 }
 ?>
 <style>
-    .nadpis{
+    .nadpis {
         background-color: var(--color1);
         color: white;
         font-weight: bold;

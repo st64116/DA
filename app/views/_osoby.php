@@ -56,6 +56,8 @@ if (isset($_POST['heslo'])) {
     }
 }
 
+$viewProfilovky = $db->view_profilovky();
+var_dump($viewProfilovky);
 ?>
 <div class="text-start my-2 filter p-2">
     <?php
@@ -159,6 +161,7 @@ if (isset($_POST['heslo'])) {
                       <th scope='col'>login</th>";
             }
             ?>
+            <th>#</th>
             <th scope="col">email</th>
             <th scope="col">jméno</th>
             <th scope="col">příjmení</th>
@@ -249,11 +252,23 @@ if (isset($_POST['heslo'])) {
                 data-bs-target="#item' . $osoba["LOGIN"] . '"  aria-expanded="false" aria-controls="item' . $osoba["LOGIN"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
+
                     echo "<td class='radek' data-title='login'>" . "<span class='my-4'>" . $osoba["LOGIN"] . "</span>" . "</td>";
                 }
                 if($_SESSION['ROLE'] == 0 && $osoba['DETAIL'] == 1){
-                        echo "<td class='radek' data-title='email'>***</td>";
+                    echo '<td data-title="#" class="radek"><img class="top-image" src="assets/img/profilePhoto.png"/></td>';
+                    echo "<td class='radek' data-title='email'>***</td>";
                 }else{
+                    foreach ($viewProfilovky as $item){
+                        if($item['LOGIN'] == $osoba['LOGIN']){
+                            $profilovka = $item;
+                        }
+                    }
+                    if (isset($profilovka['OBSAH']) && $profilovka['LOGIN'] == $osoba['LOGIN']) {
+                        echo '<td data-title="#" class="radek"><img class="top-image" src="data:image/jpeg;base64,' . base64_encode($profilovka['OBSAH']->load()) . '"/></td>';
+                    } else {
+                        echo '<td data-title="#" class="radek"><img class="top-image" src="assets/img/profilePhoto.png"/></td>';
+                    }
                     echo "<td class='radek' data-title='email'>" . $osoba["EMAIL"] . "</td>";
 
                 }

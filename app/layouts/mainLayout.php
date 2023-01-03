@@ -1,12 +1,15 @@
 <?php
+include_once('database/Client.php');
+$db = new Client();
+
 //error_reporting(E_ERROR | E_PARSE);
 session_start();
 
-if(isset($_POST['emulaceOn']) && $_SESSION['ADMIN'] = 1){
+if (isset($_POST['emulaceOn']) && $_SESSION['ADMIN'] = 1) {
     $_SESSION['ROLE'] = 0;
     header("Location:nastaveni.php");
 }
-if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
+if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
     $_SESSION['ROLE'] = 1;
     header("Location:nastaveni.php");
 }
@@ -56,9 +59,8 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
                 </li>
             </a>
             <?php
-            if(isset($_SESSION['ROLE']) && $_SESSION['ROLE']==1)
-            {
-            ?>
+            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+                ?>
 
                 <a href="firmy.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="firmy">
@@ -66,12 +68,12 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">chair</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Inventáře</span>-->
-<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+                <!--                <a href="" class="text-decoration-none">-->
+                <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
+                <!--                        <span class="sidebar-text">Inventáře</span>-->
+                <!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>-->
+                <!--                    </li>-->
+                <!--                </a>-->
                 <a href="patra.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="patra">
                         <span class="sidebar-text">Patra</span>
@@ -84,12 +86,7 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">key</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Skupiny?</span>-->
-<!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">groups</span>-->
-<!--                    </li>-->
-<!--                </a>-->
+
                 <a href="stavy.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="stavy">
                         <span class="sidebar-text">Stavy</span>
@@ -114,12 +111,13 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">aspect_ratio</span>
                     </li>
                 </a>
-<!--                <a href="" class="text-decoration-none">-->
-<!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-<!--                        <span class="sidebar-text">Zájemci</span>-->
-<!--                    </li>-->
-<!--                </a>-->
-            <?php
+                <a href="fotky.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="fotky">
+                        <span class="sidebar-text">Fotky</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">photo_camera</span>
+                    </li>
+                </a>
+                <?php
             }
             if (!isset($_SESSION['ROLE'])) {
                 ?>
@@ -163,20 +161,36 @@ if(isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1){
         </ul>
     </div>
     <div class="content">
-        <div class="mx-2 mt-1 py-1 rounded-2 main-bg">
+        <div class="mx-2 mt-1 py-1 rounded-2 main-bg d-flex justify-content-between">
             <h2 class="ms-2"><?php echo $title ?></h2>
+            <?php if (isset($_SESSION['ROLE'])) { ?>
+                <a href="nastaveni.php"
+                   class="me-1 text-decoration-none text-dark text-uppercase fw-bold bg-white rounded-pill px-2 shadow">
+                    <?php
+                    $profilovka = $db->view_profilovky($_SESSION['LOGIN']);
+                    if ($profilovka) {
+                        echo '<img class="top-image" src="data:image/jpeg;base64,' . base64_encode($profilovka['OBSAH']->load()) . '"/>';
+                    } else {
+                        echo '<img class="top-image" src="assets/img/profilePhoto.png"/>';
+                    }
+                    $userData = $db->view_zajemce($_SESSION['LOGIN']);
+                    echo "<span class='me-1'>" . $userData['JMENO'] . "</span>";
+                    echo "<span>" . $userData['PRIJMENI'] . "</span>";
+                    ?>
+                </a>
+            <?php } ?>
         </div>
 
         <div class="mx-2 mt-2 p-3 rounded-2">
             <?php include($childView); ?>
         </div>
 
-<!--        <div class="debug shadow p-4 bg-info rounded-3">-->
-<!--            --><?php
-//            echo "<p>session:</p>";
-//            var_dump($_SESSION)
-//            ?>
-<!--        </div>-->
+        <!--        <div class="debug shadow p-4 bg-info rounded-3">-->
+        <!--            --><?php
+        //            echo "<p>session:</p>";
+        //            var_dump($_SESSION)
+        //            ?>
+        <!--        </div>-->
     </div>
 </div>
 
