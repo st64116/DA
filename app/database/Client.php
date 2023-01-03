@@ -152,9 +152,9 @@ class Client
 
     function view_zajemce_hierarchicky(?string $loginKorene = null) {
         if (isset($loginKorene)) {
-            return $this->view('VIEW_REZERVACE_HIERARCHICKY', "WHERE '$loginKorene' LIKE koren");
+            return $this->view('VIEW_ZAJEMCE_HIERARCHICKY', "WHERE '$loginKorene' LIKE koren");
         } else {
-            return $this->view('VIEW_REZERVACE_HIERARCHICKY');
+            return $this->view('VIEW_ZAJEMCE_HIERARCHICKY');
         }
     }
 

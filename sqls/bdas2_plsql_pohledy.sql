@@ -91,7 +91,8 @@ CREATE OR REPLACE VIEW view_profilovky AS
 -- HIERARCHIE
 
 CREATE OR REPLACE VIEW view_zajemce_hierarchicky AS
-    SELECT login, LEVEL as poradi, PRIOR login as nadrizeny, CONNECT_BY_ROOT login as koren
+    SELECT login, jmeno, prijmeni, nazev,
+           LEVEL as poradi, PRIOR login as nadrizeny, CONNECT_BY_ROOT login as koren
     FROM zajemci
     LEFT JOIN osoby USING (id_zajemce)
     LEFT JOIN firmy USING (id_zajemce)
