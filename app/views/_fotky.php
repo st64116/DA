@@ -2,9 +2,9 @@
 include_once('database/Client.php');
 $db = new Client();
 
-if(isset($_POST['foto'])){
+if (isset($_POST['foto'])) {
     $login = $_POST['login'];
-    if($db->view_zajemce($login)){
+    if ($db->view_zajemce($login)) {
         if ($_FILES["image"]["error"] > 0) {
             $errorMsg = "něco se nepovedlo!!";
         } else {
@@ -24,29 +24,42 @@ if(isset($_POST['foto'])){
             };
 
         }
-    }else{
+    } else {
         $errorMsg = "Login neexistuje";
     }
 }
 
-if(isset($_POST['delete'])){
-    if($db->delete_ucel($_POST['id'])){
+if (isset($_POST['delete'])) {
+    if ($db->delete_ucel($_POST['id'])) {
         $goodMsg = "Stav úspěšně odebráno!";
-    }else{
+    } else {
         $errorMsg = "něco se nepovedlo :(";
     }
 }
 
-if(isset($_POST['update'])){
-    if($db->update_profilovku($_POST['login'],$_POST['nazev'],$_POST['pripona'])){
-        $goodMsg = "Fotka upravena :)";
-    }else{
-        $errorMsg = "něco se nepovedlo :(";
+if (isset($_POST['update'])) {
+    if (isset($_FILES['imageUpdate']) && $_FILES["imageUpdate"]["error"] == 0) {
+        $db->delete_profilovku($_POST['login']);
+        if (!is_bool(strpos(strtolower($_FILES["imageUpdate"]["type"]), "jpeg", 0))) {
+            $pripona = "jpg";
+        } else {
+            $pripona = "png";
+        }
+        if ($db->insert_profilovku_pokus($_POST['login'], $_FILES["imageUpdate"]["name"], $pripona,$_FILES['imageUpdate']["tmp_name"])) {
+            $goodMsg = "profilovka nastavena";
+        } else {
+            $errorMsg = "něco se nepovedlo!!";
+        };
+    } else {
+        if ($db->update_profilovku($_POST['login'], $_POST['nazev'], $_POST['pripona'])) {
+            $goodMsg = "Fotka upravena :)";
+        } else {
+            $errorMsg = "něco se nepovedlo :(";
+        }
     }
 }
 
 $viewProfilovky = $db->view_profilovky();
-var_dump($viewProfilovky[0]);
 ?>
 <div class="text-start my-2 filter p-2">
     <?php
@@ -74,12 +87,17 @@ var_dump($viewProfilovky[0]);
             <div class=" mt-3 px-2 py-3 p-sm-5 border border-dark rounded-3">
                 <div class="row text-start">
                     <div class="col-6 col-lg-3 my-2">
+                        <label>login:</label>
+                        <input type="text" name="login" id="login">
+                    </div>
+                    <div class="col-6 col-lg-3 my-2">
                         <label>Název:</label>
                         <input type="text" name="nazev" id="nazev">
                     </div>
-
-                </div>
-                <div>
+                    <div class="col-6 col-lg-3 my-2">
+                        <label>Přípona:</label>
+                        <input type="text" name="pripona" id="pripona">
+                    </div>
 
                 </div>
                 <div class="row">
@@ -100,7 +118,8 @@ var_dump($viewProfilovky[0]);
         ?>
         <div class="collapse" id="add">
             <form action="" method="post" enctype="multipart/form-data">
-                <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center" enctype="multipart/form-data">
+                <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center"
+                      enctype="multipart/form-data">
                     <label>login:</label>
                     <input type="text" name="login" placeholder="existující login!!" required class="w-100">
                     <input class="my-2 w-100" type="file" accept="image/png, image/jpeg" name="image" required>
@@ -129,16 +148,42 @@ var_dump($viewProfilovky[0]);
         <?php
 
         //filter název
+        if (isset($_GET["login"]) && $_GET['login'] != "") {
+            $value = $_GET["login"];
+            echo "<script> document.getElementById('login').value ='" . $value . "';</script>"; // nastavení inputu na hledanou hodnotu
+            $pom = array();
+            foreach ($viewProfilovky as $item) {
+                if (!is_bool(strpos(strtolower($item["LOGIN"]), strtolower($value), 0))) {
+                    array_push($pom, $item);
+                }
+            }
+            $viewProfilovky = $pom;
+        }
+
+        //filter název
         if (isset($_GET["nazev"]) && $_GET['nazev'] != "") {
             $value = $_GET["nazev"];
             echo "<script> document.getElementById('nazev').value ='" . $value . "';</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
-            foreach ($viewUcely as $item) {
+            foreach ($viewProfilovky as $item) {
                 if (!is_bool(strpos(strtolower($item["NAZEV"]), strtolower($value), 0))) {
                     array_push($pom, $item);
                 }
             }
-            $viewUcely = $pom;
+            $viewProfilovky = $pom;
+        }
+
+        //filter přípon
+        if (isset($_GET["pripona"]) && $_GET['pripona'] != "") {
+            $value = $_GET["pripona"];
+            echo "<script> document.getElementById('pripona').value ='" . $value . "';</script>"; // nastavení inputu na hledanou hodnotu
+            $pom = array();
+            foreach ($viewProfilovky as $item) {
+                if (!is_bool(strpos(strtolower($item["PRIPONA"]), strtolower($value), 0))) {
+                    array_push($pom, $item);
+                }
+            }
+            $viewProfilovky = $pom;
         }
 
 
@@ -164,9 +209,10 @@ var_dump($viewProfilovky[0]);
 
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
                     echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . str_replace('.', '_', $item['LOGIN']) . '">
-<form class="w-100 px-2" action="" method="post">
+<form class="w-100 px-2" action="" method="post" enctype="multipart/form-data">
 <div class="row">
 <input name="login" class="w-100 d-none" type="text" value="' . $item['LOGIN'] . '" required readonly>
+<div><label>nová fotka:</label><input class="w-100" type="file" accept="image/png, image/jpeg" name="imageUpdate"></div>
 <div><label>název:</label><input name="nazev" class="w-100" type="text" value="' . $item['NAZEV'] . '" required id="nazev' . $item['LOGIN'] . '"></div>
 <div><label>Přípona:</label><input name="pripona" class="w-100" type="text" value="' . $item['PRIPONA'] . '" required id="pripona' . $item['LOGIN'] . '"></div>
 <div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>

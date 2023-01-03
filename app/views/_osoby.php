@@ -8,7 +8,7 @@ if (isset($_POST['foto'])) {
             $errorMsg = "něco se nepovedlo!!";
         } else {
             if ($db->view_profilovky($_POST['login']) != false) {
-                $db->delete_profilovku($_SESSION['login']);
+                $db->delete_profilovku($_POST['login']);
             }
             if (!is_bool(strpos(strtolower($_FILES["image"]["type"]), "jpeg", 0))) {
                 $pripona = "jpeg";
