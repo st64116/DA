@@ -18,10 +18,6 @@ class Client
 
     // GENERIC FUNCTIONS
 
-    function custom_query(string $sql) {
-        return $this->make_query($sql);
-    }
-
     private function make_query(string $sql) {
         try {
             if ($this->connection) {
@@ -33,7 +29,8 @@ class Client
                         return $statement;
                     }
                 }
-                $this->error = oci_error($statement);
+                if (!!$statement)
+                    $this->error = oci_error($statement);
             } else $this->error = oci_error();
         } catch (Exception $e) {
             $this->error = array(["code" => $e->getCode(), "message" => $e->getMessage(),
@@ -60,18 +57,21 @@ class Client
     private function execute(string $sqlBody) : bool {
         $statement = $this->make_query("BEGIN $sqlBody END;");
         $result = !!$statement;
-        oci_free_statement($statement);
+        if ($result)
+            oci_free_statement($statement);
         return $result;
     }
 
     // VIEWs
 
     function view_rezervace() {
-            return $this->view('VIEW_REZERVACE');
+        $this->zkontrolovat_rezervace();
+        return $this->view('VIEW_REZERVACE');
     }
 
     function view_rezervaci(string $login) {
-            return $this->view('VIEW_REZERVACE', "WHERE '$login' LIKE \"Zajemce\"");
+        $this->zkontrolovat_rezervace();
+        return $this->view('VIEW_REZERVACE', "WHERE '$login' LIKE \"Zajemce\"");
     }
 
     function view_mistnosti() {
@@ -143,6 +143,7 @@ class Client
     }
 
     function view_rezervace_hierarchicky(?string $loginKorene = null) {
+        $this->zkontrolovat_rezervace();
         if (isset($loginKorene)) {
             return $this->view('VIEW_REZERVACE_HIERARCHICKY', "WHERE '$loginKorene' LIKE koren");
         } else {

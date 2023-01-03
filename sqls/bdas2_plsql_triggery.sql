@@ -16,6 +16,16 @@ BEGIN
     END IF;
 END;
 
+-- pomocny CHECK vlastnosti rezervace podmnozinou vlastnosti mistnosti
+CREATE OR REPLACE PROCEDURE p_check_vlastnosti_podmnozinou
+    (v_id_skupiny IN NUMBER)
+    IS
+BEGIN
+    IF (pckg_rez_vlas_mist.f_check_vlastnosti_podmnozinou(v_id_skupiny) = 1) THEN
+        raise_application_error(-20011, 'The reservation properties must be subset of existing room properties');
+    END IF;
+END;
+
 -- REZERVACE CHECK CAS
 CREATE OR REPLACE TRIGGER t_rezervace_check_cas
     BEFORE INSERT ON rezervace
@@ -107,7 +117,7 @@ BEGIN
             OR :new.id_patra IS NULL OR :new.id_velikosti IS NULL)) THEN
         raise_application_error(-20005, 'The room must have all properties except accessories');
     END IF;
-    /* opravit
+    /* je reseno v insert/update procedure, v triggeru nelze spustis z duvodu dotazu na table skupiny_vlastnosti
     IF (:new.patri LIKE 'rezervaci' 
         AND pckg_rez_vlas_mist.f_check_vlastnosti_podmnozinou(:new.id_skupiny) = 1) THEN
             raise_application_error(-20011, 'The reservation properties must be subset of existing room properties');
