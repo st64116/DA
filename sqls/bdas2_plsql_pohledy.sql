@@ -87,3 +87,25 @@ CREATE OR REPLACE VIEW view_soubory AS
 CREATE OR REPLACE VIEW view_profilovky AS
     SELECT login, nazev, pripona, obsah
         FROM zajemci z JOIN soubory s ON z.id_profilovky = s.id_souboru;
+
+-- HIERARCHIE
+
+CREATE OR REPLACE VIEW view_zajemce_hierarchicky AS
+    SELECT login, LEVEL as poradi, PRIOR login as nadrizeny, CONNECT_BY_ROOT login as koren
+    FROM zajemci
+    LEFT JOIN osoby USING (id_zajemce)
+    LEFT JOIN firmy USING (id_zajemce)
+        CONNECT BY id_nadrizeneho = PRIOR id_zajemce
+        --START WITH DISKRIMINATOR LIKE 'FIRMY'
+        ORDER SIBLINGS BY login;
+
+
+CREATE OR REPLACE VIEW view_rezervace_hierarchicky AS
+    SELECT id_rezervace, casOd, casDo, id_mistnosti, id_stavu,
+           id_skupiny, login, CONNECT_BY_ROOT login as koren
+    FROM zajemci
+    LEFT JOIN osoby USING (id_zajemce)
+    LEFT JOIN firmy USING (id_zajemce)
+    JOIN rezervace USING (id_zajemce)
+        --START WITH DISKRIMINATOR LIKE 'FIRMY'
+        CONNECT BY id_nadrizeneho = PRIOR id_zajemce;

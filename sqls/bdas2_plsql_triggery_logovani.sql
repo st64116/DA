@@ -109,11 +109,15 @@ CREATE OR REPLACE TRIGGER t_log_update_zajemci
 DECLARE
     v_info_old VARCHAR2(1022);
     v_info_new VARCHAR2(1022);
+    v_heslo CHAR(8) := 'OLD_PASS';
 BEGIN
+    IF (:old.heslo NOT LIKE :new.heslo) THEN
+        v_heslo := 'NEW_PASS';
+    END IF;
     v_info_old := '' || :old.id_zajemce || ', "' || :old.login || '", "' || :old.email || '", "'
-        || :old.heslo || '", "' || :old.diskriminator || '", ' || :old.opravneni || ', ' || :old.id_profilovky;
+                      || :old.diskriminator || '", ' || :old.opravneni || ', ' || :old.id_profilovky;
     v_info_new := '' || :new.id_zajemce || ', "' || :new.login || '", "' || :new.email || '", "'
-        || :new.heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni || ', ' || :new.id_profilovky;
+        || v_heslo || '", "' || :new.diskriminator || '", ' || :new.opravneni || ', ' || :new.id_profilovky;
     P_MAKE_LOG('update', 'zajemci', v_info_old || ' -> ' || v_info_new);
 END;
 /

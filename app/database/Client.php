@@ -142,6 +142,22 @@ class Client
         }
     }
 
+    function view_rezervace_hierarchicky(?string $loginKorene = null) {
+        if (isset($loginKorene)) {
+            return $this->view('VIEW_REZERVACE_HIERARCHICKY', "WHERE '$loginKorene' LIKE koren");
+        } else {
+            return $this->view('VIEW_REZERVACE_HIERARCHICKY');
+        }
+    }
+
+    function view_zajemce_hierarchicky(?string $loginKorene = null) {
+        if (isset($loginKorene)) {
+            return $this->view('VIEW_REZERVACE_HIERARCHICKY', "WHERE '$loginKorene' LIKE koren");
+        } else {
+            return $this->view('VIEW_REZERVACE_HIERARCHICKY');
+        }
+    }
+
     // INSERTs
 
     function insert_firmu(string $login, string $email,
@@ -320,7 +336,6 @@ class Client
             "P_UPDATE_UMISTENI($id, '$nazev');"
         );
     }
-
 
     function update_velikost(int $id, string $nazev) : bool {
         return $this->execute(
