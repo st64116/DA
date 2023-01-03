@@ -78,7 +78,8 @@ CREATE OR REPLACE VIEW view_stavy AS
 -- LOGY
 CREATE OR REPLACE VIEW view_logy AS
     SELECT id_logu, typ_operace, tabulka, info,
-        TO_CHAR(cas, 'yyyy-mm-dd hh24:mi:ss') AS cas FROM logy;
+        TO_CHAR(cas, 'yyyy-mm-dd hh24:mi:ss') AS cas FROM logy
+    ORDER BY cas DESC;
 
 -- SOUBORY
 CREATE OR REPLACE VIEW view_soubory AS
