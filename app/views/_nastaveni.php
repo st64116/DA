@@ -22,7 +22,6 @@ if (isset($_POST['changeImage'])) {
         };
 
     }
-
 }
 
 if (isset($_POST['heslo'])) {

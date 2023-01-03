@@ -24,8 +24,8 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link href="assets/css/mainLayout.css" rel="stylesheet"/>
     <link href="assets/css/tabulka.css" rel="stylesheet"/>
-    <title><?php echo $title; ?></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title><?php echo $title; ?></title>
 </head>
 <body>
 
@@ -161,11 +161,12 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
         </ul>
     </div>
     <div class="content">
-        <div class="mx-2 mt-1 py-1 rounded-2 main-bg d-flex justify-content-between">
+        <div class="mx-2 mt-1 py-1 rounded-2 d-flex justify-content-between">
             <h2 class="ms-2"><?php echo $title ?></h2>
+<!--            <h2></h2>-->
             <?php if (isset($_SESSION['ROLE'])) { ?>
                 <a href="nastaveni.php"
-                   class="me-1 text-decoration-none text-dark text-uppercase fw-bold bg-white rounded-pill px-2 shadow">
+                   class="me-1 text-decoration-none text-dark bg-white text-uppercase fw-bold rounded-pill px-2 shadow" >
                     <?php
                     $profilovka = $db->view_profilovky($_SESSION['LOGIN']);
                     if ($profilovka) {
@@ -204,6 +205,12 @@ if (isset($script)) {
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <script>
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });
+    });
+
     $(".sidebar ul li").on('click', function () {
         $(".sidebar ul li.active").removeClass('active');
         $(this).addClass('active');

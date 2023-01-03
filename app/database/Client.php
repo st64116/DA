@@ -373,12 +373,22 @@ class Client
         );
     }
 
-    function update_profilovku(string $login, string $nazev, string $pripona, $soubor) : bool {
+    function update_profilovku(string $login, string $nazev, string $pripona) : bool {
         // TODO zjistit jak prevest FILE na BLOB
         return $this->execute(
-            "P_UPDATE_PROFILOVKU('$login', '$nazev', '$pripona', $soubor);"
+            "P_UPDATE_PROFILOVKU('$login', '$nazev', '$pripona');"
         );
     }
+
+//    function update_fotku(string $login, string $nazev, string $pripona) : bool {
+//        $sql = "SELECT id_profilovky FROM zajemci WHERE login LIKE '$login' RETURNING login";
+//        $sql2 = "UPDATE soubory SET nazev = '$nazev', pripona = '$pripona' WHERE id_souboru = v_id_profilovky;";
+//        $smtp = oci_parse($this->connection, $sql);
+//        if(oci_execute($smtp)){
+//            return true;
+//        }
+//        return false;
+//    }
 
     // DELETEs
 

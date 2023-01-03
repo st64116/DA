@@ -2,12 +2,30 @@
 include_once('database/Client.php');
 $db = new Client();
 
-if(isset($_POST['add'])){
-    $nazev = htmlspecialchars($_POST['nazev']);
-    if($db->insert_ucel($nazev)){
-        $goodMsg = "Stav úspěšně přidáno!";
+if(isset($_POST['foto'])){
+    $login = $_POST['login'];
+    if($db->view_zajemce($login)){
+        if ($_FILES["image"]["error"] > 0) {
+            $errorMsg = "něco se nepovedlo!!";
+        } else {
+            if ($db->view_profilovky($login) != false) {
+                $db->delete_profilovku($login);
+            }
+            if (!is_bool(strpos(strtolower($_FILES["image"]["type"]), "jpeg", 0))) {
+                $pripona = "jpg";
+            } else {
+                $pripona = "png";
+            }
+
+            if ($db->insert_profilovku_pokus($login, $_FILES["image"]["name"], $pripona, $_FILES["image"]["tmp_name"])) {
+                $goodMsg = "profilovka nastavena";
+            } else {
+                $errorMsg = "něco se nepovedlo!!";
+            };
+
+        }
     }else{
-        $errorMsg = "něco se nepovedlo :(";
+        $errorMsg = "Login neexistuje";
     }
 }
 
@@ -20,8 +38,8 @@ if(isset($_POST['delete'])){
 }
 
 if(isset($_POST['update'])){
-    if($db->update_ucel($_POST['id'],htmlspecialchars($_POST['nazev']))){
-        $goodMsg = "Stav úspěšně upraveno :)";
+    if($db->update_profilovku($_POST['login'],$_POST['nazev'],$_POST['pripona'])){
+        $goodMsg = "Fotka upravena :)";
     }else{
         $errorMsg = "něco se nepovedlo :(";
     }
@@ -81,10 +99,13 @@ var_dump($viewProfilovky[0]);
     if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
         ?>
         <div class="collapse" id="add">
-            <form action="" method="post">
-                <label>Název:</label>
-                <input class="w-100" type="text" name="nazev" required>
-                <button class="btn btn-danger mt-2" type="submit" name="add">Přidat</button>
+            <form action="" method="post" enctype="multipart/form-data">
+                <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center" enctype="multipart/form-data">
+                    <label>login:</label>
+                    <input type="text" name="login" placeholder="existující login!!" required class="w-100">
+                    <input class="my-2 w-100" type="file" accept="image/png, image/jpeg" name="image" required>
+                    <button type="submit" name="foto" class="btn btn-danger btn-sm">Přidat</button>
+                </form>
             </form>
         </div>
     <?php } ?>
@@ -131,7 +152,7 @@ var_dump($viewProfilovky[0]);
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
                     echo '<td data-title="#" class="radek">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
-                data-bs-target="#item' . $item['LOGIN'] . '"  aria-expanded="false" aria-controls="item' . $item['LOGIN'] . '"><span class="material-symbols-outlined">edit</span>
+                data-bs-target="#item' . str_replace('.', '_', $item['LOGIN']) . '"  aria-expanded="false" aria-controls="item' . str_replace('.', '_', $item['LOGIN']) . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
                 }
@@ -142,11 +163,12 @@ var_dump($viewProfilovky[0]);
                 echo "</tr>";
 
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $item['LOGIN'] . '">
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . str_replace('.', '_', $item['LOGIN']) . '">
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
-<input name="id" class="w-100 d-none" type="text" value="' . $item['LOGIN'] . '" required readonly>
+<input name="login" class="w-100 d-none" type="text" value="' . $item['LOGIN'] . '" required readonly>
 <div><label>název:</label><input name="nazev" class="w-100" type="text" value="' . $item['NAZEV'] . '" required id="nazev' . $item['LOGIN'] . '"></div>
+<div><label>Přípona:</label><input name="pripona" class="w-100" type="text" value="' . $item['PRIPONA'] . '" required id="pripona' . $item['LOGIN'] . '"></div>
 <div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>
 </form>
@@ -156,6 +178,7 @@ var_dump($viewProfilovky[0]);
 </form>
 </div></td></tr>';
                     echo '<script>document.getElementById("nazev' . $item['LOGIN'] . '").value = ' . $item['NAZEV'] . '</script>'; // nastavení oprávnění na aktouální hodnotu
+                    echo '<script>document.getElementById("pripona' . $item['LOGIN'] . '").value = ' . $item['PRIPONA'] . '</script>'; // nastavení oprávnění na aktouální hodnotu
                 }
             }
         }

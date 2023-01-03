@@ -8,8 +8,8 @@ if (isset($_POST['submit'])) {
     $login = htmlspecialchars($_POST['username']);
     $password = htmlspecialchars($_POST['password']);
     $passwordAgain = htmlspecialchars($_POST['passwordAgain']);
+    var_dump($email);
     if ($password == $passwordAgain) {
-        $db->insert_osobu($login,$email,$password,$jmeno,$prijmeni);
         if($db->insert_osobu($login,$email,$password,$jmeno,$prijmeni)){
             header("Location:login.php");
         }else{

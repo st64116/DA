@@ -265,15 +265,14 @@ END;
 CREATE OR REPLACE PROCEDURE p_update_profilovku
     (v_login IN VARCHAR2,
     v_nazev IN VARCHAR2,
-    v_pripona IN VARCHAR2,
-    v_obsah IN BLOB)
+    v_pripona IN VARCHAR2)
     IS
     v_id_profilovky NUMBER;
 BEGIN
     SAVEPOINT point_pred_updatem;
     SELECT id_profilovky INTO v_id_profilovky
         FROM zajemci WHERE login LIKE v_login;
-    UPDATE soubory SET nazev = v_nazev, pripona = v_pripona, obsah = v_obsah
+    UPDATE soubory SET nazev = v_nazev, pripona = v_pripona
         WHERE id_souboru = v_id_profilovky;
     COMMIT;
 EXCEPTION

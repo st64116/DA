@@ -13,8 +13,6 @@ if (isset($_POST['rezervace']) && isset($_SESSION['LOGIN'])) {
     $do = $_POST['do'];
     $od = str_replace('T', ' ', $od);
     $do = str_replace('T', ' ', $do);
-    var_dump($od);
-    var_dump($do);
     $mistnost = $_POST['mistnost'];
     if ($db->insert_rezervaci_mistnosti($od, $do, $_SESSION['LOGIN'], $mistnost)) {
         $rezervaceMsg = "rezervace místnosti:" . $mistnost . "od: " . $od . "do: " . $do . "proběhla úspěšně";
@@ -52,7 +50,6 @@ if (isset($_POST['update'])) {
             array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
         }
     }
-    var_dump($prislusentstviArray);
     if ($db->update_mistnost($id_mistnosti, $nazev, $ucel, $umisteni, $patro, $velikost, $prislusentstviArray)) {
         $rezervaceMsg = "Úpravy se úspěšně neprovedly :)";
     } else {
@@ -67,13 +64,11 @@ if (isset($_POST['submitAdd'])) {
     $patro = $_POST['ucelAdd'];
     $velikost = $_POST['ucelAdd'];
     $prislusentstviArray = array();
-    var_dump($ucel);
     foreach ($db->view_prislusenstvi() as $prislusenstvi) {
         if (isset($_POST[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
             array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
         }
     }
-    var_dump($prislusentstviArray);
     if ($db->insert_mistnost($nazev, $ucel, $umisteni, $patro, $velikost, $prislusentstviArray)) {
         $rezervaceMsg = "úspěšně přidáno! :)";
     } else {
@@ -173,9 +168,6 @@ if (isset($_POST['delete'])) {
                         }
                         ?>
                     </div>
-                </div>
-                <div>
-
                 </div>
                 <div class="row">
                     <div class="mt-3 text-start col-6">
@@ -332,7 +324,6 @@ if (isset($_POST['delete'])) {
         //Filtr příslušenství
         $prislusentstviArray = array();
         foreach ($db->view_prislusenstvi() as $prislusenstvi) {
-            var_dump(str_replace(' ', '', $prislusenstvi['NAZEV']));
             if (isset($_GET[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
                 array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
             }

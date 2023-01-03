@@ -2,6 +2,31 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if (isset($_POST['foto'])) {
+    if (isset($_FILES['image'])) {
+        if ($_FILES["image"]["error"] > 0) {
+            $errorMsg = "něco se nepovedlo!!";
+        } else {
+            if ($db->view_profilovky($_POST['login']) != false) {
+                $db->delete_profilovku($_SESSION['login']);
+            }
+            if (!is_bool(strpos(strtolower($_FILES["image"]["type"]), "jpeg", 0))) {
+                $pripona = "jpeg";
+            } else {
+                $pripona = "png";
+            }
+
+            if ($db->insert_profilovku_pokus($_POST['login'], $_FILES["image"]["name"], $pripona, $_FILES["image"]["tmp_name"])) {
+                $goodMsg = "profilovka nastavena";
+            } else {
+                $errorMsg = "něco se nepovedlo!!";
+            };
+        }
+    } else {
+        $errorMsg = "něco se nepovedlo!!";
+    }
+}
+
 if (isset($_POST['submitAdd'])) {
     $login = htmlspecialchars($_POST['loginAdd']);
     $email = htmlspecialchars($_POST['emailAdd']);
@@ -11,7 +36,7 @@ if (isset($_POST['submitAdd'])) {
     $heslo = htmlspecialchars($_POST['hesloAdd']);
 
     if ($db->insert_osobu($login, $email, $heslo, $jmeno, $prijmeni, $nadrizeny)) {
-        $rezervaceMsg = "Osoba úspěšně přidána :)";
+        $goodMsg = "Osoba úspěšně přidána :)";
     } else {
         $errorMsg = "Nastala chyba! Osoba nebyla přidána!";
     }
@@ -19,7 +44,7 @@ if (isset($_POST['submitAdd'])) {
 
 if (isset($_POST['delete'])) {
     if ($db->delete_osobu($_POST['osobaId'])) {
-        $rezervaceMsg = "Osoba úspěšně odstraněna :)";
+        $goodMsg = "Osoba úspěšně odstraněna :)";
     } else {
         $errorMsg = "Nastala chyba! Osoba nebyla odstraněna!";
     }
@@ -40,9 +65,8 @@ if (isset($_POST['update'])) {
     } else {
         $detail = 1; // 1 = soukromý profil
     }
-    var_dump($detail);
     if ($db->update_osobu($login, $email, $opravneni, $jmeno, $prijmeni, $detail, $nadrizeny)) {
-        $rezervaceMsg = "Osoba úspěšně upravena :)";
+        $goodMsg = "Osoba úspěšně upravena :)";
     } else {
         $errorMsg = "Nastala chyba! Osoba nebyla upravena!";
     }
@@ -50,22 +74,21 @@ if (isset($_POST['update'])) {
 
 if (isset($_POST['heslo'])) {
     if ($db->update_heslo($_POST['login'], htmlspecialchars($_POST['noveHeslo']))) {
-        $rezervaceMsg = "Heslo úspěšně změněno :)";
+        $goodMsg = "Heslo úspěšně změněno :)";
     } else {
         $errorMsg = "Nastala chyba! Heslo nebylo změněno!";
     }
 }
 
 $viewProfilovky = $db->view_profilovky();
-var_dump($viewProfilovky);
 ?>
 <div class="text-start my-2 filter p-2">
     <?php
     if (isset($errorMsg)) {
         echo "<p class='text-white bg-danger p-2 my-2 rounded-3'> $errorMsg </p>";
     }
-    if (isset($rezervaceMsg)) {
-        echo "<p class='text-white bg-success p-2 my-2 rounded-3'> $rezervaceMsg </p>";
+    if (isset($goodMsg)) {
+        echo "<p class='text-white bg-success p-2 my-2 rounded-3'> $goodMsg </p>";
     }
     ?>
     <div class="d-flex justify-content-between">
@@ -92,6 +115,7 @@ var_dump($viewProfilovky);
                         <label>Příjmení:</label>
                         <input type="text" name="prijmeni" id="prijmeni">
                     </div>
+                    <?php if($_SESSION['ROLE'] == 1){ ?>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Login:</label>
                         <input type="text" name="login" id="login">
@@ -108,10 +132,7 @@ var_dump($viewProfilovky);
                             <option value="1">admin</option>
                         </select>
                     </div>
-                    <datalist id="browsers">
-
-                    </datalist>
-
+                    <?php } ?>
                 </div>
                 <div>
 
@@ -249,18 +270,18 @@ var_dump($viewProfilovky);
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
                     echo '<td data-title="#" class="radek">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
-                data-bs-target="#item' . $osoba["LOGIN"] . '"  aria-expanded="false" aria-controls="item' . $osoba["LOGIN"] . '"><span class="material-symbols-outlined">edit</span>
+                data-bs-target="#item' . str_replace('.','',$osoba["LOGIN"]) . '"  aria-expanded="false" aria-controls="item' . str_replace('.','',$osoba["LOGIN"]) . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
 
                     echo "<td class='radek' data-title='login'>" . "<span class='my-4'>" . $osoba["LOGIN"] . "</span>" . "</td>";
                 }
-                if($_SESSION['ROLE'] == 0 && $osoba['DETAIL'] == 1){
+                if ($_SESSION['ROLE'] == 0 && $osoba['DETAIL'] == 1) {
                     echo '<td data-title="#" class="radek"><img class="top-image" src="assets/img/profilePhoto.png"/></td>';
                     echo "<td class='radek' data-title='email'>***</td>";
-                }else{
-                    foreach ($viewProfilovky as $item){
-                        if($item['LOGIN'] == $osoba['LOGIN']){
+                } else {
+                    foreach ($viewProfilovky as $item) {
+                        if ($item['LOGIN'] == $osoba['LOGIN']) {
                             $profilovka = $item;
                         }
                     }
@@ -274,15 +295,21 @@ var_dump($viewProfilovky);
                 }
                 echo "<td class='radek' data-title='jméno'>" . $osoba["JMENO"] . "</td>";
                 echo "<td class='radek' data-title='příjmení'>" . $osoba["PRIJMENI"] . "</td>";
-                if($_SESSION['ROLE'] == 0 && $osoba['DETAIL'] == 1){
+                if ($_SESSION['ROLE'] == 0 && $osoba['DETAIL'] == 1) {
                     echo "<td class='radek' data-title='oprávnění'>***</td>";
-                }else{
+                } else {
                     echo "<td class='radek' data-title='oprávnění'>" . $osoba["OPRAVNENI"] . "</td>";
                 }
                 echo "</tr>";
 
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $osoba["LOGIN"] . '">
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . str_replace('.','',$osoba["LOGIN"]) . '">
+<form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center" enctype="multipart/form-data">
+<label>nová fotka:</label>
+<input type="text" name="login" required readonly class="d-none" value="' . $osoba['LOGIN'] . '">
+<input class="" type="file" accept="image/png, image/jpeg" name="image">
+<button type="submit" name="foto" class="btn btn-danger btn-sm">Změnit Fotku</button>
+</form>
 <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center">
 <label>nové heslo(min 4 znaky): </label>
 <input class="d-none" name="login" type="text" value="' . $osoba['LOGIN'] . '" required readonly>
@@ -304,7 +331,7 @@ var_dump($viewProfilovky);
                     } else {
                         echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $osoba["LOGIN"] . '" name="detailUpdate">';
                     }
-echo '<label class="form-check-label" for="flexSwitchCheckDefault' . $osoba["LOGIN"] . '">veřejný profil</label>
+                    echo '<label class="form-check-label" for="flexSwitchCheckDefault' . $osoba["LOGIN"] . '">veřejný profil</label>
 </div></div>
 <div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>
