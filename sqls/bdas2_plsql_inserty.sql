@@ -21,6 +21,7 @@ BEGIN
     v_id_skupiny := pckg_rez_vlas_mist.f_add_vlastnost_pro_rezervace
         (v_id_ucelu, v_id_umisteni, v_id_patra, 
             v_id_velikosti, v_prislusenstvi);
+    p_check_vlastnosti_podmnozinou(v_id_skupiny);
     SELECT id_zajemce INTO v_id_zajemce
         FROM zajemci WHERE login LIKE v_login;
     INSERT INTO REZERVACE (casOd, casDo, id_zajemce, id_skupiny)

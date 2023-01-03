@@ -25,12 +25,13 @@ BEGIN
     END IF;
     SELECT id_skupiny INTO v_id_skupiny 
         FROM rezervace WHERE id_rezervace = v_id_rezervace;
+    p_check_vlastnosti_podmnozinou(v_id_skupiny);
     UPDATE rezervace SET casod = v_od, casdo = v_do 
         WHERE id_rezervace = v_id_rezervace;
     UPDATE skupiny_vlastnosti SET id_ucelu = v_id_ucelu, 
         id_umisteni = v_id_umisteni, id_patra = v_id_patra, 
         id_velikosti = v_id_velikosti
-        WHERE id_skupiny = v_id_skupiny;
+            WHERE id_skupiny = v_id_skupiny;
     pckg_rez_vlas_mist.p_update_inventar(v_id_skupiny, v_prislusenstvi);
     p_check_dostupnost_rezervace(v_id_rezervace);
     COMMIT;
