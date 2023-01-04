@@ -49,14 +49,6 @@ BEGIN
         raise_application_error(-20012, 'The reservation must be in one of the integrated states');
     END IF;
 
-    /* je reseno tim ze stav se meni automaticky(tam se toto testuje), v triggeru nelze spustis z duvodu dotazu na table rezervace
-    IF (:new.id_stavu = 2) THEN
-        IF (pckg_rez_vlas_mist.f_check_kolize_rezervace(:new.id_rezervace, :new.id_mistnosti) = 1) THEN
-            raise_application_error(-20006, 'The reservation can not have the same room and overlapping times with another reservation');
-        END IF;
-    END IF;
-    */
-
     IF (:new.id_stavu = 2 OR :new.id_stavu = 3) THEN
         IF (:new.id_mistnosti IS NULL) THEN
             raise_application_error(-20008, 'The reservation in reserved or completed state must have an assigned room');
@@ -82,6 +74,21 @@ END;
 
 ALTER TRIGGER "T_ZAJEMCI_CHECK_OPRAVNENI" ENABLE;
 
+
+-- ZAJEMCI CHECK nove opravneni
+CREATE OR REPLACE TRIGGER t_zajemci_check_nove_opravneni
+    BEFORE UPDATE ON zajemci
+    REFERENCING NEW AS new
+    FOR EACH ROW
+BEGIN
+    IF ( :new.opravneni NOT IN (0, 1) ) THEN
+        raise_application_error(-20013, 'Authorization must be at level 0 or 1');
+    END IF;
+END;
+/
+
+ALTER TRIGGER "T_ZAJEMCI_CHECK_NOVE_OPRAVNENI" ENABLE;
+
 -- PRISLUSENSTVI CHECK nazev (znak ; je interne pouzivan jako oddelovac)
 
 CREATE OR REPLACE TRIGGER t_prislusenstvi_check_nazev
@@ -100,7 +107,7 @@ ALTER TRIGGER "T_PRISLUSENSTVI_CHECK_NAZEV" ENABLE;
 
 -- VLASTNOSTI CHECK mistnosti.vlastnosti a rezervace.vlastnosti 
     -- mistnosti musi mit vsechny vlastnosti (krom prislus)
-    -- vlastnosti rezervace musi byt podmnouzinou vlastnosti mistnosti
+    -- (vlastnosti rezervace musi byt podmnouzinou vlastnosti mistnosti) - neni zde mozne uskutecnit, presunuto do procedur
 
 CREATE OR REPLACE TRIGGER t_vlastnosti_check_validitu
     BEFORE INSERT OR UPDATE ON skupiny_vlastnosti
@@ -117,12 +124,6 @@ BEGIN
             OR :new.id_patra IS NULL OR :new.id_velikosti IS NULL)) THEN
         raise_application_error(-20005, 'The room must have all properties except accessories');
     END IF;
-    /* je reseno v insert/update procedure, v triggeru nelze spustis z duvodu dotazu na table skupiny_vlastnosti
-    IF (:new.patri LIKE 'rezervaci' 
-        AND pckg_rez_vlas_mist.f_check_vlastnosti_podmnozinou(:new.id_skupiny) = 1) THEN
-            raise_application_error(-20011, 'The reservation properties must be subset of existing room properties');
-    END IF;
-    */
 END;
 /
 

@@ -98,7 +98,6 @@ CREATE OR REPLACE VIEW view_zajemce_hierarchicky AS
     LEFT JOIN osoby USING (id_zajemce)
     LEFT JOIN firmy USING (id_zajemce)
         CONNECT BY id_nadrizeneho = PRIOR id_zajemce
-        --START WITH DISKRIMINATOR LIKE 'FIRMY'
         ORDER SIBLINGS BY login;
 
 
@@ -109,5 +108,4 @@ CREATE OR REPLACE VIEW view_rezervace_hierarchicky AS
     LEFT JOIN osoby USING (id_zajemce)
     LEFT JOIN firmy USING (id_zajemce)
     JOIN rezervace USING (id_zajemce)
-        --START WITH DISKRIMINATOR LIKE 'FIRMY'
         CONNECT BY id_nadrizeneho = PRIOR id_zajemce;

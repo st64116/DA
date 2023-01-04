@@ -151,7 +151,7 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
     END;
 
 /*PRIVATE*/
-    --- vraci 0 pokud se intervaly protinaji
+    --- vraci 1 pokud se intervaly protinaji
         --- jinak vraci 0
     FUNCTION f_casy_se_protinaji
         (v_a_od IN DATE, v_a_do IN DATE, v_b_od IN DATE, v_b_do IN DATE)

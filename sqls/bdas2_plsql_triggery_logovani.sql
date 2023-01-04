@@ -1,4 +1,4 @@
--- INSERT bez commitu
+-- INSERT logu bez commitu
 CREATE OR REPLACE PROCEDURE p_make_log
     (v_typ_operace IN VARCHAR2, v_tabulka IN VARCHAR2, v_info IN VARCHAR2)
     IS
