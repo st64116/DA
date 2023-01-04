@@ -2,6 +2,12 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if(!isset($_SESSION['ROLE']) || $_SESSION['ROLE'] == 0){
+    header("Location:index.php");
+    echo "<a href='index.php' class='text-white btn btn-danger'>nemáš přístup!! Zpět na domovskou stránku</a>";
+    die();
+}
+
 if(isset($_POST['add'])){
     $nazev = htmlspecialchars($_POST['nazev']);
     if($db->insert_ucel($nazev)){

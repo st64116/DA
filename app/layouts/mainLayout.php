@@ -61,19 +61,12 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
             <?php
             if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
                 ?>
-
                 <a href="firmy.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="firmy">
                         <span class="sidebar-text">Firmy</span>
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">chair</span>
                     </li>
                 </a>
-                <!--                <a href="" class="text-decoration-none">-->
-                <!--                    <li class="sidebar-item text-center m-1 rounded-pill" id="logout">-->
-                <!--                        <span class="sidebar-text">Inventáře</span>-->
-                <!--                        <span class="material-symbols-outlined text-end sidebar-icon d-none">inventory</span>-->
-                <!--                    </li>-->
-                <!--                </a>-->
                 <a href="patra.php" class="text-decoration-none">
                     <li class="sidebar-item text-center m-1 rounded-pill" id="patra">
                         <span class="sidebar-text">Patra</span>
@@ -163,7 +156,6 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
     <div class="content">
         <div class="mx-2 mt-1 py-1 rounded-2 d-flex justify-content-between">
             <h2 class="ms-2"><?php echo $title ?></h2>
-<!--            <h2></h2>-->
             <?php if (isset($_SESSION['ROLE'])) { ?>
                 <a href="nastaveni.php"
                    class="me-1 text-decoration-none text-dark bg-white text-uppercase fw-bold rounded-pill px-2 shadow" >

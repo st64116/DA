@@ -1,6 +1,13 @@
 <?php
 include_once('database/Client.php');
 $db = new Client();
+
+if(isset($_SESSION['ROLE'])){
+    header("Location:index.php");
+    echo "<a href='index.php' class='text-white btn btn-danger'>už účet máš!! Zpět na domovskou stránku</a>";
+    die();
+}
+
 if (isset($_POST['submit'])) {
     $jmeno = htmlspecialchars($_POST['name']);
     $prijmeni = htmlspecialchars($_POST["surname"]);

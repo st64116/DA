@@ -2,6 +2,10 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if(!isset($_SESSION['ROLE'])){
+    header('Location:login.php');
+}
+
 if (isset($_POST['changeImage'])) {
     if ($_FILES["image"]["error"] > 0) {
         $errorMsg = "něco se nepovedlo!!";
