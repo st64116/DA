@@ -110,6 +110,12 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
                         <span class="material-symbols-outlined text-end sidebar-icon d-none">photo_camera</span>
                     </li>
                 </a>
+                <a href="logy.php" class="text-decoration-none">
+                    <li class="sidebar-item text-center m-1 rounded-pill" id="logy">
+                        <span class="sidebar-text">Logy</span>
+                        <span class="material-symbols-outlined text-end sidebar-icon d-none">format_list_numbered</span>
+                    </li>
+                </a>
                 <?php
             }
             if (!isset($_SESSION['ROLE'])) {
