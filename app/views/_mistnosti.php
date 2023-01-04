@@ -112,7 +112,7 @@ if (isset($_POST['delete'])) {
                 <div class="row text-start">
                     <div class="col-6 col-lg-3 my-2">
                         <label>Patro:</label>
-                        <select class="w-100" name="patra" id="patra">
+                        <select class="w-100" name="patra" id="patraFiltr">
                             <option value="nevybrano"></option>
                             <?php
                             foreach ($viewPatra as $patro) {
@@ -134,7 +134,7 @@ if (isset($_POST['delete'])) {
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>umísťění:</label>
-                        <select class="w-100" name="umisteni" id="umisteni">
+                        <select class="w-100" name="umisteni" id="umisteniFiltr">
                             <option value="nevybrano"></option>
                             <?php
                             foreach ($viewUmisteni as $umisteni) {
@@ -158,11 +158,12 @@ if (isset($_POST['delete'])) {
                         <?php
                         foreach ($viewPrislusenstvi as $prislusenstvi) {
                             echo '<div class="form-check form-switch col-6 col-lg-4">';
-                            if (isset($_GET[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
-                                echo '<input checked class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
-                            } else {
-                                echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
-                            }
+//                            if (isset($_GET[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
+//                                echo '<input checked class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
+//                            } else {
+//                                echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
+//                            }
+                            echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
                             echo '<label class="form-check-label" for="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
                         </div>';
                         }
@@ -208,7 +209,7 @@ if (isset($_POST['delete'])) {
                     ?>
                 </select>
                 <label>Patro:</label>
-                <select class="w-100" name="patra" id="patra" required>
+                <select class="w-100" name="patra" id="patro" required>
                     <option value="nevybrano"></option>
                     <?php
                     foreach ($viewPatra as $patro) {
@@ -272,7 +273,7 @@ if (isset($_POST['delete'])) {
         //filter patra
         if (isset($_GET["patra"]) && $_GET["patra"] != "nevybrano") {
             $patra = $_GET["patra"];
-            echo "<script> document.getElementById('patra').value ='" . $patra . "';</script>"; // nastavení inputu na hledanou hodnotu
+            echo "<script> document.getElementById('patraFiltr').value ='" . $patra . "';console.log('patra no ty mrtko' + document.getElementById('patra').value);</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
             foreach ($mistnosti as $mistnost) { // filtr mistnosti
                 if ($mistnost["Patro"] == $patra) {
@@ -298,7 +299,7 @@ if (isset($_POST['delete'])) {
         //filtr umisteni
         if (isset($_GET["umisteni"]) && $_GET["umisteni"] != "nevybrano") {
             $umisteni = $_GET["umisteni"];
-            echo "<script> document.getElementById('umisteni').value ='" . $umisteni . "';</script>"; // nastavení inputu na hledanou hodnotu
+            echo "<script> document.getElementById('umisteniFiltr').value ='" . $umisteni . "';</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
             foreach ($mistnosti as $mistnost) {
                 if ($mistnost["Umisteni"] == $umisteni) {
@@ -326,6 +327,7 @@ if (isset($_POST['delete'])) {
         foreach ($db->view_prislusenstvi() as $prislusenstvi) {
             if (isset($_GET[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
                 array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
+                echo "<script>document.getElementById('flexSwitchCheckDefault" . str_replace(' ', '', $prislusenstvi['NAZEV']) . "').checked = true;</script>";
             }
         }
         if (count($prislusentstviArray) > 0) {
@@ -346,82 +348,85 @@ if (isset($_POST['delete'])) {
             $mistnosti = $pom;
         }
 
-        //tvorba tabulky
-        foreach ($mistnosti as $mistnost) {
-            echo '<tr scope="row radek">';
+        if (count($mistnosti) == 0) {
+            echo "<tr><td colspan='10'>Nebyl nalezen žádný záznam</td></tr>";
+        } else {
+            //tvorba tabulky
+            foreach ($mistnosti as $mistnost) {
+                echo '<tr scope="row radek">';
 
-            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
-                echo '<td data-title="#" class="radek">
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
+                    echo '<td data-title="#" class="radek">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#item' . $mistnost["ID_MISTNOSTI"] . '"  aria-expanded="false" aria-controls="item' . $mistnost["ID_MISTNOSTI"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
-            }
-            echo "<td data-title='nazev' class='radek'>" . "<span class='my-4'>" . $mistnost["Mistnost"] . "</span>" . "</td>";
-            echo "<td data-title='účel' class='radek'>" . $mistnost["Ucel"] . "</td>";
-            echo "<td data-title='umístění' class='radek'>" . $mistnost["Umisteni"] . "</td>";
-            echo "<td data-title='patro' class='radek'>" . $mistnost["Patro"] . "</td>";
-            echo "<td data-title='velikost' class='radek'>" . $mistnost["Velikost"] . "</td>";
-            echo "<td data-title='příslušenství' class='radek'>" . str_replace(';', ' ', $mistnost["Prislusenstvi"]) . "</td>";
+                }
+                echo "<td data-title='nazev' class='radek'>" . "<span class='my-4'>" . $mistnost["Mistnost"] . "</span>" . "</td>";
+                echo "<td data-title='účel' class='radek'>" . $mistnost["Ucel"] . "</td>";
+                echo "<td data-title='umístění' class='radek'>" . $mistnost["Umisteni"] . "</td>";
+                echo "<td data-title='patro' class='radek'>" . $mistnost["Patro"] . "</td>";
+                echo "<td data-title='velikost' class='radek'>" . $mistnost["Velikost"] . "</td>";
+                echo "<td data-title='příslušenství' class='radek'>" . str_replace(';', ' ', $mistnost["Prislusenstvi"]) . "</td>";
 
-            if (isset($_SESSION['ROLE'])) { //pokud je přihlášen -> možnost rezervace
-                echo '<td data-title="rezervace" class="radek">
+                if (isset($_SESSION['ROLE'])) { //pokud je přihlášen -> možnost rezervace
+                    echo '<td data-title="rezervace" class="radek">
              <button class="btn btn-light btn-sm text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#rezerv' . $mistnost["ID_MISTNOSTI"] . '"  aria-expanded="false" aria-controls="rezerv' . $mistnost["ID_MISTNOSTI"] . '">
                 <span class="material-symbols-outlined fw-light">add</span>
             </button>
                   </td>';
-            }
+                }
 
-            echo "</tr>";
+                echo "</tr>";
 
-            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { // editační formulář
-                echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $mistnost["ID_MISTNOSTI"] . '">
+                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { // editační formulář
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $mistnost["ID_MISTNOSTI"] . '">
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
 <input class="d-none" name="id_mistnosti" type="text" value="' . $mistnost['ID_MISTNOSTI'] . '" readonly required>
 <div><label>název:</label><input name="mistnost" class="w-100" type="text" value="' . $mistnost["Mistnost"] . '"></div>
 <div><label>účel:</label>
 <select class="w-100" name="ucel" id="ucel' . $mistnost["ID_MISTNOSTI"] . '" required>';
-                foreach ($viewUcel as $Ucel) {
-                    echo "<option value='" . $Ucel["NAZEV"] . "'>" . $Ucel["NAZEV"] . "</option>";
-                }
-                echo '</select>
+                    foreach ($viewUcel as $Ucel) {
+                        echo "<option value='" . $Ucel["NAZEV"] . "'>" . $Ucel["NAZEV"] . "</option>";
+                    }
+                    echo '</select>
 </div>
 <div><label>umítění:</label>
 <select class="w-100" name="umisteni" id="umisteni' . $mistnost["ID_MISTNOSTI"] . '" required>';
-                foreach ($viewUmisteni as $umisteni) {
-                    echo "<option value='" . str_replace(' ', '', $umisteni["NAZEV"]) . "'>" . $umisteni["NAZEV"] . "</option>";
-                }
-                echo '</select>
+                    foreach ($viewUmisteni as $umisteni) {
+                        echo "<option value='" . str_replace(' ', '', $umisteni["NAZEV"]) . "'>" . $umisteni["NAZEV"] . "</option>";
+                    }
+                    echo '</select>
 </div>
 <div><label>patro:</label>
 <select class="w-100" name="patro" id="patra' . $mistnost["ID_MISTNOSTI"] . '" required>';
-                foreach ($viewPatra as $patro) {
-                    echo "<option value='" . $patro["NAZEV"] . "'>" . $patro["NAZEV"] . "</option>";
-                }
-                echo '</select></div>
+                    foreach ($viewPatra as $patro) {
+                        echo "<option value='" . $patro["NAZEV"] . "'>" . $patro["NAZEV"] . "</option>";
+                    }
+                    echo '</select></div>
 <div><label>velikost:</label>
 <select class="w-100" name="velikost" id="velikost' . $mistnost["ID_MISTNOSTI"] . '" required>';
-                foreach ($viewVelikosti as $velikost) {
-                    echo "<option value='" . str_replace(' ', '', $velikost["NAZEV"]) . "'>" . $velikost["NAZEV"] . "</option>";
-                }
+                    foreach ($viewVelikosti as $velikost) {
+                        echo "<option value='" . str_replace(' ', '', $velikost["NAZEV"]) . "'>" . $velikost["NAZEV"] . "</option>";
+                    }
 
-                echo '</select>
+                    echo '</select>
                   </div>
                   <div class="row m-0">';
 
-                foreach ($viewPrislusenstvi as $prislusenstvi) {
-                    echo '<div class="form-check form-switch col-6 col-lg-4">';
-                    if (!is_bool(strpos(strtolower($mistnost["Prislusenstvi"]), strtolower($prislusenstvi['NAZEV']), 0))) {
-                        echo '<input class="form-check-input" checked type="checkbox" role="switch" id="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
-                    } else {
-                        echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
-                    }
-                    echo '<label class="form-check-label" for="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
+                    foreach ($viewPrislusenstvi as $prislusenstvi) {
+                        echo '<div class="form-check form-switch col-6 col-lg-4">';
+                        if (!is_bool(strpos(strtolower($mistnost["Prislusenstvi"]), strtolower($prislusenstvi['NAZEV']), 0))) {
+                            echo '<input class="form-check-input" checked type="checkbox" role="switch" id="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
+                        } else {
+                            echo '<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>';
+                        }
+                        echo '<label class="form-check-label" for="flexSwitchCheckDefaultEdit' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
                       </div>';
-                }
-                echo '</div> 
+                    }
+                    echo '</div> 
 <div><button type="submit" name="update" class="btn btn-danger text-start mt-2">update</button></div>
 </div>
 </form>
@@ -431,14 +436,14 @@ if (isset($_POST['delete'])) {
 </form>
 </div></td></tr>';
 
-                echo '<script>document.getElementById("patra' . $mistnost['ID_MISTNOSTI'] . '").value="' . $mistnost["Patro"] . '"</script>';
-                echo '<script>document.getElementById("ucel' . $mistnost['ID_MISTNOSTI'] . '").value="' . $mistnost["Ucel"] . '"</script>';
-                echo '<script>document.getElementById("umisteni' . $mistnost['ID_MISTNOSTI'] . '").value="' . str_replace(' ', '', $mistnost["Umisteni"]) . '"</script>';
-                echo '<script>document.getElementById("velikost' . $mistnost['ID_MISTNOSTI'] . '").value="' . str_replace(' ', '', $mistnost["Velikost"]) . '"</script>';
-            }
+                    echo '<script>document.getElementById("patra' . $mistnost['ID_MISTNOSTI'] . '").value="' . $mistnost["Patro"] . '"</script>';
+                    echo '<script>document.getElementById("ucel' . $mistnost['ID_MISTNOSTI'] . '").value="' . $mistnost["Ucel"] . '"</script>';
+                    echo '<script>document.getElementById("umisteni' . $mistnost['ID_MISTNOSTI'] . '").value="' . str_replace(' ', '', $mistnost["Umisteni"]) . '"</script>';
+                    echo '<script>document.getElementById("velikost' . $mistnost['ID_MISTNOSTI'] . '").value="' . str_replace(' ', '', $mistnost["Velikost"]) . '"</script>';
+                }
 
-            if (isset($_SESSION['ROLE'])) { // rezervační formulář
-                echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="rezerv' . $mistnost["ID_MISTNOSTI"] . '">
+                if (isset($_SESSION['ROLE'])) { // rezervační formulář
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="rezerv' . $mistnost["ID_MISTNOSTI"] . '">
 <form class="w-100 px-2 border border-bottom-1 p-1" action="" method="post">
 <div class="row">
 <div><label>místnost:</label><input class="w-100 d-none" name="mistnost" type="text" value="' . $mistnost["ID_MISTNOSTI"] . '" readonly></div>
@@ -448,6 +453,7 @@ if (isset($_POST['delete'])) {
 </div>
 </form>
 </div></td></tr>';
+                }
             }
         }
         ?>
