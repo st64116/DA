@@ -3,10 +3,10 @@ include_once('database/Client.php');
 $db = new Client();
 
 if (isset($_POST['submitAdd'])) {
-    $login = $_POST['loginAdd'];
-    $email = $_POST['emailAdd'];
-    $jmeno = $_POST['jmenoAdd'];
-    $heslo = $_POST['hesloAdd'];
+    $login = htmlspecialchars($_POST['loginAdd']);
+    $email = htmlspecialchars($_POST['emailAdd']);
+    $jmeno = htmlspecialchars($_POST['jmenoAdd']);
+    $heslo = htmlspecialchars($_POST['hesloAdd']);
 
     var_dump($login);
     if ($db->insert_firmu($login, $email, $heslo, $jmeno)) {
@@ -25,10 +25,10 @@ if (isset($_POST['delete'])) {
 }
 
 if (isset($_POST['update'])) {
-    $login = $_POST['loginUpdate'];
-    $email = $_POST['emailUpdate'];
-    $opravneni = $_POST['opravneniUpdate'];
-    $jmeno = $_POST['jmenoUpdate'];
+    $login = htmlspecialchars($_POST['loginUpdate']);
+    $email = htmlspecialchars($_POST['emailUpdate']);
+    $opravneni = htmlspecialchars($_POST['opravneniUpdate']);
+    $jmeno = htmlspecialchars($_POST['jmenoUpdate']);
     if ($db->update_firmu($login, $email,$jmeno,$opravneni)) {
         $rezervaceMsg = "Firma úspěšně upravena :)";
     } else {
@@ -37,9 +37,9 @@ if (isset($_POST['update'])) {
 }
 
 if (isset($_POST['heslo'])) {
-    var_dump($_POST['noveHeslo']);
-    var_dump($_POST['login']);
-    if ($db->update_heslo($_POST['login'], $_POST['noveHeslo'])) {
+//    var_dump($_POST['noveHeslo']);
+//    var_dump($_POST['login']);
+    if ($db->update_heslo($_POST['login'], htmlspecialchars($_POST['noveHeslo']))) {
         $rezervaceMsg = "Heslo úspěšně změněno :)";
     } else {
         $errorMsg = "Nastala chyba! Heslo nebylo změněno!";
@@ -212,7 +212,7 @@ $firmy = $db->view_firmy();
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
                     echo '<td data-title="#" class="radek">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
-                data-bs-target="#item' . $firma["LOGIN"] . '"  aria-expanded="false" aria-controls="item' . $firma["LOGIN"] . '"><span class="material-symbols-outlined">edit</span>
+                data-bs-target="#item' . str_replace('.','_',$firma["LOGIN"]) . '"  aria-expanded="false" aria-controls="item' . str_replace('.','_',$firma["LOGIN"]) . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
                 }
@@ -223,7 +223,7 @@ $firmy = $db->view_firmy();
                 echo "</tr>";
 
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $firma["LOGIN"] . '">
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . str_replace('.','_',$firma["LOGIN"]) . '">
 <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center">
 <label>nové heslo(min 4 znaky): </label>
 <input class="d-none" name="login" type="text" value="' . $firma['LOGIN'] . '" required readonly>

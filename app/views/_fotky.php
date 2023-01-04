@@ -3,7 +3,7 @@ include_once('database/Client.php');
 $db = new Client();
 
 if (isset($_POST['foto'])) {
-    $login = $_POST['login'];
+    $login = htmlspecialchars($_POST['login']);
     if ($db->view_zajemce($login)) {
         if ($_FILES["image"]["error"] > 0) {
             $errorMsg = "něco se nepovedlo!!";
