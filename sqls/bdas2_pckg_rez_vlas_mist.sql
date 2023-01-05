@@ -246,13 +246,13 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
 
 /*PUBLIC*/
     FUNCTION f_get_concat_prislusenstvi
-    (v_id_skupiny IN NUMBER) RETURN VARCHAR2
+        (v_id_skupiny IN NUMBER) RETURN VARCHAR2
         IS
         v_string VARCHAR2(1000) := '';
     BEGIN
         FOR r_prislus IN
             (SELECT nazev FROM inventare JOIN prislusenstvi USING (id_prislusenstvi)
-             WHERE id_skupiny = v_id_skupiny)
+                WHERE id_skupiny = v_id_skupiny)
             LOOP
                 v_string := v_string || r_prislus.nazev ||';';
             END LOOP;
@@ -314,9 +314,8 @@ CREATE OR REPLACE PACKAGE BODY pckg_rez_vlas_mist AS
               AND (v_id_umisteni IS NULL OR id_umisteni = v_id_umisteni)
               AND (v_id_patra IS NULL OR id_patra = v_id_patra)
               AND (v_id_velikosti IS NULL OR id_velikosti = v_id_velikosti)
-              AND (f_get_concat_prislusenstvi(mi.id_skupiny) LIKE ''
-                OR f_get_concat_prislusenstvi(mi.id_skupiny)
-                       LIKE v_prislusenstvi);
+              AND (v_prislusenstvi IS NULL OR v_prislusenstvi LIKE '' OR
+                   f_get_concat_prislusenstvi(mi.id_skupiny) LIKE v_prislusenstvi);
         r_mistnost c_mistnosti%ROWTYPE;
         v_pole_mistnosti type_pole_mistnosti;
         v_i NUMBER := 0;
