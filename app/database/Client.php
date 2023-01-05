@@ -126,12 +126,10 @@ class Client
     }
 
     function view_soubory() {
-        // TODO zjistit jak prevest BLOB na FILE
         return $this->view('VIEW_SOUBORY');
     }
 
     function view_profilovky(?string $login = null) {
-        // TODO zjistit jak prevest BLOB na FILE
         if (isset($login)) {
             $profilovky = $this->view('VIEW_PROFILOVKY', "WHERE '$login' LIKE login");
             if (!$profilovky)
@@ -210,12 +208,16 @@ class Client
 
     function insert_rezervaci_vlastnostmi(string $casOd, string $casDo, string $loginZajemce,
                                           ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,
-                                          ?int $id_velikosti, ?array $prislusenstvi) : bool
+                                          ?int $id_velikosti, array $prislusenstvi) : bool
     {
         $prislusString = $this->array_prislusenstvi_to_string($prislusenstvi);
+        $ucel = (is_null($id_ucelu)) ? 'NULL' : "$id_ucelu";
+        $umisteni = (is_null($id_umisteni)) ? 'NULL' : "$id_umisteni";
+        $patro = (is_null($id_patra)) ? 'NULL' : "$id_patra";
+        $velikost = (is_null($id_velikosti)) ? 'NULL' : "$id_velikosti";
         return $this->execute(
             "P_INSERT_REZERVACI_SKRZ_VLASTNOSTI('$casOd', '$casDo', '$loginZajemce', 
-            $id_ucelu, $id_umisteni, $id_patra, $id_velikosti, '$prislusString');"
+            $ucel, $umisteni, $patro, $velikost, '$prislusString');"
         );
     }
 
@@ -250,7 +252,6 @@ class Client
     }
 
     function insert_profilovku(string $login, string $nazev, string $pripona, $soubor) : bool {
-        //TODO zjistit jak prevest FILE na BLOB
         return $this->execute(
             "P_INSERT_PROFILOVKU('$login', '$nazev', '$pripona', $soubor);"
         );
@@ -374,7 +375,6 @@ class Client
     }
 
     function update_profilovku(string $login, string $nazev, string $pripona) : bool {
-        // TODO zjistit jak prevest FILE na BLOB
         return $this->execute(
             "P_UPDATE_PROFILOVKU('$login', '$nazev', '$pripona');"
         );
