@@ -15,7 +15,7 @@ if (isset($_POST['rezervace']) && isset($_SESSION['LOGIN'])) {
     $do = str_replace('T', ' ', $do);
     $mistnost = $_POST['mistnost'];
     if ($db->insert_rezervaci_mistnosti($od, $do, $_SESSION['LOGIN'], $mistnost)) {
-        $rezervaceMsg = "rezervace místnosti:" . $mistnost . "od: " . $od . "do: " . $do . "proběhla úspěšně";
+        $rezervaceMsg = "rezervace místnosti od: " . $od . "do: " . $do . " proběhla úspěšně";
     } else {
         $errorMsg = "Nastala chyba! Rezervace se bohůžel neprovedla!";
     }

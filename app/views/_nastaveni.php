@@ -48,7 +48,11 @@ if (isset($_POST['update'])) {
     }
 
     if ($_SESSION['ROLE'] == 0) {
-        $opravneni = 0;
+        if($_SESSION['ADMIN'] == 0){
+            $opravneni = 0;
+        }else{
+            $opravneni = 1;
+        }
     } else {
         $opravneni = $_POST['opravneni'];
     }

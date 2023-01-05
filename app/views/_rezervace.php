@@ -10,23 +10,102 @@ if (isset($_POST['delete'])) {
     }
 }
 
-// TODO: admin -> přidání rezervace
+// TODO: přidání rezervace
 
-// TODO: update rezervace
+if (isset($_POST['add'])) {
+    $od = $_POST['od'];
+    $do = $_POST['do'];
+    $od = str_replace('T', ' ', $od);
+    $do = str_replace('T', ' ', $do);
+    $mistnost = $_POST['mistnost'];
+    if ($_SESSION['ROLE'] == 1) {
+        if ($db->insert_rezervaci_mistnosti($od, $do, htmlspecialchars($_POST['login']), htmlspecialchars($_POST['mistnost']))) {
+            $goodMsg = "rezervováno";
+        } else {
+            $errorMsg = "něco se nepovedlo";
+        }
+    } else {
+        if ($db->insert_rezervaci_mistnosti($od, $do, $_SESSION['LOGIN'], $mistnost)) {
+            $goodMsg = "rezervováno";
+        } else {
+            $errorMsg = "něco se nepovedlo";
+        }
+    }
+}
+
+if (isset($_POST['addVlastnosti'])) {
+    $prislusentstviArray = array();
+    foreach ($db->view_prislusenstvi() as $prislusenstvi) {
+        if (isset($_POST[str_replace(' ', '', $prislusenstvi['NAZEV'])])) {
+            array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
+        }
+    }
+    var_dump($prislusentstviArray);
+    $od = $_POST['od'];
+    $do = $_POST['do'];
+    $od = str_replace('T', ' ', $od);
+    $do = str_replace('T', ' ', $do);
+    if (isset($_POST['patro']) && $_POST['patro'] != "") {
+        $patro = $_POST['patro'];
+    } else {
+        $patro = null;
+    }
+    if (isset($_POST['velikost']) && $_POST['velikost'] != "") {
+        $velikost = $_POST['velikost'];
+    } else {
+        $velikost = null;
+    }
+    if (isset($_POST['umisteni']) && $_POST['umisteni'] != "") {
+        $umisteni = $_POST['umisteni'];
+    } else {
+        $umisteni = null;
+    }
+    if (isset($_POST['ucel']) && $_POST['ucel'] != "") {
+        $ucel = $_POST['ucel'];
+    } else {
+        $ucel = null;
+    }
+    if (isset($_POST['login']) && $_POST['login'] != "") {
+        $login = $_POST['login'];
+    } else {
+        $login = $_SESSION['LOGIN'];
+    }
+    echo "od: " . $od . " do: " . $do . " login: " . $login . " patro: ". $patro . " ucel: " .$ucel ." umisteni: ". $umisteni . " velikost: ". $velikost;
+    if ($db->insert_rezervaci_vlastnostmi($od, $do, $login, $ucel, $umisteni, $patro, $velikost, $prislusentstviArray)) {
+        $goodMsg = "rezervováno";
+    } else {
+        $errorMsg = "něco se nepovedlo";
+    }
+}
+
+if (isset($_POST['update'])) {
+//    var_dump($_POST['update']);
+    $prislusenstviArray = array();
+    foreach (explode(';', $_POST['prislusenstvi']) as $item) {
+        array_push($prislusenstviArray, $item);
+    }
+    var_dump($prislusenstviArray);
+    if ($db->update_rezervaci($_POST['id'], str_replace('T', ' ', $_POST['od']),
+        str_replace('T', ' ', $_POST['do']), null, null, null, null,
+        $prislusenstviArray)) {
+        $goodMsg = "rezervace změněna";
+    } else {
+        $errorMsg = "něco se nepovedlo!!";
+    }
+}
+
 
 $viewStavy = $db->view_stavy();
 $viewPrilusenstvi = $db->view_prislusenstvi();
 
 if ($_SESSION['ROLE'] == 1) {
-    $viewRezervace = $db->view_rezervace();
+    $viewRezervace = $db->view_rezervace_hierarchicky();
 } else {
-    $viewRezervace = $db->view_rezervaci($_SESSION['LOGIN']);
+    $viewRezervace = $db->view_rezervace_hierarchicky($_SESSION['LOGIN']);
 }
 
-//foreach ($viewRezervace as $rezervace){
-//    var_dump($rezervace);
-//    echo "<hr>";
-//}
+$viewmistnosti = $db->view_mistnosti();
+
 ?>
 <div class="text-start my-2 filter p-2">
     <?php
@@ -42,10 +121,12 @@ if ($_SESSION['ROLE'] == 1) {
                 data-bs-target="#filter" aria-expanded="false" aria-controls="filter">Filtr
         </button>
         <?php
-        if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
-            echo '<button class="btn btn-success text-uppercase text-end" type="button" data-bs-toggle="collapse"
+        if (isset($_SESSION['ROLE'])) {
+            echo '<div><button class="btn btn-success text-uppercase text-end btn-sm" type="button" data-bs-toggle="collapse"
                 data-bs-target="#add" aria-expanded="false" aria-controls="add">Přidat
-        </button>';
+        </button><button class="btn btn-success text-uppercase text-end ms-3 btn-sm" type="button" data-bs-toggle="collapse"
+                data-bs-target="#addVlastnosti" aria-expanded="false" aria-controls="addVlastnosti">Přidat Dle vlastností
+        </button></div>';
         }
         ?>
     </div>
@@ -113,17 +194,77 @@ if ($_SESSION['ROLE'] == 1) {
         </form>
     </div>
     <?php
-    if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+    if (isset($_SESSION['ROLE'])) {
         ?>
         <div class="collapse" id="add">
             <form action="" method="post">
                 <label>Od:</label>
-                <input class="w-100" type="datetime-local" name="odAdd" required>
+                <input class="w-100" type="datetime-local" name="od" required>
                 <label>DO:</label>
-                <input class="w-100" type="datetime-local" name="doAdd" required>
+                <input class="w-100" type="datetime-local" name="do" required>
                 <label>Místnost:</label>
-                <input class="w-100" type="text" name="mistnostADd" required>
-                <button class="btn btn-danger mt-2" type="submit" name="submitAdd">Přidat</button>
+                <select name="mistnost" class="w-100" required>
+                    <?php foreach ($db->view_mistnosti() as $item) {
+                        echo "<option value='" . $item['ID_MISTNOSTI'] . "'>" . $item["Mistnost"] . "</option>";
+                    } ?>
+                </select>
+                <?php if ($_SESSION['ROLE'] == 1) {
+                    echo "<label>Login:</label><input type='text' class='w-100' name='login'>";
+                } ?>
+                <button class="btn btn-danger mt-2" type="submit" name="add">Přidat</button>
+            </form>
+        </div>
+        <!--        function insert_rezervaci_vlastnostmi(string $casOd, string $casDo, string $loginZajemce,-->
+        <!--        ?int $id_ucelu, ?int $id_umisteni, ?int $id_patra,-->
+        <!--        ?int $id_velikosti, ?array $prislusenstvi) : bool-->
+        <div class="collapse" id="addVlastnosti">
+            <form action="" method="post">
+                <label>Od:</label>
+                <input class="w-100" type="datetime-local" name="od" required>
+                <label>DO:</label>
+                <input class="w-100" type="datetime-local" name="do" required>
+                <label>Účely:</label>
+                <select name="ucel" class="w-100">
+                    <option value=""></option>
+                    <?php foreach ($db->view_ucely() as $item) {
+                        echo "<option value='" . $item['ID_UCELU'] . "'>" . $item["NAZEV"] . "</option>";
+                    } ?>
+                </select>
+                <label>Umístění:</label>
+                <select name="umisteni" class="w-100">
+                    <option value=""></option>
+                    <?php foreach ($db->view_umisteni() as $item) {
+                        echo "<option value='" . $item['ID_UMISTENI'] . "'>" . $item["NAZEV"] . "</option>";
+                    } ?>
+                </select>
+                <label>Patro:</label>
+                <select name="patro" class="w-100">
+                    <option value=""></option>
+                    <?php foreach ($db->view_patra() as $item) {
+                        echo "<option value='" . $item['ID_PATRA'] . "'>" . $item["NAZEV"] . "</option>";
+                    } ?>
+                </select>
+                <label>Velikost:</label>
+                <select name="velikost" class="w-100">
+                    <option value=""></option>
+                    <?php foreach ($db->view_velikosti() as $item) {
+                        echo "<option value='" . $item['ID_VELIKOSTI'] . "'>" . $item["NAZEV"] . "</option>";
+                    } ?>
+                </select>
+                <div class="row mx-0">
+                    <?php
+                    foreach ($db->view_prislusenstvi() as $prislusenstvi) {
+                        echo '<div class="form-check form-switch col-6 col-lg-4">
+                                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '" name=' . str_replace(' ', '', $prislusenstvi['NAZEV']) . '>
+                                  <label class="form-check-label" for="flexSwitchCheckDefault' . $prislusenstvi['NAZEV'] . '">' . $prislusenstvi['NAZEV'] . '</label>
+                                </div>';
+                    }
+                    ?>
+                </div>
+                <?php if ($_SESSION['ROLE'] == 1) {
+                    echo "<label>Login:</label><input type='text' class='w-100' name='login'>";
+                } ?>
+                <button class="btn btn-danger mt-2" type="submit" name="addVlastnosti">Přidat</button>
             </form>
         </div>
     <?php } ?>
@@ -233,29 +374,47 @@ if ($_SESSION['ROLE'] == 1) {
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
                     echo '<td class="radek" data-title="#">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
-                data-bs-target="#item' . $rezervace["ID"] . '"  aria-expanded="false" aria-controls="item' . $rezervace["ID"] . '"><span class="material-symbols-outlined">edit</span>
+                data-bs-target="#item' . $rezervace["ID_REZERVACE"] . '"  aria-expanded="false" aria-controls="item' . $rezervace["ID_REZERVACE"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
                 }
-                echo "<td class='radek' data-title='od'>" . $rezervace["Od"] . "</td>";
-                echo "<td class='radek' data-title='do'>" . $rezervace["Do"] . "</td>";
-                echo "<td class='radek' data-title='zájemce'>" . $rezervace['Zajemce'] . "</td>";
-                echo "<td class='radek' data-title='místnost'>" . $rezervace['Mistnost'] . "</td>";
-                echo "<td class='radek' data-title='příslušenství'>" . str_replace(';', ' ', $rezervace['Prislusenstvi']) . "&nbsp</td>";
-                echo "<td class='radek' data-title='stav'>" . $rezervace['Stav'] . "</td>";
+                echo "<td class='radek' data-title='od'>" . $rezervace["CASOD"] . "</td>";
+                echo "<td class='radek' data-title='do'>" . $rezervace["CASDO"] . "</td>";
+                echo "<td class='radek' data-title='zájemce'>" . $rezervace['LOGIN'] . "</td>";
+
+                echo "<td class='radek' data-title='místnost'>";
+                foreach ($viewmistnosti as $item) {
+                    if ($item['ID_MISTNOSTI'] == $rezervace['ID_MISTNOSTI']) {
+                        echo $item['Mistnost'];
+                        $mistnost = $item;
+                        break;
+                    }
+                }
+                echo "</td>";
+                echo "<td class='radek' data-title='příslušenství'>" . str_replace(';', ' ', $mistnost['Prislusenstvi']) . "&nbsp</td>";
+                echo "<td class='radek' data-title='stav'>";
+                foreach ($viewStavy as $item) {
+                    if ($item['ID_STAVU'] == $rezervace['ID_STAVU']) {
+                        echo $item['NAZEV'];
+                        break;
+                    }
+                }
+                echo "</td>";
                 echo "</tr>";
 
                 if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //editační formulář
-                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $rezervace['ID'] . '">
+                    echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $rezervace["ID_REZERVACE"] . '">
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
-<div><label>Od:</label><input name="loginUpdate" class="w-100" type="datetime-local" value="' . str_replace(' ', 'T', $rezervace['Od']) . '" required></div>
-<div><label>Do:</label><input name="emailUpdate" class="w-100" type="datetime-local" value="' . str_replace(' ', 'T', $rezervace['Do']) . '" required></div>
+<input class="d-none" type="text" name="id" value="' . $rezervace["ID_REZERVACE"] . '">
+<div><label>Od:</label><input name="od" class="w-100" type="datetime-local" value="' . str_replace(' ', 'T', $rezervace['CASOD']) . '" required></div>
+<div><label>Do:</label><input name="do" class="w-100" type="datetime-local" value="' . str_replace(' ', 'T', $rezervace['CASDO']) . '" required></div>
+<input type="text" name="prislusenstvi" value="' . $mistnost['Prislusenstvi'] . '" class="d-none" readonly>
 </div>
 <button class="btn btn-danger mt-2" type="submit" name="update">Update</button>
 </form>
 <form class="px-2" action="" method="post">
-<input class="d-none" type="text" name="id" value="' . $rezervace['ID'] . '">
+<input class="d-none" type="text" name="id" value="' . $rezervace["ID_REZERVACE"] . '">
 <button class="btn btn-danger" type="submit" name="delete">Delete</button>
 </form>
 </div></td></tr>';
