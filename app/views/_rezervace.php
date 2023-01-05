@@ -40,7 +40,7 @@ if (isset($_POST['addVlastnosti'])) {
             array_push($prislusentstviArray, $prislusenstvi['NAZEV']);
         }
     }
-    var_dump($prislusentstviArray);
+//    var_dump($prislusentstviArray);
     $od = $_POST['od'];
     $do = $_POST['do'];
     $od = str_replace('T', ' ', $od);
@@ -70,11 +70,11 @@ if (isset($_POST['addVlastnosti'])) {
     } else {
         $login = $_SESSION['LOGIN'];
     }
-    echo "od: " . $od . " do: " . $do . " login: " . $login . " patro: ". $patro . " ucel: " .$ucel ." umisteni: ". $umisteni . " velikost: ". $velikost;
+//    echo "od: " . $od . " do: " . $do . " login: " . $login . " patro: ". $patro . " ucel: " .$ucel ." umisteni: ". $umisteni . " velikost: ". $velikost;
     if ($db->insert_rezervaci_vlastnostmi($od, $do, $login, $ucel, $umisteni, $patro, $velikost, $prislusentstviArray)) {
         $goodMsg = "rezervováno";
     } else {
-        $errorMsg = "něco se nepovedlo";
+        $errorMsg = "Nepovedlo se rezervovat místnost s těmito parametry!!";
     }
 }
 
@@ -167,7 +167,7 @@ $viewmistnosti = $db->view_mistnosti();
                             <option value="nevybrano"></option>
                             <?php
                             foreach ($viewStavy as $stav) {
-                                echo "<option value='" . $stav["NAZEV"] . "'>" . $stav['NAZEV'] . "</option>";
+                                echo "<option value='" . $stav["ID_STAVU"] . "'>" . $stav['NAZEV'] . "</option>";
                             }
                             ?>
                         </select>
@@ -320,7 +320,7 @@ $viewmistnosti = $db->view_mistnosti();
             echo "<script> document.getElementById('login').value ='" . $login . "';</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
             foreach ($viewRezervace as $rezervace) {
-                if (!is_bool(strpos(strtolower($rezervace["Zajemce"]), strtolower($login), 0))) {
+                if (!is_bool(strpos(strtolower($rezervace["LOGIN"]), strtolower($login), 0))) {
                     array_push($pom, $rezervace);
                 }
             }
@@ -332,9 +332,18 @@ $viewmistnosti = $db->view_mistnosti();
             $mistnost = $_GET["mistnost"];
             echo "<script> document.getElementById('mistnost').value ='" . $mistnost . "';</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
+            $mistnosti = array();
+            foreach ($viewmistnosti as $item) {
+                if (!is_bool(strpos(strtolower($item['Mistnost']), strtolower($mistnost), 0))) {
+                    array_push($mistnosti, $item['ID_MISTNOSTI']);
+                }
+            }
+//            var_dump($mistnosti);
             foreach ($viewRezervace as $rezervace) {
-                if (!is_bool(strpos(strtolower($rezervace["Mistnost"]), strtolower($mistnost), 0))) {
-                    array_push($pom, $rezervace);
+                foreach ($mistnosti as $id){
+                    if($id == $rezervace['ID_MISTNOSTI']){
+                        array_push($pom, $rezervace);
+                    }
                 }
             }
             $viewRezervace = $pom;
@@ -345,7 +354,7 @@ $viewmistnosti = $db->view_mistnosti();
             echo "<script> document.getElementById('stav').value ='" . $stav . "';</script>"; // nastavení inputu na hledanou hodnotu
             $pom = array();
             foreach ($viewRezervace as $rezervace) {
-                if ($rezervace["Stav"] == $stav) {
+                if ($rezervace["ID_STAVU"] == $stav) {
                     array_push($pom, $rezervace);
                 }
             }

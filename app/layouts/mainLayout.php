@@ -45,12 +45,12 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
             </button>
         </div>
         <ul class="list-unstyled text-uppercase">
-            <a href="index.php" class="text-decoration-none">
-                <li class="sidebar-item text-center m-1 rounded-pill" id="home">
-                    <span class="sidebar-text">home</span>
-                    <span class="material-symbols-outlined text-end sidebar-icon d-none">home</span>
-                </li>
-            </a>
+<!--            <a href="index.php" class="text-decoration-none">-->
+<!--                <li class="sidebar-item text-center m-1 rounded-pill" id="home">-->
+<!--                    <span class="sidebar-text">home</span>-->
+<!--                    <span class="material-symbols-outlined text-end sidebar-icon d-none">home</span>-->
+<!--                </li>-->
+<!--            </a>-->
 
             <a href="mistnosti.php" class="text-decoration-none">
                 <li class="sidebar-item text-center m-1 rounded-pill" id="mistnosti">
