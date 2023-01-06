@@ -1,21 +1,8 @@
 -- REZERVACE
 CREATE OR REPLACE VIEW view_rezervace AS
-    SELECT id_rezervace as "ID", 
-        to_char(re.casOd, 'yyyy-mm-dd hh24:mi') as "Od", 
-        to_char(re.casDo, 'yyyy-mm-dd hh24:mi') as "Do", za.login "Zajemce",
-        st.nazev as "Stav", mi.nazev as "Mistnost", uc.nazev as "Ucel",
-        um.nazev as "Umisteni", pa.nazev as "Patro", ve.nazev as "Velikost",
-        (pckg_rez_vlas_mist.f_get_concat_prislusenstvi(vl.id_skupiny)) 
-            as "Prislusenstvi"
-        FROM rezervace re
-        JOIN stavy st ON (re.id_stavu = st.id_stavu)
-        LEFT JOIN mistnosti mi ON (re.id_mistnosti = mi.id_mistnosti)
-        JOIN skupiny_vlastnosti vl ON (re.id_skupiny = vl.id_skupiny)
-        LEFT JOIN ucely uc ON (vl.id_ucelu = uc.id_ucelu)
-        LEFT JOIN umisteni um ON (vl.id_umisteni = um.id_umisteni)
-        LEFT JOIN patra pa ON (vl.id_patra = pa.id_patra)
-        LEFT JOIN velikosti ve ON (vl.id_velikosti = ve.id_velikosti)
-        JOIN zajemci za ON (re.id_zajemce = za.id_zajemce);
+    SELECT id_rezervace, casOd, casDo, id_mistnosti, id_stavu,
+           id_skupiny, login
+        FROM rezervace JOIN zajemci USING (id_zajemce);
 
 -- MISTNOSTI
 CREATE OR REPLACE VIEW view_mistnosti AS

@@ -124,6 +124,7 @@ EXCEPTION
         ROLLBACK TO point_pred_updatem;
         RAISE;
 END;
+/
 
 -- heslo (ZAJEMCI)
 
