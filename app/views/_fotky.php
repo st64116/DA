@@ -94,15 +94,15 @@ $viewProfilovky = $db->view_profilovky();
                 <div class="row text-start">
                     <div class="col-6 col-lg-3 my-2">
                         <label>login:</label>
-                        <input type="text" name="login" id="login">
+                        <input class="w-100" type="text" name="login" id="login">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Název:</label>
-                        <input type="text" name="nazev" id="nazev">
+                        <input class="w-100" type="text" name="nazev" id="nazev">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Přípona:</label>
-                        <input type="text" name="pripona" id="pripona">
+                        <input class="w-100" type="text" name="pripona" id="pripona">
                     </div>
 
                 </div>

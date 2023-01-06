@@ -2,6 +2,13 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if(!isset($_SESSION['ROLE'])){
+    header("Location:index.php");
+    echo "<a href='index.php' class='text-white btn btn-danger'>nemáš přístup!! Zpět na domovskou stránku</a>";
+    die();
+}
+
+
 if (isset($_POST['foto'])) {
     if (isset($_FILES['image'])) {
         if ($_FILES["image"]["error"] > 0) {
@@ -109,20 +116,20 @@ $viewProfilovky = $db->view_profilovky();
                 <div class="row text-start">
                     <div class="col-6 col-lg-3 my-2">
                         <label>Jméno:</label>
-                        <input type="text" name="jmeno" id="jmeno">
+                        <input class="w-100" type="text" name="jmeno" id="jmeno">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Příjmení:</label>
-                        <input type="text" name="prijmeni" id="prijmeni">
+                        <input class="w-100" type="text" name="prijmeni" id="prijmeni">
                     </div>
                     <?php if($_SESSION['ROLE'] == 1){ ?>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Login:</label>
-                        <input type="text" name="login" id="login">
+                        <input class="w-100" type="text" name="login" id="login">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Email:</label>
-                        <input type="email" name="email" id="email">
+                        <input class="w-100" type="email" name="email" id="email">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Oprávnění:</label>
@@ -311,9 +318,9 @@ $viewProfilovky = $db->view_profilovky();
 <button type="submit" name="foto" class="btn btn-danger btn-sm">Změnit Fotku</button>
 </form>
 <form action="" method="post" class="border border-1 rounded-3 p-2 mx-2 text-center">
-<label>nové heslo(min 4 znaky): </label>
+<label>nové heslo: </label>
 <input class="d-none" name="login" type="text" value="' . $osoba['LOGIN'] . '" required readonly>
-<input class="mx-2" name="noveHeslo" type="text" minlength="4" required>
+<input class="mx-2" name="noveHeslo" type="text" required>
 <button type="submit" name="heslo" class="btn btn-danger btn-sm">Změnit Heslo</button>
 </form>
 <form class="w-100 px-2" action="" method="post">

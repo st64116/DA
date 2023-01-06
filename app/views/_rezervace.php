@@ -2,6 +2,12 @@
 include_once('database/Client.php');
 $db = new Client();
 
+if(!isset($_SESSION['ROLE'])){
+    header("Location:index.php");
+    echo "<a href='index.php' class='text-white btn btn-danger'>nemáš přístup!! Zpět na domovskou stránku</a>";
+    die();
+}
+
 if (isset($_POST['delete'])) {
     if ($db->delete_rezervaci($_POST['id'])) {
         $goodMsg = "Uspěšně odstraněno";
@@ -10,7 +16,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-// TODO: přidání rezervace
+// TODO: přidání rezervacek
 
 if (isset($_POST['add'])) {
     $od = $_POST['od'];

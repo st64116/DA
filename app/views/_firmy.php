@@ -82,15 +82,15 @@ $firmy = $db->view_firmy();
                 <div class="row text-start">
                     <div class="col-6 col-lg-3 my-2">
                         <label>Název:</label>
-                        <input type="text" name="nazev" id="nazev">
+                        <input class="w-100" type="text" name="nazev" id="nazev">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Login:</label>
-                        <input type="text" name="login" id="login">
+                        <input class="w-100" type="text" name="login" id="login">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Email:</label>
-                        <input type="email" name="email" id="email">
+                        <input class="w-100" type="email" name="email" id="email">
                     </div>
                     <div class="col-6 col-lg-3 my-2">
                         <label>Oprávnění:</label>

@@ -2,7 +2,7 @@
 include_once('database/Client.php');
 $db = new Client();
 
-//error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 session_start();
 
 if (isset($_POST['emulaceOn']) && $_SESSION['ADMIN'] = 1) {
@@ -28,6 +28,7 @@ if (isset($_POST['emulaceOff']) && $_SESSION['ADMIN'] = 1) {
     <title><?php echo $title; ?></title>
 </head>
 <body>
+
 
 <div class="main-container d-flex position-relative">
     <div class="sidebar d-fixed" id="side-nav">

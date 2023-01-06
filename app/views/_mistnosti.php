@@ -188,9 +188,9 @@ if (isset($_POST['delete'])) {
         ?>
         <div class="collapse" id="add">
             <form action="" method="post">
-                <label>Název:</label>
+                <label>*Název:</label>
                 <input class="w-100" type="text" name="nazevAdd" required>
-                <label>účel:</label>
+                <label>*účel:</label>
                 <select class="w-100" name="ucelAdd" id="ucelAdd" required>
                     <option value="nevybrano"></option>
                     <?php
@@ -199,7 +199,7 @@ if (isset($_POST['delete'])) {
                     }
                     ?>
                 </select>
-                <label>umísťění:</label>
+                <label>*umísťění:</label>
                 <select class="w-100" name="umisteniAdd" id="umisteniAdd" required>
                     <option value="nevybrano"></option>
                     <?php
@@ -208,7 +208,7 @@ if (isset($_POST['delete'])) {
                     }
                     ?>
                 </select>
-                <label>Patro:</label>
+                <label>*Patro:</label>
                 <select class="w-100" name="patra" id="patro" required>
                     <option value="nevybrano"></option>
                     <?php
@@ -217,7 +217,7 @@ if (isset($_POST['delete'])) {
                     }
                     ?>
                 </select>
-                <label>Velikost:</label>
+                <label>*Velikost:</label>
                 <select class="w-100" name="velikost" id="velikost" required>
                     <option value="nevybrano"></option>
                     <?php
