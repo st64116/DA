@@ -420,7 +420,7 @@ $viewmistnosti = $db->view_mistnosti();
                 echo "</td>";
                 echo "</tr>";
 
-                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //editační formulář
+                if ((isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) || (isset($_SESSION['ROLE']) && $rezervace['ID_STAVU'] == 1)) { //editační formulář
                     echo '<tr class="radek-edit text-start"><td colspan="10" class="p-0"><div class="collapse" id="item' . $rezervace["ID_REZERVACE"] . '">
 <form class="w-100 px-2" action="" method="post">
 <div class="row">
