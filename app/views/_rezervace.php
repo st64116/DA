@@ -2,7 +2,7 @@
 include_once('database/Client.php');
 $db = new Client();
 
-if(!isset($_SESSION['ROLE'])){
+if (!isset($_SESSION['ROLE'])) {
     header("Location:index.php");
     echo "<a href='index.php' class='text-white btn btn-danger'>nemáš přístup!! Zpět na domovskou stránku</a>";
     die();
@@ -106,11 +106,14 @@ $viewPrilusenstvi = $db->view_prislusenstvi();
 
 if ($_SESSION['ROLE'] == 1) {
     $viewRezervace = $db->view_rezervace_hierarchicky();
+//    $viewRezervace = $db->view_rezervace();
 } else {
     $viewRezervace = $db->view_rezervace_hierarchicky($_SESSION['LOGIN']);
 }
 
 $viewmistnosti = $db->view_mistnosti();
+
+$vypsanyRezervace = array();
 
 ?>
 <div class="text-start my-2 filter p-2">
@@ -280,7 +283,7 @@ $viewmistnosti = $db->view_mistnosti();
         <thead class="shadow">
         <tr class="text-uppercase">
             <?php
-//            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            //            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
             if (isset($_SESSION['ROLE'])) {
                 echo "<th scope='col''>#</th>";
             }
@@ -347,8 +350,8 @@ $viewmistnosti = $db->view_mistnosti();
             }
 //            var_dump($mistnosti);
             foreach ($viewRezervace as $rezervace) {
-                foreach ($mistnosti as $id){
-                    if($id == $rezervace['ID_MISTNOSTI']){
+                foreach ($mistnosti as $id) {
+                    if ($id == $rezervace['ID_MISTNOSTI']) {
                         array_push($pom, $rezervace);
                     }
                 }
@@ -385,6 +388,17 @@ $viewmistnosti = $db->view_mistnosti();
             echo "<tr><td colspan='10'>Nebyl nalezen žádný záznam</td></tr>";
         } else {
             foreach ($viewRezervace as $rezervace) {
+                $uzJeRezervaceVypsana = false;
+                foreach ($vypsanyRezervace as $vypsanaRezervace) {
+                    if ($vypsanaRezervace == $rezervace['ID_REZERVACE']) {
+                        $uzJeRezervaceVypsana = true;
+                    }
+                }
+                if ($uzJeRezervaceVypsana) {
+                    continue;
+                } else {
+                    array_push($vypsanyRezervace, $rezervace['ID_REZERVACE']);
+                }
                 echo '<tr scope="row radek">';
 
                 if ((isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) || (isset($_SESSION['ROLE']) && $rezervace['ID_STAVU'] == 1)) { //pokud je přihlášen admin -> možnost editace
@@ -393,7 +407,7 @@ $viewmistnosti = $db->view_mistnosti();
                 data-bs-target="#item' . $rezervace["ID_REZERVACE"] . '"  aria-expanded="false" aria-controls="item' . $rezervace["ID_REZERVACE"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
-                }else{
+                } else {
                     echo "<td></td>";
                 }
                 echo "<td class='radek' data-title='od'>" . $rezervace["CASOD"] . "</td>";
