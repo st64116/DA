@@ -280,7 +280,8 @@ $viewmistnosti = $db->view_mistnosti();
         <thead class="shadow">
         <tr class="text-uppercase">
             <?php
-            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+//            if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) {
+            if (isset($_SESSION['ROLE'])) {
                 echo "<th scope='col''>#</th>";
             }
             ?>
@@ -386,12 +387,14 @@ $viewmistnosti = $db->view_mistnosti();
             foreach ($viewRezervace as $rezervace) {
                 echo '<tr scope="row radek">';
 
-                if (isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) { //pokud je přihlášen admin -> možnost editace
+                if ((isset($_SESSION['ROLE']) && $_SESSION['ROLE'] == 1) || (isset($_SESSION['ROLE']) && $rezervace['ID_STAVU'] == 1)) { //pokud je přihlášen admin -> možnost editace
                     echo '<td class="radek" data-title="#">
              <button class="btn btn-light text-uppercase p-0 " type="button" data-bs-toggle="collapse"
                 data-bs-target="#item' . $rezervace["ID_REZERVACE"] . '"  aria-expanded="false" aria-controls="item' . $rezervace["ID_REZERVACE"] . '"><span class="material-symbols-outlined">edit</span>
             </button>
                   </td>';
+                }else{
+                    echo "<td></td>";
                 }
                 echo "<td class='radek' data-title='od'>" . $rezervace["CASOD"] . "</td>";
                 echo "<td class='radek' data-title='do'>" . $rezervace["CASDO"] . "</td>";
